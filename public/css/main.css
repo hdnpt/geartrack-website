@@ -1,0 +1,65 @@
+body {
+    padding-top: 70px;
+}
+
+.track-entries {
+    font-size: 14px;
+    line-height: 14px;
+}
+
+.track-entries h4{
+    padding: 0;
+    margin: 0 0 2px 0;
+}
+
+.track-entries p {
+    margin: 0;
+}
+
+.track-entries .remove-container {
+    padding-top: 12px;
+}
+
+.track h4 {
+    margin: 0;
+    padding: 0;
+    display: inline-block;
+}
+
+.track .right-id {
+    font-size: 12px;
+    float: right;
+}
+
+.center-img {
+    margin: 0 auto;
+    display: block;
+}
+
+.track .panel-body {
+    padding: 5px 15px;
+}
+
+.track h2 {
+    margin: 5px 0 10px 0;
+    font-size: 25px;
+}
+
+.track h3 {
+    margin: 5px 0 10px 0;
+    font-size: 18px;
+}
+
+.heading {
+    color: white;
+}
+
+.footer {
+    padding-top: 19px;
+    color: #777;
+    border-top: 1px solid #e5e5e5;
+}
+
+#hide-info {
+    display: none;
+}
