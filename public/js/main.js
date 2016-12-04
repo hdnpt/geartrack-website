@@ -57,8 +57,8 @@ send.click(function (event) {
         loadTrackToContent(track)
     }
 
-    id.val("")
-    desc.val("")
+    shippingId.val("")
+    description.val("")
     popup.modal('hide');
 })
 
