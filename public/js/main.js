@@ -107,32 +107,35 @@ function loadTrackToContent(trackEntity) {
     var elId = $('#' + trackEntity.id),
         elBody = elId.find('.panel-body');
 
-    getSkyData(trackEntity.id, function (data) {
+    // Make both requests at the same time
+    var getSky = getSkyData(trackEntity.id),
+        getCorreos = getCorreosData(trackEntity.id, trackEntity.postalcode)
+
+    getSky.then(function (data) { // add sky response to the page before correos
         if(data.error) {
             elBody.append(failedTemplate({name: "Sky 56"}))
-            return
+        } else {
+            elBody.append(skyTemplate(data))
         }
 
-        elBody.append(skyTemplate(data))
-    })
-
-    getCorreosData(trackEntity.id, trackEntity.postalcode, function (data) {
-        if(data.error) {
-            elBody.append(failedTemplate({name: "Correos Express"}))
-            removeLoading(elBody)
-            return
-        }
-
-        elBody.append(correosTemplate(data))
-
-        getAdicionalData(data.id, trackEntity.postalcode, function (adicionalData) {
-            removeLoading(elBody)
-            if(adicionalData.error) {
-                elBody.append(failedTemplate({name: "Adicional"}))
-                return
+        getCorreos.then(function (data) { // append correos data
+            if(data.error) {
+                elBody.append(failedTemplate({name: "Correos Express"}))
+                removeLoading(elBody)
+                return // no need to fetch adicional pt if we dont have correos data
             }
 
-            elBody.append(adicionalTemplate(adicionalData))
+            elBody.append(correosTemplate(data))
+
+            getAdicionalData(data.id, trackEntity.postalcode).then(function (adicionalData) {
+                removeLoading(elBody)
+                if(adicionalData.error) {
+                    elBody.append(failedTemplate({name: "Adicional"}))
+                    return
+                }
+
+                elBody.append(adicionalTemplate(adicionalData))
+            })
         })
     })
 }
@@ -145,21 +148,15 @@ function loadTrackToContent(trackEntity) {
 |--------------------------------------------------------------------------
 */
 function getSkyData(id, callback) {
-    $.getJSON("/api/sky", {id: id}, function( data ) {
-        callback(data)
-    });
+    return $.getJSON("/api/sky", {id: id});
 }
 
 function getCorreosData(id, code, callback) {
-    $.getJSON("/api/correos", {id: id, postalcode: code}, function( data ) {
-        callback(data)
-    });
+    return $.getJSON("/api/correos", {id: id, postalcode: code});
 }
 
 function getAdicionalData(adicionalID, code, callback) {
-    $.getJSON("/api/adicional", {id: adicionalID, postalcode: code}, function( data ) {
-        callback(data)
-    });
+    return $.getJSON("/api/adicional", {id: adicionalID, postalcode: code});
 }
 
 /*
