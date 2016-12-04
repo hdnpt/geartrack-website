@@ -117,7 +117,6 @@ function loadTrackToContent(trackEntity) {
     })
 
     getCorreosData(trackEntity.id, trackEntity.postalcode, function (data) {
-        console.log(data);
         if(data.error) {
             elBody.append(failedTemplate({name: "Correos Express"}))
             removeLoading(elBody)
