@@ -46,7 +46,7 @@ app.use('/api', api)
 app.use(function(req, res, next) {
   const err = new Error('Not Found')
   err.status = 404
-  res.status(404).render('404', {title: "404 - Geartrack"})
+  res.status(404).render('404', {title: "404 - Geartrack", year: new Date().getFullYear() })
 })
 
 /*
