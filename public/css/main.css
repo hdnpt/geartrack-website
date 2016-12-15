@@ -66,3 +66,14 @@ body {
 #hide-info {
     display: none;
 }
+
+.close-btn {
+    position: absolute;
+    right: 33px;
+    top: 13px;
+}
+
+.jumbotron {
+    padding-top: 20px;
+    padding-bottom: 20px;
+}

@@ -3,7 +3,7 @@
 | Global vars
 |--------------------------------------------------------------------------
 */
-var send = $('#send'),
+var form = $('#controlForm'),
     shippingId = $('#shipping_id'),
     content = $('#content'),
     popup = $('#addTrack'),
@@ -24,6 +24,7 @@ var tracks = []
 var trackEntryTemplate = Handlebars.compile($("#track-list-template").html()),
     trackContentTemplate = Handlebars.compile($("#track-content-template").html()),
     skyTemplate = Handlebars.compile($("#sky-template").html()),
+    skyNLTemplate = Handlebars.compile($("#sky-template-nl").html()),
     correosTemplate = Handlebars.compile($("#correos-template").html()),
     adicionalTemplate = Handlebars.compile($("#adicional-template").html()),
     failedTemplate = Handlebars.compile($("#failed-template").html())
@@ -40,18 +41,18 @@ addAllTracksToPage()
 /**
  * Add track
  */
-send.click(function (event) {
+form.submit(function (event) {
     event.preventDefault();
 
     var id = shippingId.val().trim(),
         desc = description.val().trim()
 
-    if(id.length == 0 || desc.length == 0) {
-        alert("Deve preencher todos os campos.")
+    if(!isValidID(id) || desc.length == 0) {
+        alert("Tem de inserir um ID válido e uma descrição.")
         return
     }
 
-    var track = new Track(id, desc);
+    var track = new Track(id, capitalizeFirstLetter(desc));
 
     if(storageAddTrack(track)) { // new one
         loadTrackToContent(track)
@@ -107,6 +108,22 @@ function loadTrackToContent(trackEntity) {
     var elId = $('#' + trackEntity.id),
         elBody = elId.find('.panel-body');
 
+    switch(trackEntity.id.charAt(0)) {
+        case 'N':
+            loadNetherlandsPost(elBody, trackEntity)
+            break
+        default:
+            loadSpainExpress(elBody, trackEntity)
+    }
+}
+
+
+/*
+|--------------------------------------------------------------------------
+| Providers
+|--------------------------------------------------------------------------
+*/
+function loadSpainExpress(elBody, trackEntity) {
     // Make both requests at the same time
     var getSky = getSkyData(trackEntity.id),
         getCorreos = getCorreosData(trackEntity.id, trackEntity.postalcode)
@@ -140,7 +157,16 @@ function loadTrackToContent(trackEntity) {
     })
 }
 
-
+function loadNetherlandsPost(elBody, trackEntity) {
+    getSkyData(trackEntity.id).then(function (data) { // add sky response to the page
+        if (data.error) {
+            elBody.append(failedTemplate({name: "Sky 56 - NL"}))
+        } else {
+            elBody.append(skyNLTemplate(data))
+        }
+        removeLoading(elBody)
+    })
+}
 
 /*
 |--------------------------------------------------------------------------
@@ -202,6 +228,8 @@ function Track(id, desc) {
 }
 
 Track.prototype.getPostalCode = function () {
+    if(this.isNL()) return null
+
     var code = ""
 
     for(var i = this.id.length - 1, max = 0; i >= 0 && max < 4; i--) {
@@ -214,6 +242,10 @@ Track.prototype.getPostalCode = function () {
     }
 
     return code
+}
+
+Track.prototype.isNL = function () {
+    return this.id.charAt(0) == 'N'
 }
 
 
@@ -237,6 +269,18 @@ if (!String.prototype.format) {
                 ;
         });
     };
+}
+
+function capitalizeFirstLetter(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
+function isValidID(id) {
+    if(id.length == 0) return false
+    if(id.indexOf("PQ") !== -1) return true
+    if(id.indexOf("NL") !== -1) return true
+
+    return false
 }
 
 /*

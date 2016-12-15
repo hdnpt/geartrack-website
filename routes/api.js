@@ -50,7 +50,7 @@ router.get('/sky', cache(10), function (req, res) {
             return
         }
 
-        if (skyEntity.messages.length == 0) {
+        if (skyEntity.id.charAt(0) == 'P' && skyEntity.messages.length == 0) {
             res.json({error: "Empty data from sky!"})
             return
         }
