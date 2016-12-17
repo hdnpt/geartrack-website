@@ -44,7 +44,7 @@ addAllTracksToPage()
 form.submit(function (event) {
     event.preventDefault();
 
-    var id = shippingId.val().trim(),
+    var id = shippingId.val().trim().toUpperCase(),
         desc = description.val().trim()
 
     if(!isValidID(id) || desc.length == 0) {
@@ -110,6 +110,7 @@ function loadTrackToContent(trackEntity) {
 
     switch(trackEntity.id.charAt(0)) {
         case 'N':
+        case 'L':
             loadNetherlandsPost(elBody, trackEntity)
             break
         default:
@@ -279,6 +280,7 @@ function isValidID(id) {
     if(id.length == 0) return false
     if(id.indexOf("PQ") !== -1) return true
     if(id.indexOf("NL") !== -1) return true
+    if(id.indexOf("LV") !== -1) return true
 
     return false
 }
