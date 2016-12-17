@@ -55,6 +55,8 @@ router.get('/sky', cache(10), function (req, res) {
             return
         }
 
+        skyEntity.name = id.charAt(0) + id.charAt(1)
+
         res.json(skyEntity)
     })
 });
