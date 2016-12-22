@@ -16,8 +16,17 @@ const app = express()
 */
 app.set('views', path.join(__dirname, 'views'))
 app.set('view engine', 'hbs')
-
 app.locals.app_name = 'Geartrack'
+
+hbs.registerHelper('section', function (name, options) {
+    if(!this._sections) this._sections = {}
+    this._sections[name] = options.fn(this)
+    return null
+})
+
+hbs.registerHelper('year', function () {
+    return new Date().getFullYear()
+})
 
 hbs.registerPartials(__dirname + '/views/partials');
 

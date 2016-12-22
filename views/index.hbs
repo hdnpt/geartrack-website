@@ -1,58 +1,52 @@
-<div class="container">
-
-    <div class="row" id="hide-info">
-        <div class="col-md-12">
-            <div class="jumbotron">
-                <h2>Siga as suas encomendas do Gearbest até Portugal</h2>
-                <p>Este website ajuda-o a saber por onde andam as suas encomendas.</p>
-                <strong>Métodos de envio suportados:</strong>
-                <ul>
-                    <li><strong>PQ</strong> Spain Priority Line (Spain Express)</li>
-                    <li><strong>NL</strong> Netherlands Post surface mail</li>
-                    <li><strong>LV</strong> Bpost International</li>
-                </ul>
-                <a class="btn btn-default btn-xs close-btn" id="hide-button" role="button">Esconder</a>
-            </div>
+<div class="row" id="hide-info">
+    <div class="col-md-12">
+        <div class="jumbotron">
+            <h2>Siga as suas encomendas do Gearbest até Portugal</h2>
+            <p>Este website ajuda-o a saber por onde andam as suas encomendas.</p>
+            <strong>Métodos de envio suportados:</strong>
+            <ul>
+                <li><strong>PQ</strong> Spain Priority Line (Spain Express)</li>
+                <li><strong>NL</strong> Netherlands Post surface mail</li>
+                <li><strong>LV</strong> Bpost International</li>
+            </ul>
+            <a class="btn btn-default btn-xs close-btn" id="hide-button" role="button">Esconder</a>
         </div>
     </div>
-
-    <div class="row">
-        <div class="col-md-4">
-
-            <div class="panel panel-info">
-                <div class="panel-heading clearfix">Encomendas a seguir
-                    <div class="btn-group pull-right">
-                        <a href="#" class="btn btn-default btn-xs" data-toggle="modal" data-target="#addTrack">Adicionar
-                        </a>
-                    </div>
-                </div>
-                <ul class="list-group track-entries" id="track-entries">
-                    <li class="list-group-item" id="emptyList">
-                        Nenhuma..
-                    </li>
-                </ul>
-            </div>
-        </div>
-
-        <div class="col-md-8" id="content">
-            <div class="row" id="info">
-                <div class="col-md-12">
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                            Informações das encomendas
-                        </div>
-                        <div class="panel-body">
-                            <p>Adicione encomendas no painel esquerdo e aqui aparcerão as informações das encomendas!</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    {{> footer }}
 </div>
 
+<div class="row">
+    <div class="col-md-4">
+
+        <div class="panel panel-info">
+            <div class="panel-heading clearfix">Encomendas a seguir
+                <div class="btn-group pull-right">
+                    <a href="#" class="btn btn-default btn-xs" data-toggle="modal" data-target="#addTrack">Adicionar
+                    </a>
+                </div>
+            </div>
+            <ul class="list-group track-entries" id="track-entries">
+                <li class="list-group-item" id="emptyList">
+                    Nenhuma..
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="col-md-8" id="content">
+        <div class="row" id="info">
+            <div class="col-md-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        Informações das encomendas
+                    </div>
+                    <div class="panel-body">
+                        <p>Adicione encomendas no painel esquerdo e aqui aparcerão as informações das encomendas!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 <!-- Modal -->
 <div class="modal fade" id="addTrack" tabindex="-1" role="dialog" aria-labelledby="addTrack">
@@ -308,3 +302,7 @@
     </div>
 </script>
 <!-- /No data template -->
+
+{{#section 'script'}}
+    <script src="js/main.js?v=1"></script>
+{{/section}}
