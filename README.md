@@ -1,5 +1,11 @@
 # Geartrack
-Locate Gearbest Packages using Spain Priority Line method
+
+>Online version: [https://geartrack.hdn.pt](https://geartrack.hdn.pt)
+
+Locate Gearbest Packages using these methods:
+- **PQ** Spain Priority Line (Spain Express)
+- **NL** Netherlands Post surface mail
+- **LV** Bpost International
 
 This is an Express.js app
 
@@ -12,8 +18,8 @@ This is an Express.js app
 - `npm start` - will run `node bin/wwww`
 
 ### Todo
-- Replace jquery with a more robust framework like react, angular or vue
-- Maybe option to sort the tracks?
+- Replace jquery with React (will be done in the end of February 2017)
+- Option to sort the tracks
 
 ### License
-not sure yet
+MIT

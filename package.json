@@ -6,6 +6,8 @@
     "start": "node ./bin/www",
     "test": "supervisor -w routes,views/partials,app.js -e hbs,js bin/www"
   },
+  "license": "MIT",
+  "homepage": "https://geartrack.hdn.pt",
   "dependencies": {
     "debug": "~2.2.0",
     "express": "~4.14.0",
