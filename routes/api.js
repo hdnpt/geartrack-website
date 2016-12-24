@@ -1,13 +1,13 @@
 const express = require('express')
 const router = express.Router()
 const geartrack = require('geartrack')
-const mcache = require('memory-cache');
+const mcache = require('memory-cache')
 
 /**
  * Cache middleware
  * Caches the response for a period of time
  *
- * Uses memory cache
+ * Uses memory cache (RAM)
  * @param minutes
  * @param type default = json
  * @return {function(*, *, *)}
@@ -32,17 +32,14 @@ const cache = (minutes, type = 'json') => {
     }
 }
 
+// All this routes will be cached for 10 minutes
+router.use(cache(10))
+
 /**
  * Sky data
- * Cached for 10 minutes
  */
-router.get('/sky', cache(10), function (req, res) {
+router.get('/sky', validateId, function (req, res) {
     let id = req.query.id
-
-    if (!id) {
-        res.json({error: "ID must be passed in the query string!"})
-        return
-    }
 
     geartrack.sky.getInfo(id, (err, skyEntity) => {
         if (err) {
@@ -61,17 +58,12 @@ router.get('/sky', cache(10), function (req, res) {
     })
 });
 
+
 /**
  * Correos data
- * Cached for 10 minutes
  */
-router.get('/correos', cache(10),function (req, res) {
+router.get('/correos', validateId, validatePostalCode,function (req, res) {
     let id = req.query.id, postalcode = req.query.postalcode
-
-    if (!id || !postalcode) {
-        res.json({error: "ID & postalcode must be passed in the query string!"})
-        return
-    }
 
     geartrack.correos.getInfo(id, postalcode, (err, correosEntity) => {
         if (err) {
@@ -81,21 +73,14 @@ router.get('/correos', cache(10),function (req, res) {
 
         res.json(correosEntity)
     })
-
 });
 
 
 /**
  * Adicional data
- * Cached for 10 minutes
  */
-router.get('/adicional', cache(10), function (req, res) {
+router.get('/adicional', validateId, validatePostalCode, function (req, res) {
     let id = req.query.id, postalcode = req.query.postalcode
-
-    if (!id || !postalcode) {
-        res.json({error: "ID & postalcode must be passed in the query string!"})
-        return
-    }
 
     geartrack.adicional.getInfo(id, postalcode, (err, adicionalEntity) => {
         if (err) {
@@ -107,17 +92,12 @@ router.get('/adicional', cache(10), function (req, res) {
     })
 });
 
+
 /**
  * Expresso24 data
- * Cached for 10 minutes
  */
-router.get('/expresso24', cache(10), function (req, res) {
+router.get('/expresso24', validateId, function (req, res) {
     let id = req.query.id
-
-    if (!id || id.indexOf('ES') == -1) {
-        res.json({error: "ID must be passed in the query string!"})
-        return
-    }
 
     geartrack.expresso24.getInfo(id, (err, expressoInfo) => {
         if (err) {
@@ -128,5 +108,33 @@ router.get('/expresso24', cache(10), function (req, res) {
         res.json(expressoInfo)
     })
 });
+
+
+/*
+|--------------------------------------------------------------------------
+| Validation Middlewares
+|--------------------------------------------------------------------------
+*/
+function validateId(req, res, next) {
+    let id = req.query.id
+
+    if (!id) {
+        res.json({error: "ID must be passed in the query string!"})
+        return
+    }
+
+    next()
+}
+
+function validatePostalCode(req, res, next) {
+    let postalcode = req.query.postalcode
+
+    if (!postalcode) {
+        res.json({error: "Postalcode must be passed in the query string!"})
+        return
+    }
+
+    next()
+}
 
 module.exports = router;
