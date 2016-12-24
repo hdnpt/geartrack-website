@@ -203,10 +203,10 @@
             <table class="table table-bordered">
                 <tr>
                     <td>
-                        <strong>Recebido:</strong> \{{ received }}
+                        <strong>Ref:</strong> \{{ product.ref }}
                     </td>
                     <td>
-                        <strong>Pacotes:</strong> \{{ product.parcels }} (\{{ product.weight }}kg)
+                        <strong>Recebido:</strong> \{{ received }}
                     </td>
                 </tr>
                 <tr>
@@ -223,6 +223,14 @@
                     </td>
                     <td>
                         <strong>Cidade Destino:</strong> \{{ receiver.city }}
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <strong>Pacotes:</strong> \{{ product.parcels }} (\{{ product.weight }}kg)
+                    </td>
+                    <td>
+                        <strong>Morada Destino:</strong> \{{ receiver.address }}
                     </td>
                 </tr>
             </table>
@@ -285,6 +293,9 @@
                     </td>
                     <td>
                         <strong>Telemovel:</strong> \{{ phone1 }}
+                        \{{#if phone2}}
+                            (\{{ phone2 }})
+                        \{{/if}}
                     </td>
                 </tr>
             </table>

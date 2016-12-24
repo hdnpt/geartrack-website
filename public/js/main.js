@@ -152,6 +152,10 @@ function loadSpainExpress(elBody, trackEntity) {
                     return
                 }
 
+                // Hide the second phone if is the same
+                if(adicionalData.phone2 == adicionalData.phone1)
+                    adicionalData.phone2 = null
+
                 elBody.append(adicionalTemplate(adicionalData))
             })
         })
