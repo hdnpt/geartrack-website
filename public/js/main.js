@@ -152,7 +152,10 @@ function loadSpainExpress(elBody, trackEntity) {
                 if(adicionalData.error) {
                     elBody.append(failedTemplate({name: "Adicional"}))
                 } else {
+                    console.log(adicionalData);
+
                     // Hide the second phone if is the same
+                    adicionalData.phone2 = adicionalData.phone2.trim()
                     if(adicionalData.phone2 == adicionalData.phone1)
                         adicionalData.phone2 = null
 
