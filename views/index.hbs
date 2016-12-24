@@ -304,11 +304,66 @@
 </script>
 <!-- /Adicional template -->
 
+<!-- Expresso24 template -->
+<script id="expresso24-template" type="text/x-handlebars-template">
+    <div class="row">
+        <div class="col-md-12">
+            <h2><span class="label label-warning">Informação Expresso24:</span></h2>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xs-6">
+            <strong>Estado:</strong> \{{ status }}
+        </div>
+        <div class="col-xs-6 text-right">
+            <strong>Data:</strong> \{{ date }}
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <table class="table table-bordered">
+                <tr>
+                    <td>
+                        <strong>Origem:</strong> \{{ origin }}
+                    </td>
+                    <td>
+                        <strong>Destinatário:</strong> \{{ receiver_name }}
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <strong>Pacotes:</strong> \{{ parcels }} (\{{ weight }}kg)
+                    </td>
+                    <td>
+                        <strong>Morada Destino:</strong> \{{ address }}
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <strong>Guia Nº:</strong> \{{ guide }}
+                    </td>
+                    <td>
+                        <strong>Reembolso:</strong> \{{ refund }}
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</script>
+<!-- /Expresso24 template -->
+
 <!-- No data template -->
 <script id="failed-template" type="text/x-handlebars-template">
     <div class="row">
         <div class="col-md-12">
-            <strong>\{{name}}:</strong> Ainda não existem dados disponíveis.
+            <strong>\{{name}}:</strong>
+            \{{#if message}}
+                \{{ message }}
+            \{{else}}
+                Ainda não existem dados disponíveis.
+            \{{/if}}
         </div>
     </div>
 </script>

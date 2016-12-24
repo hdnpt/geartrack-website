@@ -68,7 +68,7 @@ router.get('/sky', cache(10), function (req, res) {
 router.get('/correos', cache(10),function (req, res) {
     let id = req.query.id, postalcode = req.query.postalcode
 
-    if (!id && !postalcode) {
+    if (!id || !postalcode) {
         res.json({error: "ID & postalcode must be passed in the query string!"})
         return
     }
@@ -92,7 +92,7 @@ router.get('/correos', cache(10),function (req, res) {
 router.get('/adicional', cache(10), function (req, res) {
     let id = req.query.id, postalcode = req.query.postalcode
 
-    if (!id && !postalcode) {
+    if (!id || !postalcode) {
         res.json({error: "ID & postalcode must be passed in the query string!"})
         return
     }
@@ -104,6 +104,28 @@ router.get('/adicional', cache(10), function (req, res) {
         }
 
         res.json(adicionalEntity)
+    })
+});
+
+/**
+ * Expresso24 data
+ * Cached for 10 minutes
+ */
+router.get('/expresso24', cache(10), function (req, res) {
+    let id = req.query.id
+
+    if (!id || id.indexOf('ES') == -1) {
+        res.json({error: "ID must be passed in the query string!"})
+        return
+    }
+
+    geartrack.expresso24.getInfo(id, (err, expressoInfo) => {
+        if (err) {
+            res.json({error: "No data was found for that id!"})
+            return
+        }
+
+        res.json(expressoInfo)
     })
 });
 

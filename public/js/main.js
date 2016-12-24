@@ -27,6 +27,7 @@ var trackEntryTemplate = Handlebars.compile($("#track-list-template").html()),
     skyNLTemplate = Handlebars.compile($("#sky-template-nl").html()),
     correosTemplate = Handlebars.compile($("#correos-template").html()),
     adicionalTemplate = Handlebars.compile($("#adicional-template").html()),
+    expresso24Template = Handlebars.compile($("#expresso24-template").html()),
     failedTemplate = Handlebars.compile($("#failed-template").html())
 
 
@@ -145,19 +146,31 @@ function loadSpainExpress(elBody, trackEntity) {
 
             elBody.append(correosTemplate(data))
 
+            let expresso24 = getExpresso24Data(data.product.ref)
+
             getAdicionalData(data.id, trackEntity.postalcode).then(function (adicionalData) {
-                removeLoading(elBody)
                 if(adicionalData.error) {
                     elBody.append(failedTemplate({name: "Adicional"}))
-                    return
+                } else {
+                    // Hide the second phone if is the same
+                    if(adicionalData.phone2 == adicionalData.phone1)
+                        adicionalData.phone2 = null
+
+                    elBody.append(adicionalTemplate(adicionalData))
                 }
 
-                // Hide the second phone if is the same
-                if(adicionalData.phone2 == adicionalData.phone1)
-                    adicionalData.phone2 = null
+                expresso24.then(function (expressoInfo) { // load expresso24 after adicional
+                    removeLoading(elBody)
+                    if(expressoInfo.error) {
+                        elBody.append(failedTemplate({name: "Expresso24", message: "Sem informação disponivel."}))
+                        return
+                    }
 
-                elBody.append(adicionalTemplate(adicionalData))
+                    elBody.append(expresso24Template(expressoInfo))
+                })
+
             })
+
         })
     })
 }
@@ -178,16 +191,20 @@ function loadNetherlandsPost(elBody, trackEntity) {
 | Get Api data
 |--------------------------------------------------------------------------
 */
-function getSkyData(id, callback) {
+function getSkyData(id) {
     return $.getJSON("/api/sky", {id: id});
 }
 
-function getCorreosData(id, code, callback) {
+function getCorreosData(id, code) {
     return $.getJSON("/api/correos", {id: id, postalcode: code});
 }
 
-function getAdicionalData(adicionalID, code, callback) {
+function getAdicionalData(adicionalID, code) {
     return $.getJSON("/api/adicional", {id: adicionalID, postalcode: code});
+}
+
+function getExpresso24Data(id) {
+    return $.getJSON("/api/expresso24", {id: id});
 }
 
 /*
