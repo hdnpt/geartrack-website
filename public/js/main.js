@@ -146,32 +146,30 @@ function loadSpainExpress(elBody, trackEntity) {
 
             elBody.append(correosTemplate(data))
 
-            let expresso24 = getExpresso24Data(data.product.ref)
+            var expresso24 = getExpresso24Data(data.product.ref),
+                adicional = getAdicionalData(data.id, trackEntity.postalcode)
 
-            getAdicionalData(data.id, trackEntity.postalcode).then(function (adicionalData) {
-                if(adicionalData.error) {
-                    elBody.append(failedTemplate({name: "Adicional"}))
+            expresso24.then(function (expressoInfo) { // load expresso24 before adicional
+                if(expressoInfo.error) {
+                    elBody.append(failedTemplate({name: "Expresso24", message: "Sem informação disponivel."}))
                 } else {
-                    // Hide the second phone if is the same
-                    adicionalData.phone2 = adicionalData.phone2.trim()
-                    if(adicionalData.phone2 == adicionalData.phone1)
-                        adicionalData.phone2 = null
-
-                    elBody.append(adicionalTemplate(adicionalData))
-                }
-
-                expresso24.then(function (expressoInfo) { // load expresso24 after adicional
-                    removeLoading(elBody)
-                    if(expressoInfo.error) {
-                        elBody.append(failedTemplate({name: "Expresso24", message: "Sem informação disponivel."}))
-                        return
-                    }
-
                     elBody.append(expresso24Template(expressoInfo))
-                })
 
+                    adicional.then(function (adicionalData) {
+                        removeLoading(elBody)
+                        if(adicionalData.error) {
+                            elBody.append(failedTemplate({name: "Adicional"}))
+                        } else {
+                            // Hide the second phone if is the same
+                            adicionalData.phone2 = adicionalData.phone2.trim()
+                            if(adicionalData.phone2 == adicionalData.phone1)
+                                adicionalData.phone2 = null
+
+                            elBody.append(adicionalTemplate(adicionalData))
+                        }
+                    })
+                }
             })
-
         })
     })
 }
