@@ -6,6 +6,7 @@ Locate Gearbest Packages using these methods:
 - **PQ** Spain Priority Line (Spain Express)
 - **NL** Netherlands Post surface mail
 - **LV** Bpost International
+- **SY** Malasya Pos
 
 This is an Express.js app
 

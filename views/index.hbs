@@ -8,6 +8,7 @@
                 <li><strong>PQ</strong> Spain Priority Line (Spain Express)</li>
                 <li><strong>NL</strong> Netherlands Post surface mail</li>
                 <li><strong>LV</strong> Bpost International</li>
+                <li><strong>SYB</strong> Malasya Pos</li>
             </ul>
             <a class="btn btn-default btn-xs close-btn" id="hide-button" role="button">Esconder</a>
         </div>
@@ -64,7 +65,7 @@
                     <div class="form-group">
                         <label for="shipping_id">Número da Encomenda: (Shippment number)</label>
                         <input type="text" class="form-control" required id="shipping_id"
-                               placeholder="ID a começar por PQ, NL, LV.." >
+                               placeholder="ID a começar por PQ, NL, LV, SYB.." >
                     </div>
                     <div class="form-group">
                         <label for="postal_code">Descrição</label>
@@ -110,6 +111,11 @@
                 </div>
                 <div class="panel-body">
                     <img src="/img/loading.svg" class="center-img" width="30" alt="Loading" />
+
+                    <div class="c-sky"></div>
+                    <div class="c-correos"></div>
+                    <div class="c-expresso24"></div>
+                    <div class="c-adicional"></div>
                 </div>
             </div>
         </div>
@@ -201,7 +207,7 @@
 
 <!-- Correos template -->
 <script id="correos-template" type="text/x-handlebars-template">
-    <div class="row">
+    <div class="row correos-h">
         <div class="col-md-12">
             <h2><span class="label label-danger">Informação Correos Express:</span></h2>
         </div>

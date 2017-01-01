@@ -1,8 +1,8 @@
 /*
-|--------------------------------------------------------------------------
-| Global vars
-|--------------------------------------------------------------------------
-*/
+ |--------------------------------------------------------------------------
+ | Global vars
+ |--------------------------------------------------------------------------
+ */
 var form = $('#controlForm'),
     shippingId = $('#shipping_id'),
     content = $('#content'),
@@ -17,10 +17,10 @@ var form = $('#controlForm'),
 var tracks = []
 
 /*
-|--------------------------------------------------------------------------
-| Templates
-|--------------------------------------------------------------------------
-*/
+ |--------------------------------------------------------------------------
+ | Templates
+ |--------------------------------------------------------------------------
+ */
 var trackEntryTemplate = Handlebars.compile($("#track-list-template").html()),
     trackContentTemplate = Handlebars.compile($("#track-content-template").html()),
     skyTemplate = Handlebars.compile($("#sky-template").html()),
@@ -32,10 +32,10 @@ var trackEntryTemplate = Handlebars.compile($("#track-list-template").html()),
 
 
 /*
-|--------------------------------------------------------------------------
-| Page functionality
-|--------------------------------------------------------------------------
-*/
+ |--------------------------------------------------------------------------
+ | Page functionality
+ |--------------------------------------------------------------------------
+ */
 storageLoadAll()
 addAllTracksToPage()
 
@@ -48,15 +48,17 @@ form.submit(function (event) {
     var id = shippingId.val().trim().toUpperCase(),
         desc = description.val().trim()
 
-    if(!isValidID(id) || desc.length == 0) {
+    if (!isValidID(id) || desc.length == 0) {
         alert("Tem de inserir um ID válido e uma descrição.")
         return
     }
 
     var track = new Track(id, capitalizeFirstLetter(desc));
 
-    if(storageAddTrack(track)) { // new one
+    if (storageAddTrack(track)) { // new one
         loadTrackToContent(track)
+    } else {
+        alert("Esse id já foi adicionado!")
     }
 
     shippingId.val("")
@@ -69,7 +71,7 @@ form.submit(function (event) {
  * Event listener for the remove functionality
  * catches dynamically added elements aswell
  */
-$(document).on('click', '.remove', function(e) {
+$(document).on('click', '.remove', function (e) {
     e.preventDefault()
 
     var id = $(this).data('id')
@@ -78,7 +80,7 @@ $(document).on('click', '.remove', function(e) {
 
     storageRemoveTrack(id)
 
-    if(tracks.length == 0) {
+    if (tracks.length == 0) {
         info.show()
         jumbotron.show()
         localStorage.removeItem('info')
@@ -86,7 +88,7 @@ $(document).on('click', '.remove', function(e) {
     }
 });
 
-if(localStorage.getItem('info') == null) {
+if (localStorage.getItem('info') == null) {
     jumbotron.show()
 }
 
@@ -98,10 +100,10 @@ $('#hide-button').click(function (e) {
 })
 
 /*
-|--------------------------------------------------------------------------
-| Content info logic
-|--------------------------------------------------------------------------
-*/
+ |--------------------------------------------------------------------------
+ | Content info logic
+ |--------------------------------------------------------------------------
+ */
 function loadTrackToContent(trackEntity) {
     addEntryToPage(trackEntity)
     addEntryToContent(trackEntity)
@@ -109,9 +111,10 @@ function loadTrackToContent(trackEntity) {
     var elId = $('#' + trackEntity.id),
         elBody = elId.find('.panel-body');
 
-    switch(trackEntity.id.charAt(0)) {
+    switch (trackEntity.id.charAt(0)) {
         case 'N':
         case 'L':
+        case 'S':
             loadNetherlandsPost(elBody, trackEntity)
             break
         default:
@@ -121,57 +124,67 @@ function loadTrackToContent(trackEntity) {
 
 
 /*
-|--------------------------------------------------------------------------
-| Providers
-|--------------------------------------------------------------------------
-*/
+ |--------------------------------------------------------------------------
+ | Providers
+ |--------------------------------------------------------------------------
+ */
 function loadSpainExpress(elBody, trackEntity) {
     // Make both requests at the same time
-    var getSky = getSkyData(trackEntity.id),
-        getCorreos = getCorreosData(trackEntity.id, trackEntity.postalcode)
+    var total = 2,
+        count = 0
 
-    getSky.then(function (data) { // add sky response to the page before correos
-        if(data.error) {
-            elBody.append(failedTemplate({name: "Sky 56"}))
-        } else {
-            elBody.append(skyTemplate(data))
-        }
+    var skyContainer = elBody.find('.c-sky'),
+        correosContainer = elBody.find('.c-correos'),
+        expresso24Container = elBody.find('.c-expresso24'),
+        adicionalContainer = elBody.find('.c-adicional')
 
-        getCorreos.then(function (data) { // append correos data
-            if(data.error) {
-                elBody.append(failedTemplate({name: "Correos Express"}))
-                removeLoading(elBody)
-                return // no need to fetch adicional pt if we dont have correos data
-            }
-
-            elBody.append(correosTemplate(data))
-
-            var expresso24 = getExpresso24Data(data.product.ref),
-                adicional = getAdicionalData(data.id, trackEntity.postalcode)
-
-            expresso24.then(function (expressoInfo) { // load expresso24 before adicional
-                if(expressoInfo.error) {
-                    elBody.append(failedTemplate({name: "Expresso24", message: "Sem informação disponivel."}))
-                } else {
-                    elBody.append(expresso24Template(expressoInfo))
-
-                    adicional.then(function (adicionalData) {
-                        removeLoading(elBody)
-                        if(adicionalData.error) {
-                            elBody.append(failedTemplate({name: "Adicional"}))
-                        } else {
-                            // Hide the second phone if is the same
-                            adicionalData.phone2 = adicionalData.phone2.trim()
-                            if(adicionalData.phone2 == adicionalData.phone1)
-                                adicionalData.phone2 = null
-
-                            elBody.append(adicionalTemplate(adicionalData))
-                        }
-                    })
-                }
-            })
+    getSkyData(trackEntity.id)
+        .then(function (skyData) {
+            skyContainer.append(skyTemplate(skyData))
+            if (++count == total) removeLoading(elBody, count, total)
         })
-    })
+        .catch(function (error) {
+            skyContainer.append(failedTemplate({name: "Sky 56"}))
+            if (++count == total) removeLoading(elBody)
+        })
+
+    getCorreosData(trackEntity.id, trackEntity.postalcode)
+        .then(function (correosData) {
+            correosContainer.append(correosTemplate(correosData))
+
+            getExpresso24Data(correosData.product.ref)
+                .then(function (expressoInfo) { // load expresso24 before adicional
+                    expresso24Container.append(expresso24Template(expressoInfo))
+                    if (++count == total) removeLoading(elBody)
+                })
+                .catch(function (error) {
+                    expresso24Container.append(failedTemplate({name: "Expresso24", message: "Sem informação disponivel."}))
+                    if (++count == total) removeLoading(elBody)
+                })
+
+            getAdicionalData(correosData.id, trackEntity.postalcode)
+                .then(function (adicionalData) {
+                    // Hide the second phone if is the same
+                    adicionalData.phone2 = adicionalData.phone2.trim()
+                    if (adicionalData.phone2 == adicionalData.phone1)
+                        adicionalData.phone2 = null
+
+                    if (adicionalData.status == "DESCARTADO") {
+                        adicionalContainer.append(failedTemplate({name: "Adicional", message: "Estado descartado."}))
+                    } else {
+                        adicionalContainer.append(adicionalTemplate(adicionalData))
+                    }
+
+                })
+                .catch(function (error) {
+                    adicionalContainer.append(failedTemplate({name: "Adicional"}))
+                })
+
+        })
+        .catch(function (error) {
+            correosContainer.append(failedTemplate({name: "Correos Express"}))
+            if (++count == total) removeLoading(elBody)
+        })
 }
 
 function loadNetherlandsPost(elBody, trackEntity) {
@@ -186,10 +199,10 @@ function loadNetherlandsPost(elBody, trackEntity) {
 }
 
 /*
-|--------------------------------------------------------------------------
-| Get Api data
-|--------------------------------------------------------------------------
-*/
+ |--------------------------------------------------------------------------
+ | Get Api data
+ |--------------------------------------------------------------------------
+ */
 function getSkyData(id) {
     return $.getJSON("/api/sky", {id: id});
 }
@@ -207,10 +220,10 @@ function getExpresso24Data(id) {
 }
 
 /*
-|--------------------------------------------------------------------------
-| Page Modifications
-|--------------------------------------------------------------------------
-*/
+ |--------------------------------------------------------------------------
+ | Page Modifications
+ |--------------------------------------------------------------------------
+ */
 function addEntryToPage(trackEntity) {
     emptyList.hide()
     trackEntries.prepend(trackEntryTemplate({
@@ -238,10 +251,10 @@ function removeLoading(elem) {
     elem.find('.center-img').remove()
 }
 /*
-|--------------------------------------------------------------------------
-| Entities
-|--------------------------------------------------------------------------
-*/
+ |--------------------------------------------------------------------------
+ | Entities
+ |--------------------------------------------------------------------------
+ */
 function Track(id, desc) {
     this.id = id;
     this.postalcode = this.getPostalCode()
@@ -249,11 +262,11 @@ function Track(id, desc) {
 }
 
 Track.prototype.getPostalCode = function () {
-    if(this.isNL()) return null
+    if (this.isNL()) return null
 
     var code = ""
 
-    for(var i = this.id.length - 1, max = 0; i >= 0 && max < 4; i--) {
+    for (var i = this.id.length - 1, max = 0; i >= 0 && max < 4; i--) {
         var char = this.id.charAt(i)
 
         if (char >= '0' && char <= '9') {
@@ -271,19 +284,19 @@ Track.prototype.isNL = function () {
 
 
 /*
-|--------------------------------------------------------------------------
-| Utils
-|--------------------------------------------------------------------------
-*/
+ |--------------------------------------------------------------------------
+ | Utils
+ |--------------------------------------------------------------------------
+ */
 /**
  * Like sprintf
  * "{0} is dead, but {1} is alive! {0} {2}".format("ASP", "ASP.NET")
  * ASP is dead, but ASP.NET is alive! ASP {2}
  */
 if (!String.prototype.format) {
-    String.prototype.format = function() {
+    String.prototype.format = function () {
         var args = arguments;
-        return this.replace(/{(\d+)}/g, function(match, number) {
+        return this.replace(/{(\d+)}/g, function (match, number) {
             return typeof args[number] != 'undefined'
                 ? args[number]
                 : match
@@ -297,21 +310,22 @@ function capitalizeFirstLetter(string) {
 }
 
 function isValidID(id) {
-    if(id.length == 0) return false
-    if(id.indexOf("PQ") !== -1) return true
-    if(id.indexOf("NL") !== -1) return true
-    if(id.indexOf("LV") !== -1) return true
+    if (id.length == 0) return false
+    if (id.indexOf("PQ") !== -1) return true
+    if (id.indexOf("NL") !== -1) return true
+    if (id.indexOf("LV") !== -1) return true
+    if (id.indexOf("SY") !== -1) return true
 
     return false
 }
 
 /*
-|--------------------------------------------------------------------------
-| Storage
-|--------------------------------------------------------------------------
-*/
+ |--------------------------------------------------------------------------
+ | Storage
+ |--------------------------------------------------------------------------
+ */
 function storageAddTrack(trackEntity) {
-    if(localStorage.getItem("#" + trackEntity.id) != null)
+    if (localStorage.getItem("#" + trackEntity.id) != null)
         return false
 
     localStorage.setItem("#" + trackEntity.id, JSON.stringify(trackEntity))
@@ -319,7 +333,7 @@ function storageAddTrack(trackEntity) {
 }
 
 function storageRemoveTrack(id) {
-    tracks = tracks.filter(function(t) {
+    tracks = tracks.filter(function (t) {
         return t.id !== id;
     });
 
@@ -330,7 +344,7 @@ function storageLoadAll() {
     for (var i = 0; i < localStorage.length; i++) {
         var key = localStorage.key(i)
 
-        if(key.charAt(0) == '#') { //we only load valid ids
+        if (key.charAt(0) == '#') { //we only load valid ids
             tracks.push(JSON.parse(localStorage.getItem(key)))
         }
     }
