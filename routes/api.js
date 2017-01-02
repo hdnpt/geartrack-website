@@ -43,12 +43,12 @@ router.get('/sky', validateId, function (req, res) {
 
     geartrack.sky.getInfo(id, (err, skyEntity) => {
         if (err) {
-            res.json({error: "No data was found for that id!"})
+            res.status(400).json({error: "No data was found for that id!"})
             return
         }
 
         if (skyEntity.id.charAt(0) == 'P' && skyEntity.messages.length == 0) {
-            res.json({error: "Empty data from sky!"})
+            res.status(400).json({error: "Empty data from sky!"})
             return
         }
 
@@ -67,7 +67,7 @@ router.get('/correos', validateId, validatePostalCode,function (req, res) {
 
     geartrack.correos.getInfo(id, postalcode, (err, correosEntity) => {
         if (err) {
-            res.json({error: "No data was found for that id!"})
+            res.status(400).json({error: "No data was found for that id!"})
             return
         }
 
@@ -84,7 +84,7 @@ router.get('/adicional', validateId, validatePostalCode, function (req, res) {
 
     geartrack.adicional.getInfo(id, postalcode, (err, adicionalEntity) => {
         if (err) {
-            res.json({error: "No data was found for that id!"})
+            res.status(400).json({error: "No data was found for that id!"})
             return
         }
 
@@ -101,7 +101,7 @@ router.get('/expresso24', validateId, function (req, res) {
 
     geartrack.expresso24.getInfo(id, (err, expressoInfo) => {
         if (err) {
-            res.json({error: "No data was found for that id!"})
+            res.status(400).json({error: "No data was found for that id!"})
             return
         }
 
@@ -119,7 +119,7 @@ function validateId(req, res, next) {
     let id = req.query.id
 
     if (!id) {
-        res.json({error: "ID must be passed in the query string!"})
+        res.status(400).json({error: "ID must be passed in the query string!"})
         return
     }
 
@@ -130,7 +130,7 @@ function validatePostalCode(req, res, next) {
     let postalcode = req.query.postalcode
 
     if (!postalcode) {
-        res.json({error: "Postalcode must be passed in the query string!"})
+        res.status(400).json({error: "Postalcode must be passed in the query string!"})
         return
     }
 
