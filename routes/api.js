@@ -19,7 +19,8 @@ const cache = (minutes, type = 'json') => {
         res.type(type)
 
         if (cachedBody) {
-            if(cachedBody.indexOf("error") !== -1) res.status(400)
+            let body = JSON.parse(cachedBody) // we know that is json
+            if(body.error) res.status(400)
 
             res.send(cachedBody)
             return
