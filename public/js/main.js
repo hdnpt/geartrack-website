@@ -41,7 +41,6 @@ Handlebars.registerHelper('StateDaysAgo', function (state, date, shouldState) {
 
     var diff = daysAgo(nDate)
 
-    console.log(diff)
     if (diff > 0) {
         var days = diff == 1 ? 'dia' : 'dias'
 
