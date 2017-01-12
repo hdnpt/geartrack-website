@@ -30,6 +30,24 @@ var trackEntryTemplate = Handlebars.compile($("#track-list-template").html()),
     expresso24Template = Handlebars.compile($("#expresso24-template").html()),
     failedTemplate = Handlebars.compile($("#failed-template").html())
 
+Handlebars.registerHelper('daysAgo', function (date) {
+    try {
+        var nDate = new Date(date), now = new Date()
+    } catch (err) {
+        return ""
+    }
+
+    var diff = now.getDate() - nDate.getDate()
+
+    if (diff > 0) {
+        var days = diff == 1 ? 'dia' : 'dias'
+
+        return "(" + diff + " " + days + ")"
+    }
+
+    return ""
+})
+
 
 /*
  |--------------------------------------------------------------------------
