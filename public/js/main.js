@@ -30,6 +30,26 @@ var trackEntryTemplate = Handlebars.compile($("#track-list-template").html()),
     expresso24Template = Handlebars.compile($("#expresso24-template").html()),
     failedTemplate = Handlebars.compile($("#failed-template").html())
 
+Handlebars.registerHelper('StateDaysAgo', function (state, date, shouldState) {
+    if(state != shouldState) return ""
+
+    try {
+        var nDate = new Date(date)
+    } catch (err) {
+        return ""
+    }
+
+    var diff = daysAgo(nDate)
+
+    if (diff > 0) {
+        var days = diff == 1 ? 'dia' : 'dias'
+
+        return "(" + diff + " " + days + ")"
+    }
+
+    return ""
+})
+
 
 /*
  |--------------------------------------------------------------------------
@@ -319,6 +339,12 @@ function isValidID(id) {
     if (id.indexOf("GE") !== -1) return true
 
     return false
+}
+
+function daysAgo(date) {
+    var seconds = Math.floor((new Date() - date) / 1000);
+
+    return Math.floor(seconds / 86400); // 60*60*24 1 day in seconds
 }
 
 /*
