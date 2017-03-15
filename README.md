@@ -7,6 +7,7 @@ Locate Gearbest Packages using these methods:
 - **NL** Netherlands Post surface mail
 - **LV** Bpost International
 - **SY** Malasya Pos
+- **GE, SB** Switzerland Post Unregistered
 
 This is an Express.js app
 
@@ -19,8 +20,7 @@ This is an Express.js app
 - `npm start` - will run `node bin/wwww`
 
 ### Todo
-- Replace jquery with React (will be done in the end of February 2017)
-- Option to sort the tracks
+- A better version is under development using .net core and will support notifications and other features!
 
 ### License
 MIT
