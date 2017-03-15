@@ -336,6 +336,7 @@ function isValidID(id) {
     if (id.indexOf("NL") !== -1) return true
     if (id.indexOf("LV") !== -1) return true
     if (id.indexOf("SY") !== -1) return true
+    if (id.indexOf("SB") !== -1) return true
     if (id.indexOf("GE") !== -1) return true
 
     return false
