@@ -1,5 +1,7 @@
 # Geartrack
 
+[![Join the chat at https://gitter.im/hdnpt/geartrack-website](https://badges.gitter.im/hdnpt/geartrack-website.svg)](https://gitter.im/hdnpt/geartrack-website?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 >Online version: [https://geartrack.hdn.pt](https://geartrack.hdn.pt)
 
 Locate Gearbest Packages using these methods:
