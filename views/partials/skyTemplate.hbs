@@ -1,0 +1,49 @@
+<!-- Sky template for NL -->
+<script id="sky-template" type="text/x-handlebars-template">
+    <div class="row">
+        <div class="col-md-12">
+            <h2><span class="label label-primary">Informação Sky56:</span></h2>
+
+            \{{#if messages}}
+            <h3><span class="label label-default">Mensagens:</span></h3>
+
+            <div class="result-details">
+                <dl class="des-block">
+                    \{{#each messages as |item| }}
+                    <dd class="\{{HelperState item.status @first}}"><i></i>
+                        <div class="track-news clearfix">
+                             <span data-toggle="tooltip" data-placement="top" title="\{{HelperDateWithHours item.date }}">
+                                   \{{HelperFromNow item.date }}
+                            </span>
+                            <p>\{{ item.status }}</p>
+                        </div>
+                    </dd>
+                    \{{/each}}
+                </dl>
+            </div>
+            \{{/if}}
+
+            <h3><span class="label label-default">Estado:</span></h3>
+            <div class="result-details">
+                <dl class="des-block">
+
+                    \{{#each status as |item|}}
+                    <dd class="\{{HelperState item.status @first}}"><i></i>
+                        <div class="track-news clearfix">
+                                <span data-toggle="tooltip" data-placement="top" title="\{{HelperDateWithHours item.date }}">
+                                   \{{HelperFromNow item.date }}
+                                </span>
+                            \{{#if item.area}}
+                            <p>\{{ item.area }} - <strong>\{{ item.status }}</strong></p>
+                            \{{else}}
+                            <p><strong>\{{ item.status }}</strong></p>
+                            \{{/if}}
+                        </div>
+                    </dd>
+                    \{{/each}}
+                </dl>
+            </div>
+        </div>
+    </div>
+</script>
+<!-- /Sky template for NL -->

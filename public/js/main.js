@@ -1,3 +1,8 @@
+/**
+ * SORRY BRO, THIS CODE IS A MESS!
+ * I NEED TO FIND TIME TO CONVERT THIS TO REACT!
+ */
+
 /*
  |--------------------------------------------------------------------------
  | Global vars
@@ -16,6 +21,10 @@ var form = $('#controlForm'),
 
 var tracks = []
 
+$('body').tooltip({
+    selector: '[data-toggle="tooltip"]'
+});
+
 /*
  |--------------------------------------------------------------------------
  | Templates
@@ -24,30 +33,62 @@ var tracks = []
 var trackEntryTemplate = Handlebars.compile($("#track-list-template").html()),
     trackContentTemplate = Handlebars.compile($("#track-content-template").html()),
     skyTemplate = Handlebars.compile($("#sky-template").html()),
-    skyNLTemplate = Handlebars.compile($("#sky-template-nl").html()),
     correosTemplate = Handlebars.compile($("#correos-template").html()),
     adicionalTemplate = Handlebars.compile($("#adicional-template").html()),
     expresso24Template = Handlebars.compile($("#expresso24-template").html()),
+    singpostTemplate = Handlebars.compile($("#singpost-template").html()),
+    cttTemplate = Handlebars.compile($("#ctt-template").html()),
+    cainiaoTemplate = Handlebars.compile($("#cainiao-template").html()),
     failedTemplate = Handlebars.compile($("#failed-template").html())
 
-Handlebars.registerHelper('StateDaysAgo', function (state, date, shouldState) {
-    if(state != shouldState) return ""
+Handlebars.registerHelper('HelperFromNow', function (date) {
+    return moment(date).fromNow()
+})
 
-    try {
-        var nDate = new Date(date)
-    } catch (err) {
-        return ""
+Handlebars.registerHelper('HelperDate', function (date) {
+    return moment(date).format('DD/MM/YYYY')
+})
+
+Handlebars.registerHelper('HelperDateWithHours', function (date) {
+    return moment(date).format("DD/MM/YYYY HH:mm")
+})
+
+Handlebars.registerHelper('HelperHours', function (date) {
+    return moment(date).format("HH:mm")
+})
+
+Handlebars.registerHelper('HelperCapitalize', function (string) {
+    let lower = string.toLowerCase()
+    return lower.charAt(0).toUpperCase() + lower.slice(1);
+})
+
+Handlebars.registerHelper('HelperCapitalizeWords', function (string) {
+    string = string.toLowerCase()
+    return string.replace(/(?:^|\s)\S/g, function(a) { return a.toUpperCase(); });
+})
+
+Handlebars.registerHelper('HelperLowerCase', function (string) {
+    return string.toLowerCase()
+})
+
+Handlebars.registerHelper('HelperState', function (state, first, insideFirst) {
+    switch (state.toLowerCase()) {
+        case 'product delivered':
+        case 'entregue':
+        case 'entregado':
+        case 'delivery success':
+            return 'delivered';
+        default:
+            if (typeof insideFirst == 'boolean') {
+                if (insideFirst && first)
+                    return 'new'
+            } else {
+                if (first)
+                    return 'new'
+            }
+
+            return ''
     }
-
-    var diff = daysAgo(nDate)
-
-    if (diff > 0) {
-        var days = diff == 1 ? 'dia' : 'dias'
-
-        return "(" + diff + " " + days + ")"
-    }
-
-    return ""
 })
 
 
@@ -58,6 +99,30 @@ Handlebars.registerHelper('StateDaysAgo', function (state, date, shouldState) {
  */
 storageLoadAll()
 addAllTracksToPage()
+
+let help_block = $('#help_block'),
+    form_group = shippingId.parent('.form-group')
+
+shippingId.on('input paste', function () {
+    let inserted = $(this).val()
+
+    if(inserted.length == 0) {
+        form_group.toggleClass('has-success', false)
+        form_group.toggleClass('has-error', false)
+        help_block.hide()
+        return
+    }
+
+    if (isValidID(inserted)) {
+        form_group.toggleClass('has-error', false)
+        form_group.toggleClass('has-success', true)
+        help_block.hide()
+    } else {
+        form_group.toggleClass('has-success', false)
+        form_group.toggleClass('has-error', true)
+        help_block.show()
+    }
+});
 
 /**
  * Add track
@@ -77,9 +142,13 @@ form.submit(function (event) {
 
     if (storageAddTrack(track)) { // new one
         loadTrackToContent(track)
+        tracks.push(track)
     } else {
         alert("Esse id já foi adicionado!")
     }
+
+    form_group.toggleClass('has-success', false)
+    help_block.hide()
 
     shippingId.val("")
     description.val("")
@@ -138,6 +207,18 @@ function loadTrackToContent(trackEntity) {
         case 'G':
             loadNetherlandsPost(elBody, trackEntity)
             break
+        case 'R': // Aliexpress
+            let ending = trackEntity.id.charAt(trackEntity.id.length - 2)
+                + trackEntity.id.charAt(trackEntity.id.length - 1)
+            switch (ending) {
+                case 'MY':
+                    loadAliMalasya(elBody, trackEntity)
+                    break
+                default:
+                    loadAliSingpost(elBody, trackEntity)
+            }
+
+            break
         default:
             loadSpainExpress(elBody, trackEntity)
     }
@@ -162,7 +243,7 @@ function loadSpainExpress(elBody, trackEntity) {
     getSkyData(trackEntity.id)
         .then(function (skyData) {
             skyContainer.append(skyTemplate(skyData))
-            if (++count == total) removeLoading(elBody, count, total)
+            if (++count == total) removeLoading(elBody)
         })
         .catch(function (error) {
             skyContainer.append(failedTemplate({name: "Sky 56"}))
@@ -179,7 +260,10 @@ function loadSpainExpress(elBody, trackEntity) {
                     if (++count == total) removeLoading(elBody)
                 })
                 .catch(function (error) {
-                    expresso24Container.append(failedTemplate({name: "Expresso24", message: "Sem informação disponivel."}))
+                    expresso24Container.append(failedTemplate({
+                        name: "Expresso24",
+                        message: "Sem informação disponivel."
+                    }))
                     if (++count == total) removeLoading(elBody)
                 })
 
@@ -208,16 +292,82 @@ function loadSpainExpress(elBody, trackEntity) {
         })
 }
 
+/*
+ |--------------------------------------------------------------------------
+ | Sky56
+ |--------------------------------------------------------------------------
+ */
 function loadNetherlandsPost(elBody, trackEntity) {
+    var skyContainer = elBody.find('.c-sky')
+
     getSkyData(trackEntity.id).then(function (data) { // add sky response to the page
-        if (data.error) {
-            elBody.append(failedTemplate({name: "Sky 56 - NL"}))
-        } else {
-            elBody.append(skyNLTemplate(data))
-        }
+        skyContainer.append(skyTemplate(data))
         removeLoading(elBody)
     })
+        .catch(function (error) {
+            skyContainer.append(failedTemplate({name: "Sky 56"}))
+            removeLoading(elBody)
+        })
 }
+
+/*
+ |--------------------------------------------------------------------------
+ | Aliexpress
+ |--------------------------------------------------------------------------
+ */
+function loadAliSingpost(elBody, trackEntity) {
+    // Make both requests at the same time
+    var total = 2,
+        count = 0
+
+    var singpostContainer = elBody.find('.c-singpost'),
+        cttContainer = elBody.find('.c-ctt')
+
+    getCttData(trackEntity.id).then(function (data) {
+        cttContainer.append(cttTemplate(data))
+
+        if (++count == total) removeLoading(elBody)
+    }).catch(function (error) {
+        cttContainer.append(failedTemplate({name: "CTT"}))
+        if (++count == total) removeLoading(elBody)
+    })
+
+    getSingpostData(trackEntity.id).then(function (data) {
+        singpostContainer.append(singpostTemplate(data))
+
+        if (++count == total) removeLoading(elBody)
+    }).catch(function (error) {
+        singpostContainer.append(failedTemplate({name: "Singpost"}))
+        if (++count == total) removeLoading(elBody)
+    })
+}
+
+function loadAliMalasya(elBody, trackEntity) {
+    // Make both requests at the same time
+    var total = 2,
+        count = 0
+
+    var cainiaoContainer = elBody.find('.c-cainiao'),
+        cttContainer = elBody.find('.c-ctt')
+
+    getCttData(trackEntity.id).then(function (data) {
+        cttContainer.append(cttTemplate(data))
+        if (++count == total) removeLoading(elBody)
+    }).catch(function (error) {
+        cttContainer.append(failedTemplate({name: "CTT"}))
+        if (++count == total) removeLoading(elBody)
+    })
+
+    getCainiaoData(trackEntity.id).then(function (data) {
+        cainiaoContainer.append(cainiaoTemplate(data))
+        if (++count == total) removeLoading(elBody)
+    }).catch(function (error) {
+        cainiaoContainer.append(failedTemplate({name: "Cainiao"}))
+        if (++count == total) removeLoading(elBody)
+    })
+
+}
+
 
 /*
  |--------------------------------------------------------------------------
@@ -238,6 +388,18 @@ function getAdicionalData(adicionalID, code) {
 
 function getExpresso24Data(id) {
     return $.getJSON("/api/expresso24", {id: id});
+}
+
+function getSingpostData(id) {
+    return $.getJSON("/api/singpost", {id: id});
+}
+
+function getCttData(id) {
+    return $.getJSON("/api/ctt", {id: id});
+}
+
+function getCainiaoData(id) {
+    return $.getJSON("/api/cainiao", {id: id});
 }
 
 /*
@@ -283,7 +445,7 @@ function Track(id, desc) {
 }
 
 Track.prototype.getPostalCode = function () {
-    if (this.isNL()) return null
+    if (!this.isPQ()) return null
 
     var code = ""
 
@@ -299,8 +461,8 @@ Track.prototype.getPostalCode = function () {
     return code
 }
 
-Track.prototype.isNL = function () {
-    return this.id.charAt(0) == 'N'
+Track.prototype.isPQ = function () {
+    return this.id.charAt(0) == 'P'
 }
 
 
@@ -331,13 +493,16 @@ function capitalizeFirstLetter(string) {
 }
 
 function isValidID(id) {
-    if (id.length == 0) return false
+    if (id.length < 3) return false
     if (id.indexOf("PQ") !== -1) return true
     if (id.indexOf("NL") !== -1) return true
     if (id.indexOf("LV") !== -1) return true
     if (id.indexOf("SY") !== -1) return true
     if (id.indexOf("SB") !== -1) return true
     if (id.indexOf("GE") !== -1) return true
+
+    if (/R.+SG$/.test(id)) return true
+    if (/R.+MY$/.test(id)) return true
 
     return false
 }

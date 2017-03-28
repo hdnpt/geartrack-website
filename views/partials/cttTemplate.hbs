@@ -1,0 +1,43 @@
+<script id="ctt-template" type="text/x-handlebars-template">
+    <div class="row">
+        <div class="col-md-12">
+            <h2><span class="label label-primary">Informação CTT:</span></h2>
+
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <tr>
+                        <td>
+                            <strong>Último Estado:</strong> \{{ state.status }}
+                        </td>
+                        <td>
+                            <strong>Data:</strong> \{{HelperDate state.date }} \{{HelperFromNow state.date }}
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+            <h3><span class="label label-default">Mensagens:</span></h3>
+            <div class="result-details">
+                <dl class="des-block">
+
+                    \{{#each messages as |message|}}
+
+                    \{{#each message.status as |status|}}
+                    <dd class="\{{HelperState status.status @../first @first}}"><i></i>
+                        <div class="track-news clearfix">
+                            <span data-toggle="tooltip" data-placement="top" title="\{{HelperDateWithHours status.time }}">
+                                   \{{HelperFromNow status.time }}
+                                </span>
+                            <p>\{{ status.status }}</p>
+                        </div>
+                    </dd>
+                    \{{/each}}
+
+                    \{{/each}}
+
+                </dl>
+            </div>
+        </div>
+    </div>
+    </div>
+</script>

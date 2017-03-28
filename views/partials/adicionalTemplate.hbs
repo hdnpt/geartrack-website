@@ -1,0 +1,47 @@
+
+<!-- Adicional template -->
+<script id="adicional-template" type="text/x-handlebars-template">
+    <div class="row">
+        <div class="col-md-12">
+            <h2><span class="label label-success">Informação Adicional PT:</span></h2>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xs-6">
+            <strong>Estado:</strong> \{{HelperCapitalizeWords status }} <strong>Sub Estado:</strong> \{{HelperCapitalizeWords sub_status }}
+        </div>
+        <div class="col-xs-6 text-right">
+            <strong>Ultima atualização:</strong> \{{HelperDateWithHours updated }} \{{HelperFromNow updated }}
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <tr>
+                        <td>
+                            <strong>Tipo Serviço:</strong> \{{HelperCapitalizeWords service_type }}
+                        </td>
+                        <td>
+                            <strong>Destinatário:</strong> \{{HelperCapitalizeWords name }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <strong>Distribuidor:</strong> \{{ distributor }}
+                        </td>
+                        <td>
+                            <strong>Telemovel:</strong> \{{ phone1 }}
+                            \{{#if phone2}}
+                            (\{{ phone2 }})
+                            \{{/if}}
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</script>
+<!-- /Adicional template -->

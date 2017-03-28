@@ -112,7 +112,64 @@ router.get('/expresso24', validateId, function (req, res) {
     })
 });
 
+/**
+ * Singpost
+ */
+router.get('/singpost', validateId, function (req, res) {
+    let id = req.query.id
 
+    geartrack.singpost.getInfo(id, (err, singpost) => {
+        if (err) {
+            res.status(400).json({error: "No data was found for that id!"})
+            return
+        }
+
+        singpost.messages = singpost.messages.map(m => {
+            m.status =  m.status.replace(/ \(Country.+\)/ig, "")
+            return m
+        })
+
+        res.json(singpost)
+    })
+});
+
+/**
+ * CTT
+ */
+router.get('/ctt', validateId, function (req, res) {
+    let id = req.query.id
+
+    geartrack.ctt.getInfo(id, (err, ctt) => {
+        if (err) {
+            res.status(400).json({error: "No data was found for that id!"})
+            return
+        }
+
+        res.json(ctt)
+    })
+});
+
+/**
+ * Cainiao
+ */
+router.get('/cainiao', validateId, function (req, res) {
+    let id = req.query.id
+
+    geartrack.cainiao.getInfo(id, (err, cainiao) => {
+        if (err) {
+            res.status(400).json({error: "No data was found for that id!"})
+            return
+        }
+
+        cainiao.messages = cainiao.messages.map(m => {
+            m.status = m.status.replace('[-]', '')
+
+            return m
+        })
+
+        res.json(cainiao)
+    })
+});
 /*
 |--------------------------------------------------------------------------
 | Validation Middlewares

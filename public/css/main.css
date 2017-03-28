@@ -1,5 +1,10 @@
 body {
     padding-top: 70px;
+    font-family: 'Roboto', sans-serif;
+}
+
+.mb0 {
+    margin-bottom: 0;
 }
 
 .track-entries {
@@ -7,7 +12,7 @@ body {
     line-height: 14px;
 }
 
-.track-entries h4{
+.track-entries h4 {
     padding: 0;
     margin: 0 0 2px 0;
     white-space: nowrap;
@@ -48,6 +53,12 @@ body {
     font-size: 25px;
 }
 
+.track h2 span {
+    display: block;
+    text-align: left;
+    padding: 8px 12px !important;
+}
+
 .track h3 {
     margin: 5px 0 10px 0;
     font-size: 18px;
@@ -81,8 +92,7 @@ body {
 /* FAQs
    ========================================================================== */
 #accordion a:hover,
-#accordion a:focus
-{
+#accordion a:focus {
     text-decoration: none;
 }
 
@@ -114,4 +124,133 @@ body {
     -o-transform: rotate(90deg);
     transform: rotate(90deg);
     color: #454444;
+}
+
+#help_block {
+    display: none;
+}
+
+
+.central-text {
+    font-size: 13px;
+}
+
+.help-cursor, [data-toggle="tooltip"] {
+    cursor: help;
+}
+
+/* Timeline
+   ========================================================================== */
+.result-details dt {
+    padding: 10px 0 10px;
+}
+
+.result-details dd.new {
+    color: #ff851b;
+}
+
+.result-details dd.new i {
+    border-color: #ff851b;
+    background: #ff851b;
+}
+
+.result-details dd.delivered {
+    color: #309c40;
+}
+
+.result-details dd.delivered i {
+    border-color: #309c40;
+    background: #309c40;
+}
+
+.result-details dd:first-child {
+    background-position: 0 10px !important;
+    background-repeat: no-repeat !important;
+}
+
+.result-details dd {
+    position: relative;
+    margin-left: 20px;
+    background: url('/img/timeline_line.png') left repeat-y;
+}
+
+.result-details dd i {
+    display: inline-block;
+    float: left;
+    margin: 10px 0 0 -3px;
+    width: 7px;
+    height: 7px;
+    line-height: 16px;
+    border-radius: 50%;
+    border: 2px solid #e0e0e0;
+    background: #e0e0e0;
+}
+
+.result-details i {
+    font-style: normal;
+}
+
+.result-details dd .track-news {
+    position: relative;
+    margin-right: 0;
+    padding: 0 !important;
+    background: 0;
+}
+
+.result-details dd span {
+    position: absolute;
+    width: 113px;
+    overflow: hidden;
+    white-space: nowrap;
+    padding: 0 !important;
+    height: 25px;
+    line-height: 25px;
+    text-align: center;
+    font-weight: bold;
+    cursor: help;
+}
+
+.result-details dd table {
+    margin-left: 20px;
+    margin-bottom: 10px;
+}
+
+.result-details dd table td {
+    height: 25px;
+    line-height: 25px;
+}
+
+
+.result-details dd table td.date {
+    width: 120px;
+    font-weight: bold;
+}
+
+.result-details dd table td.area {
+    width: 200px;
+}
+
+.result-details dd .track-news p {
+    margin-left: 130px;
+    line-height: 25px;
+}
+
+.result-details dd:last-child {
+    background-position: 0 -190px;
+    background-repeat: no-repeat;
+}
+
+.result-details dd:only-child {
+    background: none !important;
+}
+
+/* Fixes cross browser support
+   ========================================================================== */
+body:last-child abbr[title], x:-moz-any-link {
+    cursor: help;
+    border-bottom: none !important;
+}
+
+.central-text {
+    font-size: 13px;
 }

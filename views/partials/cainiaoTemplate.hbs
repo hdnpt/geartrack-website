@@ -1,0 +1,28 @@
+<script id="cainiao-template" type="text/x-handlebars-template">
+    <div class="row">
+        <div class="col-md-12">
+
+            <h2><span class="label label-danger">Informação Cainiao:</span></h2>
+
+            <h3><span class="label label-default">Mensagens:</span></h3>
+            <div class="result-details">
+                <dl class="des-block">
+
+                    \{{#each messages as |message|}}
+
+                    <dd class="\{{HelperState message.status @first}}"><i></i>
+                        <div class="track-news clearfix">
+                            <span data-toggle="tooltip" data-placement="top" title="\{{HelperDateWithHours message.date }}">
+                                   \{{HelperFromNow message.date }}
+                                </span>
+                            <p>\{{ message.status }}</p>
+                        </div>
+                    </dd>
+                    \{{/each}}
+
+                </dl>
+            </div>
+
+        </div>
+    </div>
+</script>

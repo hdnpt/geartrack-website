@@ -1,0 +1,84 @@
+
+<!-- Correos template -->
+<script id="correos-template" type="text/x-handlebars-template">
+    <div class="row correos-h">
+        <div class="col-md-12">
+            <h2><span class="label label-danger">Informação Correos Express:</span></h2>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xs-6">
+            <strong>Estado:</strong> \{{HelperCapitalize state }}
+        </div>
+        <div class="col-xs-6 text-right">
+            <strong>Ultima atualização:</strong>
+            <span data-toggle="tooltip" data-placement="top" title="\{{HelperDateWithHours lastUpdate }}">
+               \{{HelperFromNow lastUpdate }}
+            </span>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <table class="table table-bordered">
+                <tr>
+                    <td>
+                        <strong>Ref:</strong> \{{ product.ref }}
+                    </td>
+                    <td>
+                        <strong>Recebido:</strong> \{{HelperDate received }} \{{HelperFromNow received }}
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <strong>Empresa:</strong> \{{HelperLowerCase sender.name }}
+                    </td>
+                    <td>
+                        <strong>Destinatário:</strong> \{{HelperCapitalizeWords receiver.name }}
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <strong>Cidade:</strong> \{{HelperCapitalize sender.city }}
+                    </td>
+                    <td>
+                        <strong>Cidade Destino:</strong> \{{HelperCapitalize receiver.city }}
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <strong>Pacotes:</strong> \{{ product.parcels }} (\{{ product.weight }}kg)
+                    </td>
+                    <td>
+                        <strong>Morada Destino:</strong> \{{HelperCapitalizeWords receiver.address }}
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <h3><span class="label label-default">Estados:</span></h3>
+
+            <div class="result-details">
+                <dl class="des-block">
+
+                    \{{#each states as |item|}}
+                    <dd class="\{{HelperState item.info @first}}"><i></i>
+                        <div class="track-news clearfix">
+                                <span data-toggle="tooltip" data-placement="top" title="\{{HelperDateWithHours item.date }}">
+                                   \{{HelperFromNow item.date }}
+                                </span>
+                            <p>\{{HelperCapitalizeWords item.department }} - <strong>\{{HelperCapitalizeWords item.info }}</strong></p>
+                        </div>
+                    </dd>
+                    \{{/each}}
+                </dl>
+            </div>
+
+        </div>
+    </div>
+</script>
+<!-- /Correos template -->

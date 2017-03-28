@@ -1,16 +1,34 @@
 <div class="row" id="hide-info">
     <div class="col-md-12">
         <div class="jumbotron">
-            <h2>Siga as suas encomendas do Gearbest até Portugal</h2>
+            <h2>Siga as suas encomendas até Portugal</h2>
             <p>Este website ajuda-o a saber por onde andam as suas encomendas.</p>
             <strong>Métodos de envio suportados:</strong>
-            <ul>
-                <li><strong>PQ</strong> Spain Priority Line (Spain Express)</li>
-                <li><strong>NL</strong> Netherlands Post surface mail</li>
-                <li><strong>LV</strong> Bpost International</li>
-                <li><strong>SYB</strong> Malasya Pos</li>
-                <li><strong>GE e SB</strong> Switzerland Post Unregistered</li>
-            </ul>
+            <div class="table-responsive">
+                <table class="table mb0">
+                    <tr>
+                        <th style="width: 50%">Gearbest</th>
+                        <th style="width: 50%">Aliexpress</th>
+                    </tr>
+                    <tr>
+                        <td>
+                            <ul class="mb0">
+                                <li><strong>PQ</strong> Spain Priority Line (Spain Express)</li>
+                                <li><strong>NL</strong> Netherlands Post surface mail</li>
+                                <li><strong>LV</strong> Bpost International</li>
+                                <li><strong>SYB</strong> Malasya Pos</li>
+                                <li><strong>GE e SB</strong> Switzerland Post Unregistered</li>
+                            </ul>
+                        </td>
+                        <td>
+                            <ul class="mb0">
+                                <li><strong>R..SG</strong> Singapore(Singapore Post) + CTT</li>
+                                <li><strong>R..MY</strong> Malasya (Pos Malaysia) + CTT</li>
+                            </ul>
+                        </td>
+                    </tr>
+                </table>
+            </div>
             <a class="btn btn-default btn-xs close-btn" id="hide-button" role="button">Esconder</a>
         </div>
     </div>
@@ -62,17 +80,18 @@
                     <h4 class="modal-title" id="myModalLabel">Seguir nova encomenda</h4>
                 </div>
                 <div class="modal-body">
-
                     <div class="form-group">
-                        <label for="shipping_id">Número da Encomenda: (Shippment number)</label>
+                        <label for="shipping_id">Tracking ID:</label>
                         <input type="text" class="form-control" required id="shipping_id"
-                               placeholder="ID a começar por PQ, NL, LV, SYB, GE, SB.." >
+                               placeholder="Insira o ID de tracking da encomenda.." maxlength="50" >
+                        <span class="help-block" id="help_block">Esse tipo de ID ainda não é suportado <i class="fa fa-frown-o"></i>, fale connosco para adicionarmos!</span>
                     </div>
                     <div class="form-group">
                         <label for="postal_code">Descrição</label>
                         <input type="text" class="form-control" id="description" required
                                placeholder="Para facil identificação, ex: Telemovel">
                     </div>
+                    <p class="small">Obs: insira o id de tracking para verificar se é suportado.</p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
@@ -117,6 +136,9 @@
                     <div class="c-correos"></div>
                     <div class="c-expresso24"></div>
                     <div class="c-adicional"></div>
+                    <div class="c-ctt"></div>
+                    <div class="c-cainiao"></div>
+                    <div class="c-singpost"></div>
                 </div>
             </div>
         </div>
@@ -124,265 +146,19 @@
 </script>
 <!-- /Track Content Body -->
 
-<!-- Sky template -->
-<script id="sky-template" type="text/x-handlebars-template">
-    <div class="row">
-        <div class="col-md-12">
-            <h2><span class="label label-primary">Informação Sky56:</span></h2>
+{{> skyTemplate }}
 
-            \{{#if messages}}
-            <h3><span class="label label-default">Mensagens:</span></h3>
+{{> correosTemplate }}
 
-            <table class="table table-striped table-condensed">
-                <tr>
-                    <th style="width: 30%">Data</th>
-                    <th>Mensagem</th>
-                </tr>
-                \{{#each messages}}
-                <tr>
-                    <td>\{{ date }}</td>
-                    <td>\{{ message }}</td>
-                </tr>
-                \{{/each}}
-            </table>
-            \{{/if}}
+{{> adicionalTemplate }}
 
-            \{{#if status}}
-            <h3><span class="label label-default">Estado:</span></h3>
-            <table class="table table-striped table-condensed">
-                <tr>
-                    <th style="width: 30%">Data</th>
-                    <th>Estado</th>
-                </tr>
-                \{{#each status}}
-                <tr>
-                    <td>\{{ date }} \{{StateDaysAgo status date "Pre-registrado" }}</td>
-                    <td>\{{ status }}</td>
-                </tr>
-                \{{/each}}
-            </table>
-            \{{/if}}
-        </div>
-    </div>
-</script>
-<!-- /Sky template -->
+{{> expresso24Template }}
 
-<!-- Sky template for NL -->
-<script id="sky-template-nl" type="text/x-handlebars-template">
-    <div class="row">
-        <div class="col-md-12">
-            <h2><span class="label label-primary">Informação Sky56 \{{ name }}:</span></h2>
+{{> singpostTemplate }}
 
-            \{{#if messages}}
-            <h3><span class="label label-default">Mensagens:</span></h3>
+{{> cttTemplate }}
 
-            <table class="table table-striped table-condensed">
-                <tr>
-                    <th style="width: 30%">Data</th>
-                    <th>Mensagem</th>
-                </tr>
-                \{{#each messages}}
-                <tr>
-                    <td>\{{ date }}</td>
-                    <td>\{{ status }}</td>
-                </tr>
-                \{{/each}}
-            </table>
-            \{{/if}}
-
-            <h3><span class="label label-default">Estado:</span></h3>
-
-            <table class="table table-striped table-condensed">
-                <tr>
-                    <th style="width: 30%">Data</th>
-                    <th>Local</th>
-                    <th>Estado</th>
-                </tr>
-                \{{#each status}}
-                <tr>
-                    <td>\{{ date }}</td>
-                    <td>\{{ area }}</td>
-                    <td>\{{ status }}</td>
-                </tr>
-                \{{/each}}
-            </table>
-        </div>
-    </div>
-</script>
-<!-- /Sky template for NL -->
-
-<!-- Correos template -->
-<script id="correos-template" type="text/x-handlebars-template">
-    <div class="row correos-h">
-        <div class="col-md-12">
-            <h2><span class="label label-danger">Informação Correos Express:</span></h2>
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="col-xs-6">
-            <strong>Estado:</strong> \{{ state }}
-        </div>
-        <div class="col-xs-6 text-right">
-            <strong>Ultima atualização:</strong> \{{ lastUpdate }}
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="col-md-12">
-            <table class="table table-bordered">
-                <tr>
-                    <td>
-                        <strong>Ref:</strong> \{{ product.ref }}
-                    </td>
-                    <td>
-                        <strong>Recebido:</strong> \{{ received }}
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <strong>Empresa:</strong> \{{ sender.name }}
-                    </td>
-                    <td>
-                        <strong>Destinatário:</strong> \{{ receiver.name }}
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <strong>Cidade:</strong> \{{ sender.city }}
-                    </td>
-                    <td>
-                        <strong>Cidade Destino:</strong> \{{ receiver.city }}
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <strong>Pacotes:</strong> \{{ product.parcels }} (\{{ product.weight }}kg)
-                    </td>
-                    <td>
-                        <strong>Morada Destino:</strong> \{{ receiver.address }}
-                    </td>
-                </tr>
-            </table>
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="col-md-12">
-            <h3><span class="label label-default">Estados:</span></h3>
-            <table class="table table-striped table-condensed">
-                <tr>
-                    <th>Data</th>
-                    <th>Estado</th>
-                    <th>Local</th>
-                </tr>
-                \{{#each states}}
-                <tr>
-                    <td>\{{ date }}</td>
-                    <td>\{{ info }}</td>
-                    <td>\{{ department }}</td>
-                </tr>
-                \{{/each}}
-            </table>
-        </div>
-    </div>
-</script>
-<!-- /Correos template -->
-
-<!-- Adicional template -->
-<script id="adicional-template" type="text/x-handlebars-template">
-    <div class="row">
-        <div class="col-md-12">
-            <h2><span class="label label-success">Informação Adicional PT:</span></h2>
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="col-xs-6">
-            <strong>Estado:</strong> \{{ status }} <strong>Sub Estado:</strong> \{{ sub_status }}
-        </div>
-        <div class="col-xs-6 text-right">
-            <strong>Ultima atualização:</strong> \{{ updated }}
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="col-md-12">
-            <table class="table table-bordered">
-                <tr>
-                    <td>
-                        <strong>Tipo Serviço:</strong> \{{ service_type }}
-                    </td>
-                    <td>
-                        <strong>Destinatário:</strong> \{{ name }}
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <strong>Distribuidor:</strong> \{{ distributor }}
-                    </td>
-                    <td>
-                        <strong>Telemovel:</strong> \{{ phone1 }}
-                        \{{#if phone2}}
-                            (\{{ phone2 }})
-                        \{{/if}}
-                    </td>
-                </tr>
-            </table>
-        </div>
-    </div>
-</script>
-<!-- /Adicional template -->
-
-<!-- Expresso24 template -->
-<script id="expresso24-template" type="text/x-handlebars-template">
-    <div class="row">
-        <div class="col-md-12">
-            <h2><span class="label label-warning">Informação Expresso24:</span></h2>
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="col-xs-6">
-            <strong>Estado:</strong> \{{ status }}
-        </div>
-        <div class="col-xs-6 text-right">
-            <strong>Data:</strong> \{{ date }}
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="col-md-12">
-            <table class="table table-bordered">
-                <tr>
-                    <td>
-                        <strong>Origem:</strong> \{{ origin }}
-                    </td>
-                    <td>
-                        <strong>Destinatário:</strong> \{{ receiver_name }}
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <strong>Pacotes:</strong> \{{ parcels }} (\{{ weight }}kg)
-                    </td>
-                    <td>
-                        <strong>Morada Destino:</strong> \{{ address }}
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <strong>Guia Nº:</strong> \{{ guide }}
-                    </td>
-                    <td>
-                        <strong>Reembolso:</strong> \{{ refund }}
-                    </td>
-                </tr>
-            </table>
-        </div>
-    </div>
-</script>
-<!-- /Expresso24 template -->
+{{> cainiaoTemplate }}
 
 <!-- No data template -->
 <script id="failed-template" type="text/x-handlebars-template">
