@@ -2,6 +2,7 @@ const express = require('express')
 const router = express.Router()
 const geartrack = require('geartrack')
 const mcache = require('memory-cache')
+const http = require('http')
 
 /**
  * Cache middleware
