@@ -140,7 +140,6 @@ router.get('/ctt', validateId, function (req, res) {
     let id = req.query.id
 
     res.status(400).json({error: "No data was found for that id!"})
-
     // geartrack.ctt.getInfo(id, (err, ctt) => {
     //     if (err) {
     //         res.status(400).json({error: "No data was found for that id!"})

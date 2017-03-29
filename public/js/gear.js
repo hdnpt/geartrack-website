@@ -392,7 +392,7 @@ function getSingpostData(id) {
 }
 
 function getCttData(id) {
-    return $.getJSON("/api/ctt", {id: id});
+    return $.getJSON("http://178.32.113.93:3000/api/ctt", {id: id});
 }
 
 function getCainiaoData(id) {
