@@ -97,7 +97,7 @@ Handlebars.registerHelper('HelperState', function (state, first, insideFirst) {
 storageLoadAll()
 addAllTracksToPage()
 
-let help_block = $('#help_block'),
+let help_block2 = $('#help_block'),
     form_group = shippingId.parent('.form-group')
 
 shippingId.on('input paste', function () {
@@ -106,18 +106,18 @@ shippingId.on('input paste', function () {
     if(inserted.length == 0) {
         form_group.toggleClass('has-success', false)
         form_group.toggleClass('has-error', false)
-        help_block.hide()
+        help_block2.hide()
         return
     }
 
     if (isValidID(inserted)) {
         form_group.toggleClass('has-error', false)
         form_group.toggleClass('has-success', true)
-        help_block.hide()
+        help_block2.hide()
     } else {
         form_group.toggleClass('has-success', false)
         form_group.toggleClass('has-error', true)
-        help_block.show()
+        help_block2.show()
     }
 });
 
@@ -145,7 +145,7 @@ form.submit(function (event) {
     }
 
     form_group.toggleClass('has-success', false)
-    help_block.hide()
+    help_block2.hide()
 
     shippingId.val("")
     description.val("")
