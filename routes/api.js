@@ -139,14 +139,16 @@ router.get('/singpost', validateId, function (req, res) {
 router.get('/ctt', validateId, function (req, res) {
     let id = req.query.id
 
-    geartrack.ctt.getInfo(id, (err, ctt) => {
-        if (err) {
-            res.status(400).json({error: "No data was found for that id!"})
-            return
-        }
+    res.status(400).json({error: "No data was found for that id!"})
 
-        res.json(ctt)
-    })
+    // geartrack.ctt.getInfo(id, (err, ctt) => {
+    //     if (err) {
+    //         res.status(400).json({error: "No data was found for that id!"})
+    //         return
+    //     }
+    //
+    //     res.json(ctt)
+    // })
 });
 
 /**
