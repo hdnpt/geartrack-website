@@ -174,7 +174,7 @@ function request(id, cb) {
             });
             response.on('end', function() {
                 var parsed = JSON.parse(body);
-                callback(null, parsed);
+                cb(null, parsed);
             });
         });
 }
