@@ -7,6 +7,10 @@ body {
     margin-bottom: 0;
 }
 
+.mr10 {
+    margin-right: 10px;
+}
+
 .track-entries {
     font-size: 14px;
     line-height: 14px;
@@ -197,7 +201,7 @@ body {
     background: 0;
 }
 
-.result-details dd span {
+.result-details dd span.date {
     position: absolute;
     width: 113px;
     overflow: hidden;
@@ -242,6 +246,22 @@ body {
 
 .result-details dd:only-child {
     background: none !important;
+}
+
+.area-break:before {
+    content: " - ";
+}
+
+@media (max-width: 768px) {
+    .area-break:before {
+        content: "";
+    }
+
+    .area-break {
+        font-size: 13px;
+        line-height: 13px;
+        display: block;
+    }
 }
 
 /* Fixes cross browser support

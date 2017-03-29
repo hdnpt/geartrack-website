@@ -68,10 +68,10 @@
                     \{{#each states as |item|}}
                     <dd class="\{{HelperState item.info @first}}"><i></i>
                         <div class="track-news clearfix">
-                                <span data-toggle="tooltip" data-placement="top" title="\{{HelperDateWithHours item.date }}">
+                                <span class="date" data-toggle="tooltip" data-placement="top" title="\{{HelperDateWithHours item.date }}">
                                    \{{HelperFromNow item.date }}
                                 </span>
-                            <p>\{{HelperCapitalizeWords item.department }} - <strong>\{{HelperCapitalizeWords item.info }}</strong></p>
+                            <p><strong>\{{HelperCapitalizeWords item.info }}</strong> <span class="area-break">\{{HelperCapitalizeWords item.department }}</span></p>
                         </div>
                     </dd>
                     \{{/each}}

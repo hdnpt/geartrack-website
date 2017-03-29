@@ -25,7 +25,7 @@
                     \{{#each message.status as |status|}}
                     <dd class="\{{HelperState status.status @../first @first}}"><i></i>
                         <div class="track-news clearfix">
-                            <span data-toggle="tooltip" data-placement="top" title="\{{HelperDateWithHours status.time }}">
+                            <span class="date" data-toggle="tooltip" data-placement="top" title="\{{HelperDateWithHours status.time }}">
                                    \{{HelperFromNow status.time }}
                                 </span>
                             <p>\{{ status.status }}</p>

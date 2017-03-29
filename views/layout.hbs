@@ -7,17 +7,17 @@
 {{else}}
     <title>Geartrack</title>
 {{/if}}
-    <meta name="description" content="Tracking de encomendas feitas no Gearbest, que usam o método Spain Priority Line e outros.">
+    <meta name="description" content="Tracking de encomendas até Portugal. Suporta Gearbest e Aliexpress.">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <!-- Favicons -->
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=bOv709k2Pr">
-    <link rel="icon" type="image/png" href="/favicon-32x32.png?v=bOv709k2Pr" sizes="32x32">
-    <link rel="icon" type="image/png" href="/favicon-16x16.png?v=bOv709k2Pr" sizes="16x16">
-    <link rel="manifest" href="/manifest.json?v=bOv709k2Pr">
-    <link rel="mask-icon" href="/safari-pinned-tab.svg?v=bOv709k2Pr" color="#ff851b">
-    <link rel="shortcut icon" href="/favicon.ico?v=bOv709k2Pr">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=47rnj2zzvB">
+    <link rel="icon" type="image/png" href="/favicon-32x32.png?v=47rnj2zzvB" sizes="32x32">
+    <link rel="icon" type="image/png" href="/favicon-16x16.png?v=47rnj2zzvB" sizes="16x16">
+    <link rel="manifest" href="/manifest.json?v=47rnj2zzvB">
+    <link rel="mask-icon" href="/safari-pinned-tab.svg?v=47rnj2zzvB" color="#ff851b">
+    <link rel="shortcut icon" href="/favicon.ico?v=47rnj2zzvB">
     <meta name="theme-color" content="#ff851b">
 
     <!--
@@ -50,6 +50,14 @@
 
     <!-- Roboto font -->
     <link href="https://fonts.googleapis.com/css?family=Roboto:400,700" rel="stylesheet">
+
+    <!-- Open Graph -->
+    <meta property="og:url" content="https://geartrack.hdn.pt"/>
+    <meta property="og:type" content="Geartrack"/>
+    <meta property="og:title" content="Tracking de encomendas até Portugal."/>
+    <meta property="og:description" content="Suporta Gearbest e Aliexpress."/>
+    <meta property="og:image" content="http://geartrack.hdn.pt/img/fb_share.png"/>
+    <meta property="fb:app_id" content="1750856191909961"/>
 </head>
 <body>
 
@@ -66,17 +74,19 @@
         {{> footer }}
     </div>
 
-
     <!-- JS -->
     <script src="/js/vendor/jquery-3.1.1.min.js"></script>
     <script src="/js/vendor/bootstrap.min.js"></script>
     <script src="/js/vendor/handlebars.min.js"></script>
     <script src="/js/vendor/moment.min.js"></script>
     <script src="/js/vendor/moment-pt.js"></script>
+    <script src="/js/main.js"></script>
     <script>
         moment.locale('pt');
     </script>
     {{{_sections.script}}}
+
+    <!-- Google Analytics -->
     <script>
         (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
                     (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -86,5 +96,22 @@
         ga('create', 'UA-69457776-2', 'auto');
         ga('send', 'pageview');
     </script>
+    <!-- /Google Analytics -->
+    
+    <!-- User Report -->
+        <script type="text/javascript">
+            window._urq = window._urq || [];
+            _urq.push(['initSite', '2a576ee4-ba36-4fe4-9f28-59f1ee94c700']);
+            (function () {
+                var ur = document.createElement('script');
+                ur.type = 'text/javascript';
+                ur.async = true;
+                ur.src = ('https:' == document.location.protocol ?
+                        'https://cdn.userreport.com/userreport.js' : 'http://cdn.userreport.com/userreport.js');
+                var s = document.getElementsByTagName('script')[0];
+                s.parentNode.insertBefore(ur, s);
+            })();
+        </script>
+    <!-- /User Report -->
 </body>
 </html>
