@@ -28,7 +28,7 @@
                             <span class="date" data-toggle="tooltip" data-placement="top" title="\{{HelperDateWithHours status.time }}">
                                    \{{HelperFromNow status.time }}
                                 </span>
-                            <p>\{{ status.status }}</p>
+                            <p><strong>\{{HelperCapitalizeWords status.status }}</strong> <span class="area-break">\{{HelperCapitalizeWords status.local }}</span></p>
                         </div>
                     </dd>
                     \{{/each}}
