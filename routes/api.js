@@ -79,6 +79,22 @@ router.get('/correos', validateId, validatePostalCode,function (req, res) {
     })
 });
 
+/**
+ * CorreosEs data
+ */
+router.get('/correoses', validateId,function (req, res) {
+    let id = req.query.id
+
+    geartrack.correoses.getInfo(id, (err, correosEntity) => {
+        if (err) {
+            res.status(400).json({error: "No data was found for that id!"})
+            return
+        }
+
+        res.json(correosEntity)
+    })
+});
+
 
 /**
  * Adicional data
@@ -140,44 +156,15 @@ router.get('/singpost', validateId, function (req, res) {
 router.get('/ctt', validateId, function (req, res) {
     let id = req.query.id
 
-    request(id, (err, ctt) => {
-        if(ctt.error) {
+    geartrack.ctt.getInfo(id, (err, ctt) => {
+        if (err) {
             res.status(400).json({error: "No data was found for that id!"})
             return
         }
 
         res.json(ctt)
     })
-
-
-
-    // geartrack.ctt.getInfo(id, (err, ctt) => {
-    //     if (err) {
-    //         res.status(400).json({error: "No data was found for that id!"})
-    //         return
-    //     }
-    //
-    //     res.json(ctt)
-    // })
 });
-
-function request(id, cb) {
-        return http.get({
-            host: '178.32.113.93',
-            port: 3000,
-            path: '/api/ctt?id=' + id
-        }, function(response) {
-            // Continuously update stream with data
-            var body = '';
-            response.on('data', function(d) {
-                body += d;
-            });
-            response.on('end', function() {
-                var parsed = JSON.parse(body);
-                cb(null, parsed);
-            });
-        });
-}
 
 /**
  * Cainiao

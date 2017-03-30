@@ -24,6 +24,10 @@ body {
     text-overflow: ellipsis;
 }
 
+.label-yellow {
+    background-color: #ffc11b;
+}
+
 .track-entries p {
     margin: 0;
 }
@@ -174,7 +178,7 @@ body {
 
 .result-details dd {
     position: relative;
-    margin-left: 20px;
+    margin-left: 10px;
     background: url('/img/timeline_line.png') left repeat-y;
 }
 
@@ -203,7 +207,7 @@ body {
 
 .result-details dd span.date {
     position: absolute;
-    width: 113px;
+    width: 105px;
     overflow: hidden;
     white-space: nowrap;
     padding: 0 !important;
@@ -235,7 +239,7 @@ body {
 }
 
 .result-details dd .track-news p {
-    margin-left: 130px;
+    margin-left: 110px;
     line-height: 25px;
 }
 

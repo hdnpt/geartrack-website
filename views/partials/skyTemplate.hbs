@@ -1,4 +1,4 @@
-<!-- Sky template for NL -->
+<!-- Sky template -->
 <script id="sky-template" type="text/x-handlebars-template">
     <div class="row">
         <div class="col-md-12">
@@ -12,7 +12,8 @@
                     \{{#each messages as |item| }}
                     <dd class="\{{HelperState item.status @first}}"><i></i>
                         <div class="track-news clearfix">
-                             <span class="date" data-toggle="tooltip" data-placement="top" title="\{{HelperDateWithHours item.date }}">
+                             <span class="date" data-toggle="tooltip" data-placement="top"
+                                   title="\{{HelperDateWithHours item.date }}">
                                    \{{HelperFromNow item.date }}
                             </span>
                             <p>\{{ item.status }}</p>
@@ -23,14 +24,18 @@
             </div>
             \{{/if}}
 
-            <h3><span class="label label-default">Estado:</span></h3>
+            \{{#HelperTrackerSkyPQ this}}
+            \{{else}}
+            \{{#if status}}
+            <h3><span class="label label-default">Estados:</span></h3>
             <div class="result-details">
                 <dl class="des-block">
 
                     \{{#each status as |item|}}
                     <dd class="\{{HelperState item.status @first}}"><i></i>
                         <div class="track-news clearfix">
-                                <span class="date" data-toggle="tooltip" data-placement="top" title="\{{HelperDateWithHours item.date }}">
+                                <span class="date" data-toggle="tooltip" data-placement="top"
+                                      title="\{{HelperDateWithHours item.date }}">
                                    \{{HelperFromNow item.date }}
                                 </span>
                             \{{#if item.area}}
@@ -38,14 +43,16 @@
                                 <strong>\{{ item.status }}</strong> <span class="area-break">\{{HelperCapitalizeWords item.area }}</span>
                             </p>
                             \{{else}}
-                            <p><strong>\{{ item.status }}</strong></p>
+                            <p>\{{ item.status }}</p>
                             \{{/if}}
                         </div>
                     </dd>
                     \{{/each}}
                 </dl>
             </div>
+            \{{/if}}
+            \{{/HelperTrackerSkyPQ}}
         </div>
     </div>
 </script>
-<!-- /Sky template for NL -->
+<!-- /Sky template -->

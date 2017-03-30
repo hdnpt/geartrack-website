@@ -1,14 +1,14 @@
 <div class="row" id="hide-info">
     <div class="col-md-12">
         <div class="jumbotron">
-            <h2>Siga as suas encomendas até Portugal</h2>
+            <h2>Segue as tuas encomendas até Portugal</h2>
             <p>Este website ajuda-o a saber por onde andam as suas encomendas.</p>
             <strong>Métodos de envio suportados:</strong>
             <div class="table-responsive">
                 <table class="table mb0">
                     <tr>
                         <th style="width: 50%">Gearbest</th>
-                        <th style="width: 50%">Aliexpress</th>
+                        <th style="width: 50%">AliExpress</th>
                     </tr>
                     <tr>
                         <td>
@@ -60,7 +60,7 @@
                         Informações das encomendas
                     </div>
                     <div class="panel-body">
-                        <p>Adicione encomendas no painel esquerdo e aqui aparcerão as informações das encomendas!</p>
+                        <p>Para veres a informação sobre as tuas encomendas adiciona os pedidos no painel à direita.</p>
                     </div>
                 </div>
             </div>
@@ -133,6 +133,7 @@
                     <img src="/img/loading.svg" class="center-img" width="30" alt="Loading" />
 
                     <div class="c-sky"></div>
+                    <div class="c-correoses"></div>
                     <div class="c-correos"></div>
                     <div class="c-expresso24"></div>
                     <div class="c-adicional"></div>
@@ -160,6 +161,8 @@
 
 {{> cainiaoTemplate }}
 
+{{> correosESTemplate }}
+
 <!-- No data template -->
 <script id="failed-template" type="text/x-handlebars-template">
     <div class="row">
@@ -176,5 +179,5 @@
 <!-- /No data template -->
 
 {{#section 'script'}}
-    <script src="js/gear.js?v=6"></script>
+    <script src="js/gear.js?v=7"></script>
 {{/section}}

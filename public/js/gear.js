@@ -31,6 +31,7 @@ var trackEntryTemplate = Handlebars.compile($("#track-list-template").html()),
     trackContentTemplate = Handlebars.compile($("#track-content-template").html()),
     skyTemplate = Handlebars.compile($("#sky-template").html()),
     correosTemplate = Handlebars.compile($("#correos-template").html()),
+    correosESTemplate = Handlebars.compile($("#correoses-template").html()),
     adicionalTemplate = Handlebars.compile($("#adicional-template").html()),
     expresso24Template = Handlebars.compile($("#expresso24-template").html()),
     singpostTemplate = Handlebars.compile($("#singpost-template").html()),
@@ -85,6 +86,14 @@ Handlebars.registerHelper('HelperState', function (state, first, insideFirst) {
             }
 
             return ''
+    }
+})
+
+Handlebars.registerHelper('HelperTrackerSkyPQ', function (skyinfo, options) {
+    if(skyinfo.id.indexOf("PQ") != -1) {
+        return options.fn(this)
+    } else {
+        return options.inverse(this)
     }
 })
 
@@ -229,10 +238,11 @@ function loadTrackToContent(trackEntity) {
  */
 function loadSpainExpress(elBody, trackEntity) {
     // Make both requests at the same time
-    var total = 2,
+    var total = 3,
         count = 0
 
     var skyContainer = elBody.find('.c-sky'),
+        correosESContainer = elBody.find('.c-correoses'),
         correosContainer = elBody.find('.c-correos'),
         expresso24Container = elBody.find('.c-expresso24'),
         adicionalContainer = elBody.find('.c-adicional')
@@ -244,6 +254,16 @@ function loadSpainExpress(elBody, trackEntity) {
         })
         .catch(function (error) {
             skyContainer.append(failedTemplate({name: "Sky 56"}))
+            if (++count == total) removeLoading(elBody)
+        })
+
+    getCorreosESData(trackEntity.id)
+        .then(function (correosData) {
+            correosESContainer.append(correosESTemplate(correosData))
+            if (++count == total) removeLoading(elBody)
+        })
+        .catch(function (error) {
+            correosESContainer.append(failedTemplate({name: "Correos ES"}))
             if (++count == total) removeLoading(elBody)
         })
 
@@ -397,6 +417,10 @@ function getCttData(id) {
 
 function getCainiaoData(id) {
     return $.getJSON("/api/cainiao", {id: id});
+}
+
+function getCorreosESData(id) {
+    return $.getJSON("/api/correoses", {id: id});
 }
 
 /*
