@@ -91,6 +91,8 @@ router.get('/correoses', validateId,function (req, res) {
             return
         }
 
+        correosEntity.provider = 'Correos ES'
+        correosEntity.color = 'yellow'
         res.json(correosEntity)
     })
 });
@@ -163,6 +165,42 @@ router.get('/ctt', validateId, function (req, res) {
         }
 
         res.json(ctt)
+    })
+});
+
+/**
+ * Direct Link
+ */
+router.get('/directlink', validateId, function (req, res) {
+    let id = req.query.id
+
+    geartrack.directlink.getInfo(id, (err, direct) => {
+        if (err) {
+            res.status(400).json({error: "No data was found for that id!"})
+            return
+        }
+
+        direct.provider = 'Direct Link'
+        direct.color = 'yellow'
+        res.json(direct)
+    })
+});
+
+/**
+ * Track china post
+ */
+router.get('/trackchinapost', validateId, function (req, res) {
+    let id = req.query.id
+
+    geartrack.trackchinapost.getInfo(id, (err, info) => {
+        if (err) {
+            res.status(400).json({error: "No data was found for that id!"})
+            return
+        }
+
+        info.provider = 'Track China Post'
+        info.color = 'danger'
+        res.json(info)
     })
 });
 

@@ -1,0 +1,36 @@
+<!-- General template -->
+<script id="general-template" type="text/x-handlebars-template">
+    <div class="row">
+        <div class="col-md-12">
+            <h2><span class="label label-\{{ color }}">Informação \{{ provider }}:</span></h2>
+
+            \{{#if states}}
+            <h3><span class="label label-default">Estados:</span></h3>
+
+            <div class="result-details">
+                <dl class="des-block">
+                    \{{#each states as |item| }}
+                    <dd class="\{{HelperState item.state @first}}"><i></i>
+                        <div class="track-news clearfix">
+                             <span class="date" data-toggle="tooltip" data-placement="top"
+                                   title="\{{HelperDateWithHours item.date }}">
+                                   \{{HelperFromNow item.date }}
+                            </span>
+                            <p title="\{{ item.title }}">
+                                \{{#if item.area}}
+                                <strong>\{{ item.state }}</strong> <span class="area-break">\{{HelperCapitalizeWords item.area }}</span>
+                                \{{else}}
+                                \{{ item.state }}
+                                \{{/if}}
+                            </p>
+                        </div>
+                    </dd>
+                    \{{/each}}
+                </dl>
+            </div>
+            \{{/if}}
+
+        </div>
+    </div>
+</script>
+<!-- /General template -->

@@ -7,6 +7,10 @@ body {
     margin-bottom: 0;
 }
 
+.mb10 {
+    margin-bottom: 10px;
+}
+
 .mr10 {
     margin-right: 10px;
 }
@@ -25,7 +29,7 @@ body {
 }
 
 .label-yellow {
-    background-color: #ffc11b;
+    background-color: #f1af00;
 }
 
 .track-entries p {

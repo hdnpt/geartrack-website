@@ -31,7 +31,7 @@ var trackEntryTemplate = Handlebars.compile($("#track-list-template").html()),
     trackContentTemplate = Handlebars.compile($("#track-content-template").html()),
     skyTemplate = Handlebars.compile($("#sky-template").html()),
     correosTemplate = Handlebars.compile($("#correos-template").html()),
-    correosESTemplate = Handlebars.compile($("#correoses-template").html()),
+    generalTemplate = Handlebars.compile($("#general-template").html()),
     adicionalTemplate = Handlebars.compile($("#adicional-template").html()),
     expresso24Template = Handlebars.compile($("#expresso24-template").html()),
     singpostTemplate = Handlebars.compile($("#singpost-template").html()),
@@ -75,6 +75,7 @@ Handlebars.registerHelper('HelperState', function (state, first, insideFirst) {
         case 'entregue':
         case 'entregado':
         case 'delivery success':
+        case 'order delivered':
             return 'delivered';
         default:
             if (typeof insideFirst == 'boolean') {
@@ -213,6 +214,9 @@ function loadTrackToContent(trackEntity) {
         case 'G':
             loadNetherlandsPost(elBody, trackEntity)
             break
+        case 'P':
+            loadSpainExpress(elBody, trackEntity)
+            break
         case 'R': // Aliexpress
             let ending = trackEntity.id.charAt(trackEntity.id.length - 2)
                 + trackEntity.id.charAt(trackEntity.id.length - 1)
@@ -220,13 +224,19 @@ function loadTrackToContent(trackEntity) {
                 case 'MY':
                     loadAliMalasya(elBody, trackEntity)
                     break
+                case 'SE':
+                    loadAliSweden(elBody, trackEntity)
+                    break
+                case 'CN':
+                    loadAliProvider(elBody, trackEntity, 'trackchinapost', 'Track China Post')
+                    break
                 default:
                     loadAliSingpost(elBody, trackEntity)
             }
 
             break
         default:
-            loadSpainExpress(elBody, trackEntity)
+            loadAliProvider(elBody, trackEntity, 'trackchinapost', 'Track China Post', false)
     }
 }
 
@@ -247,7 +257,7 @@ function loadSpainExpress(elBody, trackEntity) {
         expresso24Container = elBody.find('.c-expresso24'),
         adicionalContainer = elBody.find('.c-adicional')
 
-    getSkyData(trackEntity.id)
+    getProviderData('sky', trackEntity.id)
         .then(function (skyData) {
             skyContainer.append(skyTemplate(skyData))
             if (++count == total) removeLoading(elBody)
@@ -257,9 +267,9 @@ function loadSpainExpress(elBody, trackEntity) {
             if (++count == total) removeLoading(elBody)
         })
 
-    getCorreosESData(trackEntity.id)
+    getProviderData('correoses', trackEntity.id)
         .then(function (correosData) {
-            correosESContainer.append(correosESTemplate(correosData))
+            correosESContainer.append(generalTemplate(correosData))
             if (++count == total) removeLoading(elBody)
         })
         .catch(function (error) {
@@ -271,7 +281,7 @@ function loadSpainExpress(elBody, trackEntity) {
         .then(function (correosData) {
             correosContainer.append(correosTemplate(correosData))
 
-            getExpresso24Data(correosData.product.ref)
+            getProviderData('expresso24', correosData.product.ref)
                 .then(function (expressoInfo) { // load expresso24 before adicional
                     expresso24Container.append(expresso24Template(expressoInfo))
                     if (++count == total) removeLoading(elBody)
@@ -317,7 +327,7 @@ function loadSpainExpress(elBody, trackEntity) {
 function loadNetherlandsPost(elBody, trackEntity) {
     var skyContainer = elBody.find('.c-sky')
 
-    getSkyData(trackEntity.id).then(function (data) { // add sky response to the page
+    getProviderData('sky', trackEntity.id).then(function (data) { // add sky response to the page
         skyContainer.append(skyTemplate(data))
         removeLoading(elBody)
     })
@@ -340,7 +350,7 @@ function loadAliSingpost(elBody, trackEntity) {
     var singpostContainer = elBody.find('.c-singpost'),
         cttContainer = elBody.find('.c-ctt')
 
-    getCttData(trackEntity.id).then(function (data) {
+    getProviderData('ctt', trackEntity.id).then(function (data) {
         cttContainer.append(cttTemplate(data))
 
         if (++count == total) removeLoading(elBody)
@@ -349,7 +359,7 @@ function loadAliSingpost(elBody, trackEntity) {
         if (++count == total) removeLoading(elBody)
     })
 
-    getSingpostData(trackEntity.id).then(function (data) {
+    getProviderData('singpost', trackEntity.id).then(function (data) {
         singpostContainer.append(singpostTemplate(data))
 
         if (++count == total) removeLoading(elBody)
@@ -367,7 +377,7 @@ function loadAliMalasya(elBody, trackEntity) {
     var cainiaoContainer = elBody.find('.c-cainiao'),
         cttContainer = elBody.find('.c-ctt')
 
-    getCttData(trackEntity.id).then(function (data) {
+    getProviderData('ctt', trackEntity.id).then(function (data) {
         cttContainer.append(cttTemplate(data))
         if (++count == total) removeLoading(elBody)
     }).catch(function (error) {
@@ -375,7 +385,7 @@ function loadAliMalasya(elBody, trackEntity) {
         if (++count == total) removeLoading(elBody)
     })
 
-    getCainiaoData(trackEntity.id).then(function (data) {
+    getProviderData('cainiao', trackEntity.id).then(function (data) {
         cainiaoContainer.append(cainiaoTemplate(data))
         if (++count == total) removeLoading(elBody)
     }).catch(function (error) {
@@ -385,14 +395,68 @@ function loadAliMalasya(elBody, trackEntity) {
 
 }
 
+function loadAliSweden(elBody, trackEntity) {
+    // Make both requests at the same time
+    var total = 2,
+        count = 0
+
+    var directContainer = elBody.find('.c-directlink'),
+        cttContainer = elBody.find('.c-ctt')
+
+    getProviderData('ctt', trackEntity.id).then(function (data) {
+        cttContainer.append(cttTemplate(data))
+        if (++count == total) removeLoading(elBody)
+    }).catch(function (error) {
+        cttContainer.append(failedTemplate({name: "CTT"}))
+        if (++count == total) removeLoading(elBody)
+    })
+
+    getProviderData('directlink', trackEntity.id).then(function (data) {
+        directContainer.append(generalTemplate(data))
+        if (++count == total) removeLoading(elBody)
+    }).catch(function (error) {
+        directContainer.append(failedTemplate({name: "Direct Link"}))
+        if (++count == total) removeLoading(elBody)
+    })
+
+}
+
+function loadAliProvider(elBody, trackEntity, provider, failedName, showCtt) {
+    if (typeof(showCtt)==='undefined') showCtt = true;
+    // Make both requests at the same time
+    var total = showCtt ? 2 : 1,
+        count = 0
+
+    var alicontainer = elBody.find('.c-aligeneral'),
+        cttContainer = elBody.find('.c-ctt')
+
+    if(showCtt) {
+        getProviderData('ctt', trackEntity.id).then(function (data) {
+            cttContainer.append(cttTemplate(data))
+            if (++count == total) removeLoading(elBody)
+        }).catch(function (error) {
+            cttContainer.append(failedTemplate({name: "CTT"}))
+            if (++count == total) removeLoading(elBody)
+        })
+    }
+
+    getProviderData(provider, trackEntity.id).then(function (data) {
+        alicontainer.append(generalTemplate(data))
+        if (++count == total) removeLoading(elBody)
+    }).catch(function (error) {
+        alicontainer.append(failedTemplate({name: failedName}))
+        if (++count == total) removeLoading(elBody)
+    })
+}
+
 
 /*
  |--------------------------------------------------------------------------
  | Get Api data
  |--------------------------------------------------------------------------
  */
-function getSkyData(id) {
-    return $.getJSON("/api/sky", {id: id});
+function getProviderData(provider, id) {
+    return $.getJSON("/api/" + provider, {id: id});
 }
 
 function getCorreosData(id, code) {
@@ -401,26 +465,6 @@ function getCorreosData(id, code) {
 
 function getAdicionalData(adicionalID, code) {
     return $.getJSON("/api/adicional", {id: adicionalID, postalcode: code});
-}
-
-function getExpresso24Data(id) {
-    return $.getJSON("/api/expresso24", {id: id});
-}
-
-function getSingpostData(id) {
-    return $.getJSON("/api/singpost", {id: id});
-}
-
-function getCttData(id) {
-    return $.getJSON("/api/ctt", {id: id});
-}
-
-function getCainiaoData(id) {
-    return $.getJSON("/api/cainiao", {id: id});
-}
-
-function getCorreosESData(id) {
-    return $.getJSON("/api/correoses", {id: id});
 }
 
 /*
@@ -524,6 +568,9 @@ function isValidID(id) {
 
     if (/R.+SG$/.test(id)) return true
     if (/R.+MY$/.test(id)) return true
+    if (/R.+SE$/.test(id)) return true
+    if (/R.+CN$/.test(id)) return true
+    if (/^\d+$/.test(id)) return true
 
     return false
 }

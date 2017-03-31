@@ -24,6 +24,9 @@
                             <ul class="mb0">
                                 <li><strong>R..SG</strong> Singapore(Singapore Post) + CTT</li>
                                 <li><strong>R..MY</strong> Malasya (Pos Malaysia) + CTT</li>
+                                <li><strong>R..SE</strong> Sweden - Direct Link + CTT</li>
+                                <li><strong>R..CN</strong> China Post - Track China Post + CTT</li>
+                                <li><strong>ID númerico</strong> China Post</li>
                             </ul>
                         </td>
                     </tr>
@@ -140,6 +143,8 @@
                     <div class="c-ctt"></div>
                     <div class="c-cainiao"></div>
                     <div class="c-singpost"></div>
+                    <div class="c-directlink"></div>
+                    <div class="c-aligeneral"></div>
                 </div>
             </div>
         </div>
@@ -161,7 +166,7 @@
 
 {{> cainiaoTemplate }}
 
-{{> correosESTemplate }}
+{{> template }}
 
 <!-- No data template -->
 <script id="failed-template" type="text/x-handlebars-template">
@@ -179,5 +184,5 @@
 <!-- /No data template -->
 
 {{#section 'script'}}
-    <script src="js/gear.js?v=7"></script>
+    <script src="js/gear.js?v=11"></script>
 {{/section}}
