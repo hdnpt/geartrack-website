@@ -9,11 +9,11 @@ const http = require('http')
  * Caches the response for a period of time
  *
  * Uses memory cache (RAM)
- * @param minutes
+ * @param seconds
  * @param type default = json
  * @return {function(*, *, *)}
  */
-const cache = (minutes, type = 'json') => {
+const cache = (seconds, type = 'json') => {
     return (req, res, next) => {
         let key = req.originalUrl
         let cachedBody = mcache.get(key)
@@ -29,7 +29,8 @@ const cache = (minutes, type = 'json') => {
 
         res.sendResponse = res.send
         res.send = (body) => {
-            mcache.put(key, body, minutes * 60 * 1000); //ms
+            const time = parseInt(res.locals.expire) || seconds
+            mcache.put(key, body, time * 1000); //ms
             res.sendResponse(body)
         }
         next()
@@ -37,7 +38,7 @@ const cache = (minutes, type = 'json') => {
 }
 
 // All this routes will be cached for 10 minutes
-router.use(cache(10))
+router.use(cache(10 * 60))
 
 /**
  * Sky data
@@ -193,8 +194,15 @@ router.get('/trackchinapost', validateId, function (req, res) {
     let id = req.query.id
 
     geartrack.trackchinapost.getInfo(id, (err, info) => {
+        err = {error: 'busy'}
         if (err) {
-            res.status(400).json({error: "No data was found for that id!"})
+            let msg = "Não foi encontrada informação para este id."
+            if(err.message.indexOf('busy') != -1) {
+                res.locals.expire = 1
+                msg = "O servidor está ocupado neste momento, tente de novo."
+            }
+
+            res.status(400).json({error: msg})
             return
         }
 

@@ -444,7 +444,7 @@ function loadAliProvider(elBody, trackEntity, provider, failedName, showCtt) {
         alicontainer.append(generalTemplate(data))
         if (++count == total) removeLoading(elBody)
     }).catch(function (error) {
-        alicontainer.append(failedTemplate({name: failedName}))
+        alicontainer.append(failedTemplate({name: failedName, message: error.message}))
         if (++count == total) removeLoading(elBody)
     })
 }
