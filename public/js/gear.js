@@ -179,12 +179,12 @@ $(document).on('click', '.remove', function (e) {
     if (tracks.length == 0) {
         info.show()
         jumbotron.show()
-        localStorage.removeItem('info2')
+        localStorage.removeItem('info3')
         emptyList.show()
     }
 });
 
-if (localStorage.getItem('info2') == null) {
+if (localStorage.getItem('info3') == null) {
     jumbotron.show()
 }
 
@@ -192,7 +192,7 @@ $('#hide-button').click(function (e) {
     e.preventDefault()
 
     jumbotron.hide()
-    localStorage.setItem('info2', 0)
+    localStorage.setItem('info3', 0)
 })
 
 /*
