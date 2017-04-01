@@ -18,11 +18,12 @@
                 <div class="col-md-6">
                     <strong>AliExpress</strong>
                     <ul class="mb0">
-                        <li><strong>R..SG</strong> Singapore(Singapore Post) + CTT</li>
-                        <li><strong>R..MY</strong> Malasya (Pos Malaysia) + CTT</li>
-                        <li><strong>R..SE</strong> Sweden - Direct Link + CTT</li>
-                        <li><strong>R..CN</strong> China Post - Track China Post + CTT</li>
-                        <li><strong>ID númerico</strong> China Post - Apenas Track China Post disponível.</li>
+                        <li><strong>R..SG</strong> Singapore Post</li>
+                        <li><strong>R..MY</strong> Malaysia Post </li>
+                        <li><strong>R..SE</strong> Sweden Post</li>
+                        <li><strong>R..CN</strong> China Post Register Airmail</li>
+                        <li><strong>R..NL</strong> Netherlands Post</li>
+                        <li><strong>ID númerico</strong> China Post Ordinary Small Packet Plus</li>
                     </ul>
                 </div>
             </div>
@@ -136,9 +137,6 @@
                     <div class="c-expresso24"></div>
                     <div class="c-adicional"></div>
                     <div class="c-ctt"></div>
-                    <div class="c-cainiao"></div>
-                    <div class="c-singpost"></div>
-                    <div class="c-directlink"></div>
                     <div class="c-aligeneral"></div>
                 </div>
             </div>
@@ -155,29 +153,21 @@
 
 {{> expresso24Template }}
 
-{{> singpostTemplate }}
-
 {{> cttTemplate }}
 
-{{> cainiaoTemplate }}
-
-{{> template }}
+{{> aliTemplate }}
 
 <!-- No data template -->
 <script id="failed-template" type="text/x-handlebars-template">
     <div class="row">
         <div class="col-md-12">
-            <strong>\{{name}}:</strong>
-            \{{#if message}}
-                \{{ message }}
-            \{{else}}
-                Ainda não existem dados disponíveis.
-            \{{/if}}
+            <strong>\{{provider}}:</strong>
+            \{{ error }}
         </div>
     </div>
 </script>
 <!-- /No data template -->
 
 {{#section 'script'}}
-    <script src="js/gear.js?v=12"></script>
+    <script src="js/gear.js?v=13"></script>
 {{/section}}

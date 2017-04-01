@@ -9,11 +9,15 @@ const http = require('http')
  * Caches the response for a period of time
  *
  * Uses memory cache (RAM)
- * @param minutes
+ *
+ * Modify res.locals.expire to control the seconds of the cache
+ * res.locals.expire = 0 will prevent caching the response
+ *
+ * @param seconds
  * @param type default = json
  * @return {function(*, *, *)}
  */
-const cache = (minutes, type = 'json') => {
+const cache = (seconds, type = 'json') => {
     return (req, res, next) => {
         let key = req.originalUrl
         let cachedBody = mcache.get(key)
@@ -21,7 +25,7 @@ const cache = (minutes, type = 'json') => {
 
         if (cachedBody) {
             let body = JSON.parse(cachedBody) // we know that is json
-            if(body.error) res.status(400)
+            if (body.error) res.status(400)
 
             res.send(cachedBody)
             return
@@ -29,70 +33,54 @@ const cache = (minutes, type = 'json') => {
 
         res.sendResponse = res.send
         res.send = (body) => {
-            mcache.put(key, body, minutes * 60 * 1000); //ms
+
+            let time = seconds
+            if (typeof res.locals.expire != "undefined")
+                time = parseInt(res.locals.expire)
+
+            if (time > 0) {
+                mcache.put(key, body, time * 1000); //ms
+                res.header('cache-control', 'max-age=' + time)
+            }
+
             res.sendResponse(body)
         }
         next()
     }
 }
 
-// All this routes will be cached for 10 minutes
-router.use(cache(10))
+// default cache time - 10 min
+const CACHE_TIME = 10 * 60
 
-/**
- * Sky data
- */
-router.get('/sky', validateId, function (req, res) {
-    let id = req.query.id
+// All this routes will be cached
+// Error responses can manipulate cache time
+router.use(cache(CACHE_TIME))
 
-    geartrack.sky.getInfo(id, (err, skyEntity) => {
-        if (err) {
-            res.status(400).json({error: "No data was found for that id!"})
-            return
-        }
-
-        if (skyEntity.id.charAt(0) == 'P' && skyEntity.messages.length == 0) {
-            res.status(400).json({error: "Empty data from sky!"})
-            return
-        }
-
-        skyEntity.name = id.charAt(0) + id.charAt(1)
-
-        res.json(skyEntity)
-    })
-});
-
+// All common providers, name, cssClass for color
+let providers = {
+    'sky': new Provider('Sky56', 'primary'),
+    'correoses': new Provider('Correos ES', 'yellow'),
+    'expresso24': new Provider('Expresso24', 'warning'),
+    'singpost': new Provider('Singpost', 'danger'),
+    'ctt': new Provider('CTT', 'primary'),
+    'directlink': new Provider('Direct Link', 'yellow'),
+    'trackchinapost': new Provider('Track China Post', 'danger'),
+    'cainiao': new Provider('Track China Post', 'danger'),
+    'postNL': new Provider('Post NL', 'warning')
+}
 
 /**
  * Correos data
  */
-router.get('/correos', validateId, validatePostalCode,function (req, res) {
+router.get('/correos', validateId, validatePostalCode, function (req, res) {
     let id = req.query.id, postalcode = req.query.postalcode
 
     geartrack.correos.getInfo(id, postalcode, (err, correosEntity) => {
         if (err) {
-            res.status(400).json({error: "No data was found for that id!"})
-            return
+            // sets the status code and the appropriate message
+            return processErrorResponse(err, res, "Correos Express")
         }
 
-        res.json(correosEntity)
-    })
-});
-
-/**
- * CorreosEs data
- */
-router.get('/correoses', validateId,function (req, res) {
-    let id = req.query.id
-
-    geartrack.correoses.getInfo(id, (err, correosEntity) => {
-        if (err) {
-            res.status(400).json({error: "No data was found for that id!"})
-            return
-        }
-
-        correosEntity.provider = 'Correos ES'
-        correosEntity.color = 'yellow'
         res.json(correosEntity)
     })
 });
@@ -106,130 +94,87 @@ router.get('/adicional', validateId, validatePostalCode, function (req, res) {
 
     geartrack.adicional.getInfo(id, postalcode, (err, adicionalEntity) => {
         if (err) {
-            res.status(400).json({error: "No data was found for that id!"})
-            return
+            // sets the status code and the appropriate message
+            return processErrorResponse(err, res, "Adicional")
         }
 
         res.json(adicionalEntity)
     })
 });
 
-
 /**
- * Expresso24 data
+ * General providers that only need an id
  */
-router.get('/expresso24', validateId, function (req, res) {
+router.get('/:provider', validateId, function (req, res, next) {
     let id = req.query.id
 
-    geartrack.expresso24.getInfo(id, (err, expressoInfo) => {
+    let providerObj = providers[req.params.provider]
+
+    if (!providerObj) // no provider found
+        return next()
+
+    geartrack[req.params.provider].getInfo(id, (err, entity) => {
         if (err) {
-            res.status(400).json({error: "No data was found for that id!"})
-            return
+            // sets the status code and the appropriate message
+            return processErrorResponse(err, res, providerObj.name)
         }
 
-        res.json(expressoInfo)
+        entity.provider = providerObj.name // name shown: 'Informação [provider]'
+        entity.color = providerObj.cssClass // color of the background, may use bootstrap classes
+
+        res.json(entity)
     })
-});
+})
 
-/**
- * Singpost
- */
-router.get('/singpost', validateId, function (req, res) {
-    let id = req.query.id
-
-    geartrack.singpost.getInfo(id, (err, singpost) => {
-        if (err) {
-            res.status(400).json({error: "No data was found for that id!"})
-            return
-        }
-
-        singpost.messages = singpost.messages.map(m => {
-            m.status =  m.status.replace(/ \(Country.+\)/ig, "")
-            return m
-        })
-
-        res.json(singpost)
-    })
-});
-
-/**
- * CTT
- */
-router.get('/ctt', validateId, function (req, res) {
-    let id = req.query.id
-
-    geartrack.ctt.getInfo(id, (err, ctt) => {
-        if (err) {
-            res.status(400).json({error: "No data was found for that id!"})
-            return
-        }
-
-        res.json(ctt)
-    })
-});
-
-/**
- * Direct Link
- */
-router.get('/directlink', validateId, function (req, res) {
-    let id = req.query.id
-
-    geartrack.directlink.getInfo(id, (err, direct) => {
-        if (err) {
-            res.status(400).json({error: "No data was found for that id!"})
-            return
-        }
-
-        direct.provider = 'Direct Link'
-        direct.color = 'yellow'
-        res.json(direct)
-    })
-});
-
-/**
- * Track china post
- */
-router.get('/trackchinapost', validateId, function (req, res) {
-    let id = req.query.id
-
-    geartrack.trackchinapost.getInfo(id, (err, info) => {
-        if (err) {
-            res.status(400).json({error: "No data was found for that id!"})
-            return
-        }
-
-        info.provider = 'Track China Post'
-        info.color = 'danger'
-        res.json(info)
-    })
-});
-
-/**
- * Cainiao
- */
-router.get('/cainiao', validateId, function (req, res) {
-    let id = req.query.id
-
-    geartrack.cainiao.getInfo(id, (err, cainiao) => {
-        if (err) {
-            res.status(400).json({error: "No data was found for that id!"})
-            return
-        }
-
-        cainiao.messages = cainiao.messages.map(m => {
-            m.status = m.status.replace('[-]', '')
-
-            return m
-        })
-
-        res.json(cainiao)
-    })
-});
 /*
-|--------------------------------------------------------------------------
-| Validation Middlewares
-|--------------------------------------------------------------------------
-*/
+ |--------------------------------------------------------------------------
+ | Process Error Response
+ |--------------------------------------------------------------------------
+ */
+function processErrorResponse(err, res, provider) {
+    let cacheSeconds = CACHE_TIME // default cache time
+    let code = 400
+    let message = ""
+
+    let type = getErrorType(err.message)
+
+    switch (type) {
+        case 'BUSY':
+            message = "O servidor está sobrecarregado, tente novamente daqui a uns segundos."
+            cacheSeconds = 0 // prevent cache
+            break
+        case 'UNAVAILABLE':
+            message = "O servidor não está disponível de momento. Tente mais tarde."
+            break
+        case 'DOWN':
+        case 'EMPTY':
+            message = 'De momento este serviço está com problemas. Tente mais tarde.'
+            break
+        case 'PARSER':
+            message = 'De momento estamos com dificuldade em aceder à informação deste servidor. Tente mais tarde.'
+            break
+        default: // NO_DATA
+            message = "Ainda existe informação disponível para este ID."
+            break
+    }
+
+    res.locals.expire = cacheSeconds
+    return res.status(code).json({
+        error: message,
+        provider: provider
+    })
+}
+
+function getErrorType(errorMessage) {
+    let idx = errorMessage.indexOf(" - ")
+    return errorMessage.substring(0, idx)
+}
+
+/*
+ |--------------------------------------------------------------------------
+ | Validation Middlewares
+ |--------------------------------------------------------------------------
+ */
 function validateId(req, res, next) {
     let id = req.query.id
 
@@ -250,6 +195,16 @@ function validatePostalCode(req, res, next) {
     }
 
     next()
+}
+
+/*
+ |--------------------------------------------------------------------------
+ | Utils
+ |--------------------------------------------------------------------------
+ */
+function Provider(name, cssClass) {
+    this.name = name
+    this.cssClass = cssClass
 }
 
 module.exports = router;

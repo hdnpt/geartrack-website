@@ -31,12 +31,10 @@ var trackEntryTemplate = Handlebars.compile($("#track-list-template").html()),
     trackContentTemplate = Handlebars.compile($("#track-content-template").html()),
     skyTemplate = Handlebars.compile($("#sky-template").html()),
     correosTemplate = Handlebars.compile($("#correos-template").html()),
-    generalTemplate = Handlebars.compile($("#general-template").html()),
     adicionalTemplate = Handlebars.compile($("#adicional-template").html()),
     expresso24Template = Handlebars.compile($("#expresso24-template").html()),
-    singpostTemplate = Handlebars.compile($("#singpost-template").html()),
     cttTemplate = Handlebars.compile($("#ctt-template").html()),
-    cainiaoTemplate = Handlebars.compile($("#cainiao-template").html()),
+    aliExpressTemplate = Handlebars.compile($("#ali-template").html()),
     failedTemplate = Handlebars.compile($("#failed-template").html())
 
 Handlebars.registerHelper('HelperFromNow', function (date) {
@@ -62,7 +60,9 @@ Handlebars.registerHelper('HelperCapitalize', function (string) {
 
 Handlebars.registerHelper('HelperCapitalizeWords', function (string) {
     string = string.toLowerCase()
-    return string.replace(/(?:^|\s)\S/g, function(a) { return a.toUpperCase(); });
+    return string.replace(/(?:^|\s)\S/g, function (a) {
+        return a.toUpperCase();
+    });
 })
 
 Handlebars.registerHelper('HelperLowerCase', function (string) {
@@ -76,6 +76,7 @@ Handlebars.registerHelper('HelperState', function (state, first, insideFirst) {
         case 'entregado':
         case 'delivery success':
         case 'order delivered':
+        case 'the item has been delivered successfully':
             return 'delivered';
         default:
             if (typeof insideFirst == 'boolean') {
@@ -91,7 +92,7 @@ Handlebars.registerHelper('HelperState', function (state, first, insideFirst) {
 })
 
 Handlebars.registerHelper('HelperTrackerSkyPQ', function (skyinfo, options) {
-    if(skyinfo.id.indexOf("PQ") != -1) {
+    if (skyinfo.id.indexOf("PQ") != -1) {
         return options.fn(this)
     } else {
         return options.inverse(this)
@@ -113,7 +114,7 @@ let help_block2 = $('#help_block'),
 shippingId.on('input paste', function () {
     let inserted = $(this).val()
 
-    if(inserted.length == 0) {
+    if (inserted.length == 0) {
         form_group.toggleClass('has-success', false)
         form_group.toggleClass('has-error', false)
         help_block2.hide()
@@ -222,32 +223,36 @@ function loadTrackToContent(trackEntity) {
                 + trackEntity.id.charAt(trackEntity.id.length - 1)
             switch (ending) {
                 case 'MY':
-                    loadAliMalasya(elBody, trackEntity)
+                    loadAliProvider(elBody, trackEntity, 'cainiao')
                     break
                 case 'SE':
-                    loadAliSweden(elBody, trackEntity)
+                    loadAliProvider(elBody, trackEntity, 'directlink')
                     break
                 case 'CN':
-                    loadAliProvider(elBody, trackEntity, 'trackchinapost', 'Track China Post')
+                    loadAliProvider(elBody, trackEntity, 'trackchinapost')
+                    break
+                case 'NL':
+                    loadAliProvider(elBody, trackEntity, 'postNL')
                     break
                 default:
-                    loadAliSingpost(elBody, trackEntity)
+                    loadAliProvider(elBody, trackEntity, 'singpost')
             }
 
             break
-        default:
-            loadAliProvider(elBody, trackEntity, 'trackchinapost', 'Track China Post', false)
+        default: // all numbers
+            loadAliProvider(elBody, trackEntity, 'trackchinapost', false)
+            break
     }
 }
 
 
 /*
  |--------------------------------------------------------------------------
- | Providers
+ | Gearbest
  |--------------------------------------------------------------------------
  */
 function loadSpainExpress(elBody, trackEntity) {
-    // Make both requests at the same time
+    // Make 3 requests at the same time
     var total = 3,
         count = 0
 
@@ -263,17 +268,17 @@ function loadSpainExpress(elBody, trackEntity) {
             if (++count == total) removeLoading(elBody)
         })
         .catch(function (error) {
-            skyContainer.append(failedTemplate({name: "Sky 56"}))
+            skyContainer.append(failedTemplate(error.responseJSON))
             if (++count == total) removeLoading(elBody)
         })
 
     getProviderData('correoses', trackEntity.id)
         .then(function (correosData) {
-            correosESContainer.append(generalTemplate(correosData))
+            correosESContainer.append(aliExpressTemplate(correosData))
             if (++count == total) removeLoading(elBody)
         })
         .catch(function (error) {
-            correosESContainer.append(failedTemplate({name: "Correos ES"}))
+            correosESContainer.append(failedTemplate(error.responseJSON))
             if (++count == total) removeLoading(elBody)
         })
 
@@ -287,54 +292,45 @@ function loadSpainExpress(elBody, trackEntity) {
                     if (++count == total) removeLoading(elBody)
                 })
                 .catch(function (error) {
-                    expresso24Container.append(failedTemplate({
-                        name: "Expresso24",
-                        message: "Sem informação disponivel."
-                    }))
+                    expresso24Container.append(failedTemplate(error.responseJSON))
                     if (++count == total) removeLoading(elBody)
                 })
 
             getAdicionalData(correosData.id, trackEntity.postalcode)
                 .then(function (adicionalData) {
                     // Hide the second phone if is the same
-                    adicionalData.phone2 = adicionalData.phone2.trim()
                     if (adicionalData.phone2 == adicionalData.phone1)
                         adicionalData.phone2 = null
 
                     if (adicionalData.status == "DESCARTADO") {
-                        adicionalContainer.append(failedTemplate({name: "Adicional", message: "Estado descartado."}))
+                        adicionalContainer.append(failedTemplate({provider: "Adicional", error: "Estado descartado."}))
                     } else {
                         adicionalContainer.append(adicionalTemplate(adicionalData))
                     }
 
                 })
                 .catch(function (error) {
-                    adicionalContainer.append(failedTemplate({name: "Adicional"}))
+                    adicionalContainer.append(failedTemplate(error.responseJSON))
                 })
 
         })
         .catch(function (error) {
-            correosContainer.append(failedTemplate({name: "Correos Express"}))
+            correosContainer.append(failedTemplate(error.responseJSON))
             if (++count == total) removeLoading(elBody)
         })
 }
 
-/*
- |--------------------------------------------------------------------------
- | Sky56
- |--------------------------------------------------------------------------
- */
+
 function loadNetherlandsPost(elBody, trackEntity) {
     var skyContainer = elBody.find('.c-sky')
 
     getProviderData('sky', trackEntity.id).then(function (data) { // add sky response to the page
         skyContainer.append(skyTemplate(data))
         removeLoading(elBody)
+    }).catch(function (error) {
+        skyContainer.append(failedTemplate(error.responseJSON))
+        removeLoading(elBody)
     })
-        .catch(function (error) {
-            skyContainer.append(failedTemplate({name: "Sky 56"}))
-            removeLoading(elBody)
-        })
 }
 
 /*
@@ -342,87 +338,8 @@ function loadNetherlandsPost(elBody, trackEntity) {
  | Aliexpress
  |--------------------------------------------------------------------------
  */
-function loadAliSingpost(elBody, trackEntity) {
-    // Make both requests at the same time
-    var total = 2,
-        count = 0
-
-    var singpostContainer = elBody.find('.c-singpost'),
-        cttContainer = elBody.find('.c-ctt')
-
-    getProviderData('ctt', trackEntity.id).then(function (data) {
-        cttContainer.append(cttTemplate(data))
-
-        if (++count == total) removeLoading(elBody)
-    }).catch(function (error) {
-        cttContainer.append(failedTemplate({name: "CTT"}))
-        if (++count == total) removeLoading(elBody)
-    })
-
-    getProviderData('singpost', trackEntity.id).then(function (data) {
-        singpostContainer.append(singpostTemplate(data))
-
-        if (++count == total) removeLoading(elBody)
-    }).catch(function (error) {
-        singpostContainer.append(failedTemplate({name: "Singpost"}))
-        if (++count == total) removeLoading(elBody)
-    })
-}
-
-function loadAliMalasya(elBody, trackEntity) {
-    // Make both requests at the same time
-    var total = 2,
-        count = 0
-
-    var cainiaoContainer = elBody.find('.c-cainiao'),
-        cttContainer = elBody.find('.c-ctt')
-
-    getProviderData('ctt', trackEntity.id).then(function (data) {
-        cttContainer.append(cttTemplate(data))
-        if (++count == total) removeLoading(elBody)
-    }).catch(function (error) {
-        cttContainer.append(failedTemplate({name: "CTT"}))
-        if (++count == total) removeLoading(elBody)
-    })
-
-    getProviderData('cainiao', trackEntity.id).then(function (data) {
-        cainiaoContainer.append(cainiaoTemplate(data))
-        if (++count == total) removeLoading(elBody)
-    }).catch(function (error) {
-        cainiaoContainer.append(failedTemplate({name: "Cainiao"}))
-        if (++count == total) removeLoading(elBody)
-    })
-
-}
-
-function loadAliSweden(elBody, trackEntity) {
-    // Make both requests at the same time
-    var total = 2,
-        count = 0
-
-    var directContainer = elBody.find('.c-directlink'),
-        cttContainer = elBody.find('.c-ctt')
-
-    getProviderData('ctt', trackEntity.id).then(function (data) {
-        cttContainer.append(cttTemplate(data))
-        if (++count == total) removeLoading(elBody)
-    }).catch(function (error) {
-        cttContainer.append(failedTemplate({name: "CTT"}))
-        if (++count == total) removeLoading(elBody)
-    })
-
-    getProviderData('directlink', trackEntity.id).then(function (data) {
-        directContainer.append(generalTemplate(data))
-        if (++count == total) removeLoading(elBody)
-    }).catch(function (error) {
-        directContainer.append(failedTemplate({name: "Direct Link"}))
-        if (++count == total) removeLoading(elBody)
-    })
-
-}
-
-function loadAliProvider(elBody, trackEntity, provider, failedName, showCtt) {
-    if (typeof(showCtt)==='undefined') showCtt = true;
+function loadAliProvider(elBody, trackEntity, provider, showCtt) {
+    if (typeof(showCtt) === 'undefined') showCtt = true;
     // Make both requests at the same time
     var total = showCtt ? 2 : 1,
         count = 0
@@ -430,21 +347,21 @@ function loadAliProvider(elBody, trackEntity, provider, failedName, showCtt) {
     var alicontainer = elBody.find('.c-aligeneral'),
         cttContainer = elBody.find('.c-ctt')
 
-    if(showCtt) {
+    if (showCtt) {
         getProviderData('ctt', trackEntity.id).then(function (data) {
             cttContainer.append(cttTemplate(data))
             if (++count == total) removeLoading(elBody)
         }).catch(function (error) {
-            cttContainer.append(failedTemplate({name: "CTT"}))
+            cttContainer.append(failedTemplate(error.responseJSON))
             if (++count == total) removeLoading(elBody)
         })
     }
 
     getProviderData(provider, trackEntity.id).then(function (data) {
-        alicontainer.append(generalTemplate(data))
+        alicontainer.append(aliExpressTemplate(data))
         if (++count == total) removeLoading(elBody)
     }).catch(function (error) {
-        alicontainer.append(failedTemplate({name: failedName}))
+        alicontainer.append(failedTemplate(error.responseJSON))
         if (++count == total) removeLoading(elBody)
     })
 }
@@ -570,6 +487,7 @@ function isValidID(id) {
     if (/R.+MY$/.test(id)) return true
     if (/R.+SE$/.test(id)) return true
     if (/R.+CN$/.test(id)) return true
+    if (/R.+NL$/.test(id)) return true
     if (/^\d+$/.test(id)) return true
 
     return false
