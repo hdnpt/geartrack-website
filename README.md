@@ -12,16 +12,12 @@ Locate Gearbest Packages using these methods:
 - **GE, SB** Switzerland Post Unregistered
 
 Locate AliExpress Packages using these methods:
-- Singpost & CTT
-    - RF.....SG ids
-- Malasya (Cainiao) & CTT 
-    - RQ.....MY ids
-- Sweden & CTT
-    - R......SE ids
-- China Post & CTT
-    - R......CN ids
-- China Post - Standard Shipping
-    - Numeric ids
+- **RF..SG** Singapore Post
+- **RQ..MY** Malaysia Post
+- **R...SE** Sweden Post
+- **R...CN** China Post Register Airmail
+- **R...NL** Netherlands Post
+- **numeric** China Post Ordinary Small Packet Plus
 
 This is an Express.js app
 
