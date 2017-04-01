@@ -65,7 +65,7 @@ let providers = {
     'ctt': new Provider('CTT', 'primary'),
     'directlink': new Provider('Direct Link', 'yellow'),
     'trackchinapost': new Provider('Track China Post', 'danger'),
-    'cainiao': new Provider('Track China Post', 'danger'),
+    'cainiao': new Provider('Cainiao', 'danger'),
     'postNL': new Provider('Post NL', 'warning')
 }
 
