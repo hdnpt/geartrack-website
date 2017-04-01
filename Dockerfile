@@ -8,4 +8,4 @@ RUN dpkg --add-architecture i386 && \
 WORKDIR /geartrack-website
 EXPOSE 3000
 RUN npm install
-ENTRYPOINT ["npm", "run"]
+ENTRYPOINT ["npm", "start"]
