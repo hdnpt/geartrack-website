@@ -35,7 +35,7 @@ To build and run locally:
 - `docker run -d -p 80:3000 geartrack-website`
 
 Using the public image on docker hub:
-- `docker run -d -p 80:3000 iamfreee/geartrack-website` - the image will be downloaded
+- `docker run -d -p 80:3000 hdnpt/geartrack-website` - the image will be downloaded
 
 ### Todo
 - A better version is under development using .net core and will support notifications and other features!
