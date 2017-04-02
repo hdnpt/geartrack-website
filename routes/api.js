@@ -154,7 +154,7 @@ function processErrorResponse(err, res, provider) {
             message = 'De momento estamos com dificuldade em aceder à informação deste servidor. Tente mais tarde.'
             break
         default: // NO_DATA
-            message = "Ainda existe informação disponível para este ID."
+            message = "Ainda não existe informação disponível para este ID."
             break
     }
 

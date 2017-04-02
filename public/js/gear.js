@@ -149,6 +149,12 @@ function loadTrackToContent(trackEntity) {
     switch (trackEntity.id.charAt(0)) {
         case 'N':
         case 'L':
+            if (/L.+CN$/.test(trackEntity.id))  {
+                loadAliProvider(elBody, trackEntity, 'cainiao')
+            } else {
+                loadNetherlandsPost(elBody, trackEntity)
+            }
+            break
         case 'S':
         case 'G':
             loadNetherlandsPost(elBody, trackEntity)
@@ -224,32 +230,33 @@ function loadSpainExpress(elBody, trackEntity) {
         .then(function (correosData) {
             correosContainer.append(correosTemplate(correosData))
 
-            getProviderData('expresso24', correosData.product.ref)
-                .then(function (expressoInfo) { // load expresso24 before adicional
-                    expresso24Container.append(expresso24Template(expressoInfo))
-                    if (++count == total) removeLoading(elBody)
-                })
-                .catch(function (error) {
-                    expresso24Container.append(failedTemplate(error.responseJSON))
-                    if (++count == total) removeLoading(elBody)
-                })
-
-            getAdicionalData(correosData.id, trackEntity.postalcode)
-                .then(function (adicionalData) {
-                    // Hide the second phone if is the same
-                    if (adicionalData.phone2 == adicionalData.phone1)
-                        adicionalData.phone2 = null
-
-                    if (adicionalData.status == "DESCARTADO") {
-                        adicionalContainer.append(failedTemplate({provider: "Adicional", error: "Estado descartado."}))
-                    } else {
-                        adicionalContainer.append(adicionalTemplate(adicionalData))
-                    }
-
-                })
-                .catch(function (error) {
-                    adicionalContainer.append(failedTemplate(error.responseJSON))
-                })
+            if (++count == total) removeLoading(elBody)
+            // getProviderData('expresso24', correosData.product.ref)
+            //     .then(function (expressoInfo) { // load expresso24 before adicional
+            //         expresso24Container.append(expresso24Template(expressoInfo))
+            //         if (++count == total) removeLoading(elBody)
+            //     })
+            //     .catch(function (error) {
+            //         expresso24Container.append(failedTemplate(error.responseJSON))
+            //         if (++count == total) removeLoading(elBody)
+            //     })
+            //
+            // getAdicionalData(correosData.id, trackEntity.postalcode)
+            //     .then(function (adicionalData) {
+            //         // Hide the second phone if is the same
+            //         if (adicionalData.phone2 == adicionalData.phone1)
+            //             adicionalData.phone2 = null
+            //
+            //         if (adicionalData.status == "DESCARTADO") {
+            //             adicionalContainer.append(failedTemplate({provider: "Adicional", error: "Estado descartado."}))
+            //         } else {
+            //             adicionalContainer.append(adicionalTemplate(adicionalData))
+            //         }
+            //
+            //     })
+            //     .catch(function (error) {
+            //         adicionalContainer.append(failedTemplate(error.responseJSON))
+            //     })
 
         })
         .catch(function (error) {
@@ -426,6 +433,7 @@ function isValidID(id) {
     if (/R.+SE$/.test(id)) return true
     if (/R.+CN$/.test(id)) return true
     if (/R.+NL$/.test(id)) return true
+    if (/L.+CN$/.test(id)) return true
     if (/^\d+$/.test(id)) return true
 
     return false
