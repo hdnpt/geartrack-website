@@ -1,4 +1,3 @@
-
 <!-- Correos template -->
 <script id="correos-template" type="text/x-handlebars-template">
     <div class="row correos-h">
@@ -8,55 +7,33 @@
     </div>
 
     <div class="row">
-        <div class="col-xs-6">
-            <strong>Estado:</strong> \{{HelperCapitalize state }}
-        </div>
-        <div class="col-xs-6 text-right">
-            <strong>Ultima atualização:</strong>
-            <span data-toggle="tooltip" data-placement="top" title="\{{HelperDateWithHours lastUpdate }}">
-               \{{HelperFromNow lastUpdate }}
-            </span>
-        </div>
-    </div>
-
-    <div class="row">
         <div class="col-md-12">
             <table class="table table-bordered">
                 <tr>
                     <td>
-                        <strong>Ref:</strong> \{{ product.ref }}
+                        <strong>Estado:</strong> \{{HelperCapitalize state }}
                     </td>
                     <td>
-                        <strong>Recebido:</strong> \{{HelperDate received }} \{{HelperFromNow received }}
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <strong>Empresa:</strong> \{{HelperCapitalizeWords sender.name }}
-                    </td>
-                    <td>
-                        <strong>Destinatário:</strong> \{{HelperCapitalizeWords receiver.name }}
+                        \{{#if deliveryDate }}
+                        <strong>Data prevista de entrega:</strong> \{{HelperDate deliveryDate }} (\{{HelperFromNow deliveryDate }})
+                        \{{else}}
+                        <strong>Descrição:</strong> \{{HelperCapitalize state2 }}
+                        \{{/if}}
+
                     </td>
                 </tr>
                 <tr>
                     <td>
-                        <strong>Cidade:</strong> \{{HelperCapitalize sender.city }}
+                        <strong>Orígem:</strong> \{{HelperCapitalize origin }}
                     </td>
                     <td>
-                        <strong>Cidade Destino:</strong> \{{HelperCapitalize receiver.city }}
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <strong>Pacotes:</strong> \{{ product.parcels }} (\{{ product.weight }}kg)
-                    </td>
-                    <td>
-                        <strong>Morada Destino:</strong> \{{HelperCapitalizeWords receiver.address }}
+                        <strong>Destino:</strong> \{{HelperCapitalizeWords destiny }}
                     </td>
                 </tr>
             </table>
         </div>
     </div>
+
 
     <div class="row">
         <div class="col-md-12">
@@ -66,12 +43,12 @@
                 <dl class="des-block">
 
                     \{{#each states as |item|}}
-                    <dd class="\{{HelperState item.info @first}}"><i></i>
+                    <dd class="\{{HelperState item.state @first}}"><i></i>
                         <div class="track-news clearfix">
                                 <span class="date" data-toggle="tooltip" data-placement="top" title="\{{HelperDateWithHours item.date }}">
                                    \{{HelperFromNow item.date }}
                                 </span>
-                            <p><strong>\{{HelperCapitalizeWords item.info }}</strong> <span class="area-break">\{{HelperCapitalizeWords item.department }}</span></p>
+                            <p><strong>\{{HelperCapitalize item.state }}</strong> <span class="area-break">\{{HelperCapitalizeWords item.area }}</span></p>
                         </div>
                     </dd>
                     \{{/each}}
@@ -80,5 +57,6 @@
 
         </div>
     </div>
+
 </script>
 <!-- /Correos template -->

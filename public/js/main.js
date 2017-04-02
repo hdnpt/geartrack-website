@@ -56,6 +56,7 @@ Handlebars.registerHelper('HelperState', function (state, first, insideFirst) {
         case 'delivery success':
         case 'order delivered':
         case 'the item has been delivered successfully':
+        case 'entregado. su envío está entregado.':
             return 'delivered';
         default:
             if (typeof insideFirst == 'boolean') {
