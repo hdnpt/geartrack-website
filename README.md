@@ -17,6 +17,7 @@ Locate AliExpress Packages using these methods:
 - **R...SE** Sweden Post
 - **R...CN** China Post Register Airmail
 - **R...NL** Netherlands Post
+- **L...CN** China EMS ePacket
 - **numeric** China Post Ordinary Small Packet Plus
 
 This is an Express.js app
