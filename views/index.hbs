@@ -2,7 +2,7 @@
     <div class="col-md-12">
         <div class="jumbotron">
             <h2>Segue as tuas encomendas até Portugal</h2>
-            <p>Este website ajuda-o a saber por onde andam as suas encomendas.</p>
+            <p>Este website ajuda-te a saber por onde andam as tuas encomendas.</p>
             <strong>Métodos de envio suportados:</strong>
             <div class="row">
                 <div class="col-md-6">
@@ -135,6 +135,7 @@
                     <div class="c-sky"></div>
                     <div class="c-correoses"></div>
                     <div class="c-correos"></div>
+                    <div class="c-correos-old"></div>
                     <div class="c-expresso24"></div>
                     <div class="c-adicional"></div>
                     <div class="c-ctt"></div>
@@ -149,6 +150,8 @@
 {{> skyTemplate }}
 
 {{> correosTemplate }}
+
+{{> correosOldTemplate }}
 
 {{> adicionalTemplate }}
 
@@ -170,5 +173,5 @@
 <!-- /No data template -->
 
 {{#section 'script'}}
-    <script src="js/gear.js?v=14"></script>
+    <script src="js/gear.js?v=15"></script>
 {{/section}}

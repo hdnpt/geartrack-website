@@ -40,7 +40,7 @@ const cache = (seconds, type = 'json') => {
 
             if (time > 0) {
                 mcache.put(key, body, time * 1000); //ms
-                res.header('cache-control', 'max-age=' + time)
+                //res.header('cache-control', 'max-age=' + time) browser was not clearing cache right :/
             }
 
             res.sendResponse(body)
@@ -76,6 +76,22 @@ router.get('/correos', validateId, validatePostalCode, function (req, res) {
     let id = req.query.id, postalcode = req.query.postalcode
 
     geartrack.correos.getInfo(id, postalcode, (err, correosEntity) => {
+        if (err) {
+            // sets the status code and the appropriate message
+            return processErrorResponse(err, res, "Correos Express")
+        }
+
+        res.json(correosEntity)
+    })
+});
+
+/**
+ * Correos old data
+ */
+router.get('/correosOld', validateId, validatePostalCode, function (req, res) {
+    let id = req.query.id, postalcode = req.query.postalcode
+
+    geartrack.correosOld.getInfo(id, postalcode, (err, correosEntity) => {
         if (err) {
             // sets the status code and the appropriate message
             return processErrorResponse(err, res, "Correos Express")
