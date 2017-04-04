@@ -78,7 +78,7 @@ router.get('/correos', validateId, validatePostalCode, function (req, res) {
     geartrack.correos.getInfo(id, postalcode, (err, correosEntity) => {
         if (err) {
             // sets the status code and the appropriate message
-            return processErrorResponse(err, res, "Correos Express")
+            return processErrorResponse(err, res, "Correos Express Novo")
         }
 
         res.json(correosEntity)
@@ -94,7 +94,7 @@ router.get('/correosOld', validateId, validatePostalCode, function (req, res) {
     geartrack.correosOld.getInfo(id, postalcode, (err, correosEntity) => {
         if (err) {
             // sets the status code and the appropriate message
-            return processErrorResponse(err, res, "Correos Express")
+            return processErrorResponse(err, res, "Correos Express Antigo")
         }
 
         res.json(correosEntity)

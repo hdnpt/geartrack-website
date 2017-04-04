@@ -3,18 +3,16 @@
         <div class="col-md-12">
             <h2><span class="label label-\{{ color }}">Informação \{{ provider }}:</span></h2>
 
-            <div class="table-responsive">
-                <table class="table table-bordered">
-                    <tr>
-                        <td>
-                            <strong>Último Estado:</strong> \{{ state.status }}
-                        </td>
-                        <td>
-                            <strong>Data:</strong> \{{HelperDate state.date }} (\{{HelperFromNow state.date }})
-                        </td>
-                    </tr>
-                </table>
-            </div>
+            <table class="table table-bordered break-strong">
+                <tr>
+                    <td>
+                        <strong>Último Estado:</strong> \{{ state.status }}
+                    </td>
+                    <td>
+                        <strong>Data:</strong> \{{HelperDate state.date }} (\{{HelperFromNow state.date }})
+                    </td>
+                </tr>
+            </table>
 
             <h3><span class="label label-default">Mensagens:</span></h3>
             <div class="result-details">
