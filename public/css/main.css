@@ -270,6 +270,10 @@ body {
         line-height: 13px;
         display: block;
     }
+
+    .break-strong strong {
+        display: block;
+    }
 }
 
 /* Fixes cross browser support

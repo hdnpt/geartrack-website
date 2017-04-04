@@ -7,21 +7,21 @@
         </div>
     </div>
 
-    <div class="row">
+    <div class="row break-strong">
         <div class="col-xs-6">
             <strong>Estado:</strong> \{{HelperCapitalize state }}
         </div>
         <div class="col-xs-6 text-right">
             <strong>Ultima atualização:</strong>
             <span data-toggle="tooltip" data-placement="top" title="\{{HelperDateWithHours lastUpdate }}">
-               \{{HelperFromNow lastUpdate }}
+                \{{HelperDateWithHours lastUpdate }} (\{{HelperFromNow lastUpdate }})
             </span>
         </div>
     </div>
 
     <div class="row">
         <div class="col-md-12">
-            <table class="table table-bordered">
+            <table class="table table-bordered break-strong">
                 <tr>
                     <td>
                         <strong>Ref:</strong> \{{ product.ref }}
