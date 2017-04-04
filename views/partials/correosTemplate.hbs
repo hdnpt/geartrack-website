@@ -2,7 +2,7 @@
 <script id="correos-template" type="text/x-handlebars-template">
     <div class="row correos-h">
         <div class="col-md-12">
-            <h2><span class="label label-danger">Informação Correos Express:</span></h2>
+            <h2><span class="label label-danger">Informação Correos Express Novo:</span></h2>
         </div>
     </div>
 
@@ -15,7 +15,7 @@
                     </td>
                     <td>
                         \{{#if deliveryDate }}
-                        <strong>Data prevista de entrega:</strong> \{{HelperDate deliveryDate }} (\{{HelperFromNow deliveryDate }})
+                        <strong>Data prevista de entrega:</strong> \{{HelperDate deliveryDate }}
                         \{{else}}
                         <strong>Descrição:</strong> \{{HelperCapitalize state2 }}
                         \{{/if}}

@@ -31,6 +31,7 @@ var trackEntryTemplate = Handlebars.compile($("#track-list-template").html()),
     trackContentTemplate = Handlebars.compile($("#track-content-template").html()),
     skyTemplate = Handlebars.compile($("#sky-template").html()),
     correosTemplate = Handlebars.compile($("#correos-template").html()),
+    correosOldTemplate = Handlebars.compile($("#correos-old-template").html()),
     adicionalTemplate = Handlebars.compile($("#adicional-template").html()),
     expresso24Template = Handlebars.compile($("#expresso24-template").html()),
     cttTemplate = Handlebars.compile($("#ctt-template").html()),
@@ -196,13 +197,14 @@ function loadTrackToContent(trackEntity) {
  |--------------------------------------------------------------------------
  */
 function loadSpainExpress(elBody, trackEntity) {
-    // Make 3 requests at the same time
-    var total = 3,
+    // Make 4 requests at the same time
+    var total = 4,
         count = 0
 
     var skyContainer = elBody.find('.c-sky'),
         correosESContainer = elBody.find('.c-correoses'),
         correosContainer = elBody.find('.c-correos'),
+        correosOldContainer = elBody.find('.c-correos-old'),
         expresso24Container = elBody.find('.c-expresso24'),
         adicionalContainer = elBody.find('.c-adicional')
 
@@ -231,32 +233,43 @@ function loadSpainExpress(elBody, trackEntity) {
             correosContainer.append(correosTemplate(correosData))
 
             if (++count == total) removeLoading(elBody)
-            // getProviderData('expresso24', correosData.product.ref)
-            //     .then(function (expressoInfo) { // load expresso24 before adicional
-            //         expresso24Container.append(expresso24Template(expressoInfo))
-            //         if (++count == total) removeLoading(elBody)
-            //     })
-            //     .catch(function (error) {
-            //         expresso24Container.append(failedTemplate(error.responseJSON))
-            //         if (++count == total) removeLoading(elBody)
-            //     })
-            //
-            // getAdicionalData(correosData.id, trackEntity.postalcode)
-            //     .then(function (adicionalData) {
-            //         // Hide the second phone if is the same
-            //         if (adicionalData.phone2 == adicionalData.phone1)
-            //             adicionalData.phone2 = null
-            //
-            //         if (adicionalData.status == "DESCARTADO") {
-            //             adicionalContainer.append(failedTemplate({provider: "Adicional", error: "Estado descartado."}))
-            //         } else {
-            //             adicionalContainer.append(adicionalTemplate(adicionalData))
-            //         }
-            //
-            //     })
-            //     .catch(function (error) {
-            //         adicionalContainer.append(failedTemplate(error.responseJSON))
-            //     })
+        })
+        .catch(function (error) {
+            correosContainer.append(failedTemplate(error.responseJSON))
+            if (++count == total) removeLoading(elBody)
+        })
+
+    getCorreosOldData(trackEntity.id, trackEntity.postalcode)
+        .then(function (correosData) {
+            correosOldContainer.append(correosOldTemplate(correosData))
+
+            if (++count == total) removeLoading(elBody)
+            getProviderData('expresso24', correosData.product.ref)
+                .then(function (expressoInfo) { // load expresso24 before adicional
+                    expresso24Container.append(expresso24Template(expressoInfo))
+                    //if (++count == total) removeLoading(elBody)
+                })
+                .catch(function (error) {
+                    expresso24Container.append(failedTemplate(error.responseJSON))
+                    //if (++count == total) removeLoading(elBody)
+                })
+
+            getAdicionalData(correosData.id, trackEntity.postalcode)
+                .then(function (adicionalData) {
+                    // Hide the second phone if is the same
+                    if (adicionalData.phone2 == adicionalData.phone1)
+                        adicionalData.phone2 = null
+
+                    if (adicionalData.status == "DESCARTADO") {
+                        adicionalContainer.append(failedTemplate({provider: "Adicional", error: "Estado descartado."}))
+                    } else {
+                        adicionalContainer.append(adicionalTemplate(adicionalData))
+                    }
+
+                })
+                .catch(function (error) {
+                    adicionalContainer.append(failedTemplate(error.responseJSON))
+                })
 
         })
         .catch(function (error) {
@@ -323,6 +336,10 @@ function getProviderData(provider, id) {
 
 function getCorreosData(id, code) {
     return $.getJSON("/api/correos", {id: id, postalcode: code});
+}
+
+function getCorreosOldData(id, code) {
+    return $.getJSON("/api/correosOld", {id: id, postalcode: code});
 }
 
 function getAdicionalData(adicionalID, code) {
