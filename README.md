@@ -18,7 +18,9 @@ Locate AliExpress Packages using these methods:
 - **R...CN** China Post Register Airmail
 - **R...NL** Netherlands Post
 - **L...CN** China EMS ePacket
-- **numeric** China Post Ordinary Small Packet Plus
+- **U..YP** Special Line YW
+- **LP..** AliExpress Standard Shipping
+- **numeric** China Post Ordinary Small Packet Plus or Yanwen
 
 This is an Express.js app
 
