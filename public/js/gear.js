@@ -150,8 +150,10 @@ function loadTrackToContent(trackEntity) {
     switch (trackEntity.id.charAt(0)) {
         case 'N':
         case 'L':
-            if (/L.+CN$/.test(trackEntity.id))  {
+            if (/L.+CN$/.test(trackEntity.id)) {
                 loadAliProvider(elBody, trackEntity, 'cainiao')
+            } else if (trackEntity.id.indexOf("LP") !== -1) {
+                loadYanwen(elBody, trackEntity)
             } else {
                 loadNetherlandsPost(elBody, trackEntity)
             }
@@ -162,6 +164,9 @@ function loadTrackToContent(trackEntity) {
             break
         case 'P':
             loadSpainExpress(elBody, trackEntity)
+            break
+        case 'U':
+            loadYanwen(elBody, trackEntity)
             break
         case 'R': // Aliexpress
             let ending = trackEntity.id.charAt(trackEntity.id.length - 2)
@@ -185,7 +190,8 @@ function loadTrackToContent(trackEntity) {
 
             break
         default: // all numbers
-            loadAliProvider(elBody, trackEntity, 'trackchinapost', false)
+            loadYanwen(elBody, trackEntity)    
+            loadAliProvider(elBody, trackEntity, 'trackchinapost', false, false)
             break
     }
 }
@@ -296,8 +302,10 @@ function loadNetherlandsPost(elBody, trackEntity) {
  | Aliexpress
  |--------------------------------------------------------------------------
  */
-function loadAliProvider(elBody, trackEntity, provider, showCtt) {
-    if (typeof(showCtt) === 'undefined') showCtt = true;
+function loadAliProvider(elBody, trackEntity, provider, showCtt, showFailedTemplateOnError) {
+    if (typeof (showCtt) === 'undefined') showCtt = true;
+    if (typeof (showFailedTemplateOnError) === 'undefined') showFailedTemplateOnError = true;
+    
     // Make both requests at the same time
     var total = showCtt ? 2 : 1,
         count = 0
@@ -310,7 +318,8 @@ function loadAliProvider(elBody, trackEntity, provider, showCtt) {
             cttContainer.append(cttTemplate(data))
             if (++count == total) removeLoading(elBody)
         }).catch(function (error) {
-            cttContainer.append(failedTemplate(error.responseJSON))
+            if (showFailedTemplateOnError)
+                cttContainer.append(failedTemplate(error.responseJSON))
             if (++count == total) removeLoading(elBody)
         })
     }
@@ -319,7 +328,45 @@ function loadAliProvider(elBody, trackEntity, provider, showCtt) {
         alicontainer.append(aliExpressTemplate(data))
         if (++count == total) removeLoading(elBody)
     }).catch(function (error) {
-        alicontainer.append(failedTemplate(error.responseJSON))
+        if (showFailedTemplateOnError)
+            alicontainer.append(failedTemplate(error.responseJSON))
+        if (++count == total) removeLoading(elBody)
+    })
+}
+
+/*
+|--------------------------------------------------------------------------
+| Yanwen provider
+|--------------------------------------------------------------------------
+*/
+function loadYanwen(elBody, trackEntity) {
+    // Make both requests at the same time
+    var total = 2,
+        count = 0
+
+    var alicontainer = elBody.find('.c-aligeneral2'),
+        aliContainer2 = elBody.find('.c-aligeneral3'),
+        cttContainer = elBody.find('.c-ctt')
+
+    getProviderData('yanwen', trackEntity.id).then(function (data) {
+        alicontainer.append(aliExpressTemplate(data))
+        if (++count == total) removeLoading(elBody)
+    }).catch(function (error) {
+        if (++count == total) removeLoading(elBody)
+    })
+
+    getProviderData('cainiao', trackEntity.id).then(function (data) {
+        aliContainer2.append(aliExpressTemplate(data))
+        if (++count == total) removeLoading(elBody)
+
+        if (data.destinyId) {
+            getProviderData('ctt', data.destinyId).then(function (data) {
+                cttContainer.append(cttTemplate(data))
+            }).catch(function (error) {
+            })    
+        }        
+
+    }).catch(function (error) {
         if (++count == total) removeLoading(elBody)
     })
 }
@@ -444,6 +491,7 @@ function isValidID(id) {
     if (id.indexOf("SY") !== -1) return true
     if (id.indexOf("SB") !== -1) return true
     if (id.indexOf("GE") !== -1) return true
+    if (id.indexOf("LP") !== -1) return true
 
     if (/R.+SG$/.test(id)) return true
     if (/R.+MY$/.test(id)) return true
@@ -451,6 +499,7 @@ function isValidID(id) {
     if (/R.+CN$/.test(id)) return true
     if (/R.+NL$/.test(id)) return true
     if (/L.+CN$/.test(id)) return true
+    if (/U.+YP$/.test(id)) return true
     if (/^\d+$/.test(id)) return true
 
     return false
