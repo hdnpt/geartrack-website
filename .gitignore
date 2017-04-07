@@ -6,3 +6,7 @@ node_modules
 
 ### Certificates
 .well-known
+
+### VS Code
+.vscode/*
+
