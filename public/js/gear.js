@@ -36,7 +36,8 @@ var trackEntryTemplate = Handlebars.compile($("#track-list-template").html()),
     expresso24Template = Handlebars.compile($("#expresso24-template").html()),
     cttTemplate = Handlebars.compile($("#ctt-template").html()),
     aliExpressTemplate = Handlebars.compile($("#ali-template").html()),
-    failedTemplate = Handlebars.compile($("#failed-template").html())
+    failedTemplate = Handlebars.compile($("#failed-template").html()),
+    cainiaoEmpty = Handlebars.compile($("#cainiao-empty-template").html())
 
 
 /*
@@ -189,6 +190,19 @@ function loadTrackToContent(trackEntity) {
             }
 
             break
+        case 'Q':
+            loadAliProvider(elBody, trackEntity, 'directlink')
+
+            var skyContainer = elBody.find('.c-sky')
+            getProviderData('sky', trackEntity.id)
+                .then(function (skyData) {
+                    skyContainer.append(skyTemplate(skyData))
+                })
+                .catch(function (error) {
+                    skyContainer.append(failedTemplate(error.responseJSON))
+                })
+
+            break
         default: // all numbers
             loadYanwen(elBody, trackEntity)    
             loadAliProvider(elBody, trackEntity, 'trackchinapost', false, false)
@@ -325,7 +339,13 @@ function loadAliProvider(elBody, trackEntity, provider, showCtt, showFailedTempl
     }
 
     getProviderData(provider, trackEntity.id).then(function (data) {
-        alicontainer.append(aliExpressTemplate(data))
+        if(provider == 'cainiao' && data.states.length == 0) {
+            alicontainer.append(cainiaoEmpty(data))
+        } else {
+            alicontainer.append(aliExpressTemplate(data))
+        }
+
+
         if (++count == total) removeLoading(elBody)
     }).catch(function (error) {
         if (showFailedTemplateOnError)
@@ -500,6 +520,7 @@ function isValidID(id) {
     if (/R.+NL$/.test(id)) return true
     if (/L.+CN$/.test(id)) return true
     if (/U.+YP$/.test(id)) return true
+    if (/Q.+XX$/.test(id)) return true
     if (/^\d+$/.test(id)) return true
 
     return false

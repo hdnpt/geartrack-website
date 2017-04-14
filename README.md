@@ -10,6 +10,7 @@ Locate Gearbest Packages using these methods:
 - **LV** Bpost International
 - **SY** Malasya Pos
 - **GE, SB** Switzerland Post Unregistered
+- **Q..XX** Sweden Registered
 
 Locate AliExpress Packages using these methods:
 - **RF..SG** Singapore Post
