@@ -34,6 +34,13 @@ Handlebars.registerHelper('HelperHours', function (date) {
 
 Handlebars.registerHelper('HelperCapitalize', function (string) {
     let lower = string.toLowerCase()
+
+    if (lower.charAt(0) == '[') { // cainiao states have [country] message
+        lower = lower.replaceAt(1, lower.charAt(1).toUpperCase())
+        let idx = lower.indexOf(']') + 2
+        lower = lower.replaceAt(idx, lower.charAt(idx).toUpperCase())
+    }
+
     return lower.charAt(0).toUpperCase() + lower.slice(1);
 })
 
@@ -78,3 +85,12 @@ Handlebars.registerHelper('HelperTrackerSkyPQ', function (skyinfo, options) {
         return options.inverse(this)
     }
 })
+
+/*
+|--------------------------------------------------------------------------
+| String utils
+|--------------------------------------------------------------------------
+*/
+String.prototype.replaceAt = function (index, replacement) {
+    return this.substr(0, index) + replacement + this.substr(index + replacement.length);
+}

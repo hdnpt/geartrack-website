@@ -10,6 +10,7 @@ Locate Gearbest Packages using these methods:
 - **LV** Bpost International
 - **SY** Malasya Pos
 - **GE, SB** Switzerland Post Unregistered
+- **Q..XX** Sweden Registered
 
 Locate AliExpress Packages using these methods:
 - **RF..SG** Singapore Post
@@ -18,7 +19,9 @@ Locate AliExpress Packages using these methods:
 - **R...CN** China Post Register Airmail
 - **R...NL** Netherlands Post
 - **L...CN** China EMS ePacket
-- **numeric** China Post Ordinary Small Packet Plus
+- **U..YP** Special Line YW
+- **LP..** AliExpress Standard Shipping
+- **numeric** China Post Ordinary Small Packet Plus or Yanwen
 
 This is an Express.js app
 
