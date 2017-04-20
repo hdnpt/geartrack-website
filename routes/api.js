@@ -68,7 +68,8 @@ let providers = {
     'cainiao': new Provider('Cainiao', 'danger'),
     'yanwen': new Provider('Yanwen', 'success'),
     'cjah': new Provider('Cjah Tracking', 'success'),
-    'postNL': new Provider('Post NL', 'warning')
+    'postNL': new Provider('Post NL', 'warning'),
+    'malaysiaPos': new Provider('Malasya Pos', 'danger')
 }
 
 /**
@@ -123,7 +124,6 @@ router.get('/adicional', validateId, validatePostalCode, function (req, res) {
 /**
  * General providers that only need an id
  */
-var cainiaos = {}
 router.get('/:provider', validateId, function (req, res, next) {
     let id = req.query.id
 
@@ -136,23 +136,6 @@ router.get('/:provider', validateId, function (req, res, next) {
         if (err) {
             // sets the status code and the appropriate message
             return processErrorResponse(err, res, providerObj.name)
-        }
-
-        // while we don't fix the issue when an action on cainiao is required
-        // we log the id so we can do it manually sometimes to save time to the end user
-        if(req.params.provider == 'cainiao') {
-            if(!cainiaos[id] && (!entity || !entity.states || entity.states.length == 0)) {
-                cainiaos[id] = 1
-                res.locals.expire = 0 // dont cache
-
-                let write = id + ': ' + JSON.stringify(entity) + '\n\n'
-                require('fs').appendFile('./cainiaoids.txt', write, err => {
-                    if(err) {
-                        console.log("Failed to write!", err);
-                    }
-                    console.log("Writed!");
-                })
-            }
         }
 
         entity.provider = providerObj.name // name shown: 'Informação [provider]'

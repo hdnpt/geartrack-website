@@ -161,7 +161,7 @@ function loadTrackToContent(trackEntity) {
             break
         case 'S':
         case 'G':
-            if(/SB.+/.test(trackEntity.id)) {
+            if (/SB.+/.test(trackEntity.id)) {
                 loadSBSwitzerlandPost(elBody, trackEntity)
             } else {
                 loadNetherlandsPost(elBody, trackEntity)
@@ -178,7 +178,7 @@ function loadTrackToContent(trackEntity) {
                 + trackEntity.id.charAt(trackEntity.id.length - 1)
             switch (ending) {
                 case 'MY':
-                    loadAliProvider(elBody, trackEntity, 'cainiao')
+                    loadAliProvider(elBody, trackEntity, 'malaysiaPos')
                     break
                 case 'SE':
                     loadAliProvider(elBody, trackEntity, 'directlink')
@@ -208,8 +208,7 @@ function loadTrackToContent(trackEntity) {
 
             break
         default: // all numbers
-            loadYanwen(elBody, trackEntity)    
-            loadAliProvider(elBody, trackEntity, 'trackchinapost', false, false)
+            loadNumbersMultiple(elBody, trackEntity)
             break
     }
 }
@@ -348,7 +347,7 @@ function loadSBSwitzerlandPost(elBody, trackEntity) {
 function loadAliProvider(elBody, trackEntity, provider, showCtt, showFailedTemplateOnError) {
     if (typeof (showCtt) === 'undefined') showCtt = true;
     if (typeof (showFailedTemplateOnError) === 'undefined') showFailedTemplateOnError = true;
-    
+
     // Make both requests at the same time
     var total = showCtt ? 2 : 1,
         count = 0
@@ -368,12 +367,11 @@ function loadAliProvider(elBody, trackEntity, provider, showCtt, showFailedTempl
     }
 
     getProviderData(provider, trackEntity.id).then(function (data) {
-        if(provider == 'cainiao' && data.states.length == 0) {
+        if (provider == 'cainiao' && data.states.length == 0) {
             alicontainer.append(cainiaoEmpty(data))
         } else {
             alicontainer.append(aliExpressTemplate(data))
         }
-
 
         if (++count == total) removeLoading(elBody)
     }).catch(function (error) {
@@ -384,10 +382,10 @@ function loadAliProvider(elBody, trackEntity, provider, showCtt, showFailedTempl
 }
 
 /*
-|--------------------------------------------------------------------------
-| Yanwen provider
-|--------------------------------------------------------------------------
-*/
+ |--------------------------------------------------------------------------
+ | Yanwen provider
+ |--------------------------------------------------------------------------
+ */
 function loadYanwen(elBody, trackEntity) {
     // Make both requests at the same time
     var total = 2,
@@ -405,21 +403,86 @@ function loadYanwen(elBody, trackEntity) {
     })
 
     getProviderData('cainiao', trackEntity.id).then(function (data) {
-        aliContainer2.append(aliExpressTemplate(data))
+        if (data.states.length > 0) {
+            aliContainer2.append(aliExpressTemplate(data))
+        }
+
         if (++count == total) removeLoading(elBody)
 
         if (data.destinyId) {
             getProviderData('ctt', data.destinyId).then(function (data) {
                 cttContainer.append(cttTemplate(data))
             }).catch(function (error) {
-            })    
-        }        
-
+            })
+        }
     }).catch(function (error) {
         if (++count == total) removeLoading(elBody)
     })
 }
 
+/*
+|--------------------------------------------------------------------------
+| Multiple (All numbers
+|--------------------------------------------------------------------------
+*/
+function loadNumbersMultiple(elBody, trackEntity) {
+// Make both requests at the same time
+    var total = 3,
+        count = 0,
+        success = 0
+
+
+
+    var alicontainer = elBody.find('.c-aligeneral2'),
+        aliContainer2 = elBody.find('.c-aligeneral3'),
+        aliContainerG = elBody.find('.c-aligeneral'),
+        cttContainer = elBody.find('.c-ctt')
+
+    getProviderData('yanwen', trackEntity.id).then(function (data) {
+        alicontainer.append(aliExpressTemplate(data))
+        success++
+        if (++count == total) failed()
+    }).catch(function (error) {
+        if (++count == total) failed()
+    })
+
+    getProviderData('cainiao', trackEntity.id).then(function (data) {
+        if (data.states.length > 0) {
+            aliContainer2.append(aliExpressTemplate(data))
+            success++
+        }
+
+        if (++count == total) failed()
+
+        if (data.destinyId) {
+            getProviderData('ctt', data.destinyId).then(function (data) {
+                cttContainer.append(cttTemplate(data))
+            }).catch(function (error) {
+            })
+        }
+    }).catch(function (error) {
+        if (++count == total) failed()
+    })
+
+    getProviderData('trackchinapost', trackEntity.id).then(function (data) {
+        aliContainerG.append(aliExpressTemplate(data))
+        success++
+        if (++count == total) failed()
+    }).catch(function (error) {
+        if (++count == total) failed()
+    })
+
+
+    function failed() {
+        if(success == 0)
+            aliContainerG.append(failedTemplate({
+                provider: "Sem informação",
+                error: "Não foi encontrado nenhum tracking com informação sobre esse ID. <br> Fale connosco no Facebook para adicionarmos!"
+            }))
+
+        removeLoading(elBody)
+    }
+}
 
 /*
  |--------------------------------------------------------------------------
