@@ -158,7 +158,11 @@ function loadTrackToContent(trackEntity) {
             break
         case 'S':
         case 'G':
-            loadNetherlandsPost(elBody, trackEntity)
+            if(/SB.+/.test(trackEntity.id)) {
+                loadSBSwitzerlandPost(elBody, trackEntity)
+            } else {
+                loadNetherlandsPost(elBody, trackEntity)
+            }
             break
         case 'P':
             loadSpainExpress(elBody, trackEntity)
@@ -288,6 +292,31 @@ function loadNetherlandsPost(elBody, trackEntity) {
     }).catch(function (error) {
         skyContainer.append(failedTemplate(error.responseJSON))
         removeLoading(elBody)
+    })
+}
+
+function loadSBSwitzerlandPost(elBody, trackEntity) {
+    // Make both requests at the same time
+    var total = 2,
+        count = 0
+
+    var alicontainer = elBody.find('.c-aligeneral'),
+        skyContainer = elBody.find('.c-sky')
+
+    getProviderData('sky', trackEntity.id).then(function (data) { // add sky response to the page
+        skyContainer.append(skyTemplate(data))
+        if (++count == total) removeLoading(elBody)
+    }).catch(function (error) {
+        skyContainer.append(failedTemplate(error.responseJSON))
+        if (++count == total) removeLoading(elBody)
+    })
+
+    getProviderData('cjah', trackEntity.id).then(function (data) {
+        alicontainer.append(aliExpressTemplate(data))
+        if (++count == total) removeLoading(elBody)
+    }).catch(function (error) {
+        alicontainer.append(failedTemplate(error.responseJSON))
+        if (++count == total) removeLoading(elBody)
     })
 }
 

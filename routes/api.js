@@ -66,7 +66,8 @@ let providers = {
     'directlink': new Provider('Direct Link', 'yellow'),
     'trackchinapost': new Provider('Track China Post', 'danger'),
     'cainiao': new Provider('Cainiao', 'danger'),
-    'postNL': new Provider('Post NL', 'warning')
+    'postNL': new Provider('Post NL', 'warning'),
+    'cjah': new Provider('Cjah Tracking', 'success')
 }
 
 /**
