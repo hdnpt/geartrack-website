@@ -399,6 +399,7 @@ function loadYanwen(elBody, trackEntity) {
         alicontainer.append(aliExpressTemplate(data))
         if (++count == total) removeLoading(elBody)
     }).catch(function (error) {
+        alicontainer.append(failedTemplate(error.responseJSON))
         if (++count == total) removeLoading(elBody)
     })
 
@@ -416,6 +417,7 @@ function loadYanwen(elBody, trackEntity) {
             })
         }
     }).catch(function (error) {
+        aliContainer2.append(failedTemplate(error.responseJSON))
         if (++count == total) removeLoading(elBody)
     })
 }
