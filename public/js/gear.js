@@ -163,6 +163,8 @@ function loadTrackToContent(trackEntity) {
         case 'G':
             if (/SB.+/.test(trackEntity.id)) {
                 loadSBSwitzerlandPost(elBody, trackEntity)
+            } else if(/S\d+/.test(trackEntity.id)) {
+                loadAliProvider(elBody, trackEntity, 'cainiao', false)
             } else {
                 loadNetherlandsPost(elBody, trackEntity)
             }
@@ -399,6 +401,7 @@ function loadYanwen(elBody, trackEntity) {
         alicontainer.append(aliExpressTemplate(data))
         if (++count == total) removeLoading(elBody)
     }).catch(function (error) {
+        alicontainer.append(failedTemplate(error.responseJSON))
         if (++count == total) removeLoading(elBody)
     })
 
@@ -416,6 +419,7 @@ function loadYanwen(elBody, trackEntity) {
             })
         }
     }).catch(function (error) {
+        aliContainer2.append(failedTemplate(error.responseJSON))
         if (++count == total) removeLoading(elBody)
     })
 }
@@ -613,6 +617,7 @@ function isValidID(id) {
     if (/L.+CN$/.test(id)) return true
     if (/U.+YP$/.test(id)) return true
     if (/Q.+XX$/.test(id)) return true
+    if (/S\d+$/.test(id)) return true
     if (/^\d+$/.test(id)) return true
 
     return false

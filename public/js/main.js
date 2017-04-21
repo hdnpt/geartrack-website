@@ -79,10 +79,13 @@ Handlebars.registerHelper('HelperState', function (state, first, insideFirst) {
 })
 
 Handlebars.registerHelper('HelperTrackerSkyPQ', function (skyinfo, options) {
-    if (skyinfo.id.indexOf("PQ") != -1) {
-        return options.fn(this)
-    } else {
+    if (skyinfo.id.indexOf("PQ") != -1) { // is PQ
+        if(skyinfo.messages.length == 0 && skyinfo.status.length > 0)
+            return options.fn(this)
+
         return options.inverse(this)
+    } else {
+        return options.fn(this)
     }
 })
 
