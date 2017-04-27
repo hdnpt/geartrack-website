@@ -2,7 +2,7 @@
 
 [![Join the chat at https://gitter.im/hdnpt/geartrack-website](https://badges.gitter.im/hdnpt/geartrack-website.svg)](https://gitter.im/hdnpt/geartrack-website?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
->Online version: [https://geartrack.hdn.pt](https://geartrack.hdn.pt)
+>Online version: [https://geartrack.pt](https://geartrack.pt)
 
 Locate Gearbest Packages using these methods:
 - **PQ** Spain Priority Line (Spain Express)
@@ -22,6 +22,14 @@ Locate AliExpress Packages using these methods:
 - **U..YP** Special Line YW
 - **LP..** AliExpress Standard Shipping
 - **numeric** China Post Ordinary Small Packet Plus or Yanwen
+
+Locate CTT Expresso Packages using these methods:
+- **E..PT**
+- **R..PT**
+- **L..PT**
+
+Locate Ebay Packages using these methods:
+- **ID..CN**
 
 This is an Express.js app
 
