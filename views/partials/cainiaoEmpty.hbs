@@ -2,7 +2,13 @@
 <script id="cainiao-empty-template" type="text/x-handlebars-template">
     <div class="row">
         <div class="col-md-12">
-            <h2><span class="label label-danger">Informação Cainiao:</span></h2>
+
+            <h2 class="label-danger clearfix">
+                <span>Informação Cainiao:</span>
+                <a href="\{{ trackerWebsite }}" target="_blank">
+                    <i class="fa fa-external-link"></i>
+                </a>
+            </h2>
 
             <p>Parece que este provedor precisa de um passo adicional para mostrar a informação de tracking.</p>
             <p>Abra <a target="_blank" href="https://global.cainiao.com/detail.htm?mailNoList=\{{ id }}">ESTE</a> website e clique no método de envio certo. (Costuma ser Pos Malasya)</p>

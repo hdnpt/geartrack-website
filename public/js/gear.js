@@ -149,10 +149,18 @@ function loadTrackToContent(trackEntity) {
         elBody = elId.find('.panel-body');
 
     switch (trackEntity.id.charAt(0)) {
+        case 'I':
+            loadAliProvider(elBody, trackEntity, 'winit', false)
+            break
+        case 'E':
+            loadCttProvider(elBody, trackEntity)
+            break;
         case 'N':
         case 'L':
             if (/L.+CN$/.test(trackEntity.id)) {
                 loadAliProvider(elBody, trackEntity, 'cainiao')
+            } else if (/L.+PT$/.test(trackEntity.id)) {
+                loadCttProvider(elBody, trackEntity)
             } else if (trackEntity.id.indexOf("LP") !== -1) {
                 loadYanwen(elBody, trackEntity)
             } else {
@@ -191,6 +199,9 @@ function loadTrackToContent(trackEntity) {
                 case 'NL':
                     loadAliProvider(elBody, trackEntity, 'postNL')
                     break
+                case 'PT':
+                    loadCttProvider(elBody, trackEntity)
+                    break
                 default:
                     loadAliProvider(elBody, trackEntity, 'singpost')
             }
@@ -223,10 +234,11 @@ function loadTrackToContent(trackEntity) {
  */
 function loadSpainExpress(elBody, trackEntity) {
     // Make 4 requests at the same time
-    var total = 4,
+    var total = 5,
         count = 0
 
     var skyContainer = elBody.find('.c-sky'),
+        panasiaContainer = elBody.find('.c-panasia'),
         correosESContainer = elBody.find('.c-correoses'),
         correosContainer = elBody.find('.c-correos'),
         correosOldContainer = elBody.find('.c-correos-old'),
@@ -240,6 +252,19 @@ function loadSpainExpress(elBody, trackEntity) {
         })
         .catch(function (error) {
             skyContainer.append(failedTemplate(error.responseJSON))
+            if (++count == total) removeLoading(elBody)
+        })
+
+    getProviderData('panasia', trackEntity.id)
+        .then(function (skyData) {
+            panasiaContainer.append(aliExpressTemplate(skyData))
+            skyContainer.hide()
+            if (++count == total) removeLoading(elBody)
+        })
+        .catch(function (error) {
+            if(skyContainer.children().length == 0) // only show failed when we dont have sky
+                panasiaContainer.append(failedTemplate(error.responseJSON))
+
             if (++count == total) removeLoading(elBody)
         })
 
@@ -380,6 +405,18 @@ function loadAliProvider(elBody, trackEntity, provider, showCtt, showFailedTempl
         if (showFailedTemplateOnError)
             alicontainer.append(failedTemplate(error.responseJSON))
         if (++count == total) removeLoading(elBody)
+    })
+}
+
+function loadCttProvider(elBody, trackEntity) {
+    var cttContainer = elBody.find('.c-ctt')
+
+    getProviderData('ctt', trackEntity.id).then(function (data) {
+        cttContainer.append(cttTemplate(data))
+        removeLoading(elBody)
+    }).catch(function (error) {
+        cttContainer.append(failedTemplate(error.responseJSON))
+        removeLoading(elBody)
     })
 }
 
@@ -619,6 +656,14 @@ function isValidID(id) {
     if (/Q.+XX$/.test(id)) return true
     if (/S\d+$/.test(id)) return true
     if (/^\d+$/.test(id)) return true
+
+    // CTT
+    if (/E.+PT$/.test(id)) return true
+    if (/R.+PT$/.test(id)) return true
+    if (/L.+PT$/.test(id)) return true
+
+    // Winit
+    if (/ID.+CN$/.test(id)) return true
 
     return false
 }
