@@ -3,7 +3,12 @@
 <script id="correos-old-template" type="text/x-handlebars-template">
     <div class="row correos-h">
         <div class="col-md-12">
-            <h2><span class="label label-danger">Informação Correos Express Antigo:</span></h2>
+            <h2 class="label-danger clearfix">
+                <span>Informação Correos Express Antigo:</span>
+                <a href="\{{ trackerWebsite }}" target="_blank">
+                    <i class="fa fa-external-link"></i>
+                </a>
+            </h2>
         </div>
     </div>
 
@@ -24,7 +29,7 @@
             <table class="table table-bordered break-strong">
                 <tr>
                     <td>
-                        <strong>Ref:</strong> \{{ product.ref }}
+                        <strong>ID Adicional:</strong> \{{ id }}
                     </td>
                     <td>
                         <strong>Recebido:</strong> \{{HelperDate received }} \{{HelperFromNow received }}

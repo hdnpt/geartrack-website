@@ -69,7 +69,9 @@ let providers = {
     'yanwen': new Provider('Yanwen', 'success'),
     'cjah': new Provider('Cjah Tracking', 'success'),
     'postNL': new Provider('Post NL', 'warning'),
-    'malaysiaPos': new Provider('Malasya Pos', 'danger')
+    'malaysiaPos': new Provider('Malasya Pos', 'danger'),
+    'winit': new Provider('Winit', 'primary'),
+    'panasia': new Provider('Panasia', 'info')
 }
 
 /**
