@@ -208,17 +208,7 @@ function loadTrackToContent(trackEntity) {
 
             break
         case 'Q':
-            loadAliProvider(elBody, trackEntity, 'directlink')
-
-            var skyContainer = elBody.find('.c-sky')
-            getProviderData('sky', trackEntity.id)
-                .then(function (skyData) {
-                    skyContainer.append(skyTemplate(skyData))
-                })
-                .catch(function (error) {
-                    skyContainer.append(failedTemplate(error.responseJSON))
-                })
-
+            loadGBSweden(elBody, trackEntity)
             break
         case 'Y':
             loadAliProvider(elBody, trackEntity, 'yanwen', false)
@@ -409,6 +399,40 @@ function loadAliProvider(elBody, trackEntity, provider, showCtt, showFailedTempl
             alicontainer.append(failedTemplate(error.responseJSON))
         if (++count == total) removeLoading(elBody)
     })
+}
+
+function loadGBSweden(elBody, trackEntity) {
+    var total = 3, count = 0
+
+    var alicontainer = elBody.find('.c-aligeneral'),
+        cttContainer = elBody.find('.c-ctt'),
+        skyContainer = elBody.find('.c-sky')
+
+    getProviderData('sky', trackEntity.id).then(function (data) {
+        skyContainer.append(skyTemplate(data))
+        if (++count == total) removeLoading(elBody)
+    }).catch(function (error) {
+        skyContainer.append(failedTemplate(error.responseJSON))
+        if (++count == total) removeLoading(elBody)
+    })
+
+    getProviderData('directlink', trackEntity.id).then(function (data) {
+        alicontainer.append(aliExpressTemplate(data))
+
+        getProviderData('ctt', data.id).then(function (data2) {
+            cttContainer.append(cttTemplate(data2))
+            if (++count == total) removeLoading(elBody)
+        }).catch(function (error) {
+            cttContainer.append(failedTemplate(error.responseJSON))
+            if (++count == total) removeLoading(elBody)
+        })
+
+        if (++count == total) removeLoading(elBody)
+    }).catch(function (error) {
+        alicontainer.append(failedTemplate(error.responseJSON))
+        if (++count == total) removeLoading(elBody)
+    })
+
 }
 
 function loadCttProvider(elBody, trackEntity) {
