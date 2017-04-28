@@ -2,7 +2,9 @@ const express = require('express')
 const path = require('path')
 const favicon = require('serve-favicon')
 const logger = require('morgan')
-const hbs = require('hbs');
+const hbs = require('hbs')
+const bugsnag = require("bugsnag")
+bugsnag.register("9d032d4196d6ba90e77e615822442142")
 
 const index = require('./routes/index')
 const api = require('./routes/api')
@@ -35,6 +37,7 @@ hbs.registerPartials(__dirname + '/views/partials')
 | App middlewares
 |--------------------------------------------------------------------------
 */
+app.use(bugsnag.requestHandler)
 app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')))
 app.use(logger('dev'))
 app.use(express.static(path.join(__dirname, 'public')))
@@ -47,6 +50,7 @@ app.use(express.static(path.join(__dirname, 'public')))
 app.use('/', index)
 app.use('/api', api)
 
+app.use(bugsnag.errorHandler)
 /*
 |--------------------------------------------------------------------------
 | 404

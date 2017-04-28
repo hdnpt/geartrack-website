@@ -9,6 +9,7 @@
   "license": "MIT",
   "homepage": "https://geartrack.hdn.pt",
   "dependencies": {
+    "bugsnag": "^1.10.0",
     "debug": "~2.2.0",
     "express": "~4.14.0",
     "geartrack": "^2.0.0",

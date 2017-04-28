@@ -113,14 +113,18 @@ router.get('/correosOld', validateId, validatePostalCode, function (req, res) {
 router.get('/adicional', validateId, validatePostalCode, function (req, res) {
     let id = req.query.id, postalcode = req.query.postalcode
 
-    geartrack.adicional.getInfo(id, postalcode, (err, adicionalEntity) => {
-        if (err) {
-            // sets the status code and the appropriate message
-            return processErrorResponse(err, res, "Adicional")
-        }
 
-        res.json(adicionalEntity)
-    })
+    return processErrorResponse({
+        message: "DOWN - "
+    }, res, "Adicional")
+    // geartrack.adicional.getInfo(id, postalcode, (err, adicionalEntity) => {
+    //     if (err) {
+    //         // sets the status code and the appropriate message
+    //         return processErrorResponse(err, res, "Adicional")
+    //     }
+    //
+    //     res.json(adicionalEntity)
+    // })
 });
 
 /**
