@@ -120,12 +120,12 @@ $(document).on('click', '.remove', function (e) {
     if (tracks.length == 0) {
         info.show()
         jumbotron.show()
-        localStorage.removeItem('info3')
+        localStorage.removeItem('info4')
         emptyList.show()
     }
 });
 
-if (localStorage.getItem('info3') == null) {
+if (localStorage.getItem('info4') == null) {
     jumbotron.show()
 }
 
@@ -133,7 +133,7 @@ $('#hide-button').click(function (e) {
     e.preventDefault()
 
     jumbotron.hide()
-    localStorage.setItem('info3', 0)
+    localStorage.setItem('info4', 0)
 })
 
 /*
@@ -219,6 +219,9 @@ function loadTrackToContent(trackEntity) {
                     skyContainer.append(failedTemplate(error.responseJSON))
                 })
 
+            break
+        case 'Y':
+            loadAliProvider(elBody, trackEntity, 'yanwen', false)
             break
         default: // all numbers
             loadNumbersMultiple(elBody, trackEntity)
@@ -661,6 +664,8 @@ function isValidID(id) {
     if (/E.+PT$/.test(id)) return true
     if (/R.+PT$/.test(id)) return true
     if (/L.+PT$/.test(id)) return true
+
+    if (/Y.+$/.test(id)) return true
 
     // Winit
     if (/ID.+CN$/.test(id)) return true
