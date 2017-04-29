@@ -665,34 +665,35 @@ function capitalizeFirstLetter(string) {
 
 function isValidID(id) {
     if (id.length < 3) return false
-    if (id.indexOf("PQ") !== -1) return true
-    if (id.indexOf("NL") !== -1) return true
-    if (id.indexOf("LV") !== -1) return true
-    if (id.indexOf("SY") !== -1) return true
-    if (id.indexOf("SB") !== -1) return true
-    if (id.indexOf("GE") !== -1) return true
-    if (id.indexOf("LP") !== -1) return true
 
-    if (/R.+SG$/.test(id)) return true
-    if (/R.+MY$/.test(id)) return true
-    if (/R.+SE$/.test(id)) return true
-    if (/R.+CN$/.test(id)) return true
-    if (/R.+NL$/.test(id)) return true
-    if (/L.+CN$/.test(id)) return true
-    if (/U.+YP$/.test(id)) return true
-    if (/Q.+XX$/.test(id)) return true
-    if (/S\d+$/.test(id)) return true
+    if (/^PQ.+$/.test(id)) return true
+    if (/^NL.+$/.test(id)) return true
+    if (/^LV.+$/.test(id)) return true
+    if (/^SY.+$/.test(id)) return true
+    if (/^SB.+$/.test(id)) return true
+    if (/^GE.+$/.test(id)) return true
+    if (/^LP.+$/.test(id)) return true
+
+    if (/^R.+SG$/.test(id)) return true
+    if (/^R.+MY$/.test(id)) return true
+    if (/^R.+SE$/.test(id)) return true
+    if (/^R.+CN$/.test(id)) return true
+    if (/^R.+NL$/.test(id)) return true
+    if (/^L.+CN$/.test(id)) return true
+    if (/^U.+YP$/.test(id)) return true
+    if (/^Q.+XX$/.test(id)) return true
+    if (/^S\d+$/.test(id)) return true
     if (/^\d+$/.test(id)) return true
 
     // CTT
-    if (/E.+PT$/.test(id)) return true
-    if (/R.+PT$/.test(id)) return true
-    if (/L.+PT$/.test(id)) return true
+    if (/^E.+PT$/.test(id)) return true
+    if (/^R.+PT$/.test(id)) return true
+    if (/^L.+PT$/.test(id)) return true
 
-    if (/Y.+$/.test(id)) return true
+    if (/^Y.+$/.test(id)) return true
 
     // Winit
-    if (/ID.+CN$/.test(id)) return true
+    if (/^ID.+CN$/.test(id)) return true
 
     return false
 }
