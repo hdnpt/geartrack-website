@@ -402,7 +402,7 @@ function loadAliProvider(elBody, trackEntity, provider, showCtt, showFailedTempl
 }
 
 function loadGBSweden(elBody, trackEntity) {
-    var total = 3, count = 0
+    var total = 2, count = 0
 
     var alicontainer = elBody.find('.c-aligeneral'),
         cttContainer = elBody.find('.c-ctt'),
@@ -421,10 +421,8 @@ function loadGBSweden(elBody, trackEntity) {
 
         getProviderData('ctt', data.id).then(function (data2) {
             cttContainer.append(cttTemplate(data2))
-            if (++count == total) removeLoading(elBody)
         }).catch(function (error) {
             cttContainer.append(failedTemplate(error.responseJSON))
-            if (++count == total) removeLoading(elBody)
         })
 
         if (++count == total) removeLoading(elBody)
