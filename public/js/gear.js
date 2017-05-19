@@ -117,12 +117,12 @@ $(document).on('click', '.remove', function (e) {
   if (tracks.length == 0) {
     info.show()
     jumbotron.show()
-    localStorage.removeItem('info4')
+    localStorage.removeItem('info5')
     emptyList.show()
   }
 })
 
-if (localStorage.getItem('info4') == null) {
+if (localStorage.getItem('info5') == null) {
   jumbotron.show()
 }
 
@@ -130,7 +130,7 @@ $('#hide-button').click(function (e) {
   e.preventDefault()
 
   jumbotron.hide()
-  localStorage.setItem('info4', 0)
+  localStorage.setItem('info5', 0)
 })
 
 /*
@@ -156,7 +156,12 @@ function loadTrackToContent (trackEntity) {
       loadAliProvider(elBody, trackEntity, 'winit', false)
       break
     case 'E':
-      loadCttProvider(elBody, trackEntity)
+      if(trackEntity.id.charAt(1) == 'Y') {
+        loadAliProvider(elBody, trackEntity, 'track24', false)
+      } else {
+        loadCttProvider(elBody, trackEntity)
+      }
+
       break
     case 'N':
     case 'L':
@@ -166,6 +171,8 @@ function loadTrackToContent (trackEntity) {
         loadCttProvider(elBody, trackEntity)
       } else if (trackEntity.id.indexOf('LP') !== -1) {
         loadYanwen(elBody, trackEntity)
+      } else if (/LA.+$/.test(trackEntity.id)) {
+        loadAliProvider(elBody, trackEntity, 'track24', false)
       } else {
         loadNetherlandsPost(elBody, trackEntity)
       }
@@ -215,6 +222,9 @@ function loadTrackToContent (trackEntity) {
         case 'AT':
           loadAliProvider(elBody, trackEntity, 'track24', false)
           break
+        case 'GB':
+          loadAliProvider(elBody, trackEntity, 'track24', false)
+          break
         default:
           loadAliProvider(elBody, trackEntity, 'singpost')
       }
@@ -224,7 +234,14 @@ function loadTrackToContent (trackEntity) {
       loadGBSweden(elBody, trackEntity)
       break
     case 'Y':
-      loadAliProvider(elBody, trackEntity, 'yanwen', false)
+      if (trackEntity.id.charAt(1) == 'T') {
+        loadAliProvider(elBody, trackEntity, 'track24', false)
+      } else {
+        loadAliProvider(elBody, trackEntity, 'yanwen', false)
+      }
+      break
+    case 'H':
+      loadAliProvider(elBody, trackEntity, 'track24', false)
       break
     default: // all numbers
       loadNumbersMultiple(elBody, trackEntity)
@@ -555,12 +572,13 @@ function loadDoubleAliProvider (elBody, trackEntity, provider1, provider2, showC
  */
 function loadNumbersMultiple (elBody, trackEntity) {
 // Make both requests at the same time
-  var total = 4,
+  var total = 5,
     count = 0,
     success = 0
 
   var alicontainer = elBody.find('.c-aligeneral2'),
     aliContainer2 = elBody.find('.c-aligeneral3'),
+    aliContainer4 = elBody.find('.c-aligeneral4'),
     aliContainerG = elBody.find('.c-aligeneral'),
     cttContainer = elBody.find('.c-ctt')
 
@@ -600,6 +618,14 @@ function loadNumbersMultiple (elBody, trackEntity) {
 
   getProviderData('dhl', trackEntity.id).then(function (data) {
     alicontainer.append(aliExpressTemplate(data))
+    success++
+    if (++count == total) failed()
+  }).catch(function (error) {
+    if (++count == total) failed()
+  })
+
+  getProviderData('track24', trackEntity.id).then(function (data) {
+    aliContainer4.append(aliExpressTemplate(data))
     success++
     if (++count == total) failed()
   }).catch(function (error) {
@@ -731,18 +757,19 @@ function isValidID (id) {
   if (id.length < 3) return false
 
   if (/^PQ.+$/.test(id)) return true
+
   if (/^NL.+$/.test(id)) return true
-  if (/^LV.+$/.test(id)) return true
-  if (/^SY.+$/.test(id)) return true
-  if (/^SB.+$/.test(id)) return true
+
   if (/^GE.+$/.test(id)) return true
+
+  if (/^LV.+$/.test(id)) return true
   if (/^LP.+$/.test(id)) return true
 
   if (/^BZ.+CN$/.test(id)) return true
 
-
-  if (/^UPA.+$/.test(id)) return true
   if (/^CP.+CN$/.test(id)) return true
+
+  if (/^HK.+AM$/.test(id)) return true
 
   if (/^R.+SG$/.test(id)) return true
   if (/^R.+MY$/.test(id)) return true
@@ -751,21 +778,31 @@ function isValidID (id) {
   if (/^R.+NL$/.test(id)) return true
   if (/^R.+HU$/.test(id)) return true
   if (/^R.+AT$/.test(id)) return true
-  if (/^L.+CN$/.test(id)) return true
-  if (/^U.+YP$/.test(id)) return true
-  if (/^Q.+XX$/.test(id)) return true
-  if (/^S\d+$/.test(id)) return true
-  if (/^\d+$/.test(id)) return true
-
-  // CTT
-  if (/^E.+PT$/.test(id)) return true
   if (/^R.+PT$/.test(id)) return true
+  if (/^R.+GB$/.test(id)) return true
+
+  if (/^U.+YP$/.test(id)) return true
+  if (/^UPA.+$/.test(id)) return true
+
+  if (/^Q.+XX$/.test(id)) return true
+
+  if (/^SB.+$/.test(id)) return true
+  if (/^S\d+$/.test(id)) return true
+  if (/^SY.+$/.test(id)) return true
+
+  if (/^E.+PT$/.test(id)) return true
+  if (/^EY.+$/.test(id)) return true
+
   if (/^L.+PT$/.test(id)) return true
+  if (/^LA.+$/.test(id)) return true
+  if (/^L.+CN$/.test(id)) return true
 
   if (/^Y.+$/.test(id)) return true
 
   // Winit
   if (/^ID.+CN$/.test(id)) return true
+
+  if (/^\d+$/.test(id)) return true
 
   return false
 }
