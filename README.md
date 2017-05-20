@@ -8,9 +8,15 @@ Locate Gearbest Packages using these methods:
 - **PQ** Spain Priority Line (Spain Express)
 - **NL** Netherlands Post surface mail
 - **LV** Bpost International
-- **SY** Malasya Pos
+- **SYB** Malasya Pos
 - **GE, SB** Switzerland Post Unregistered
 - **Q..XX** Sweden Registered
+- **R..HU** Hungary Registered
+- **numeric** DHL
+
+Locate Geekbuying Packages using these methods:
+- **YT..** Yun Express
+- **R..AT** Austrian Post
 
 Locate AliExpress Packages using these methods:
 - **RF..SG** Singapore Post
@@ -21,7 +27,9 @@ Locate AliExpress Packages using these methods:
 - **L...CN** China EMS ePacket
 - **U..YP** Special Line YW
 - **LP..** AliExpress Standard Shipping
-- **numeric** China Post Ordinary Small Packet Plus or Yanwen
+- **BZ..CN** China EMS ePacket
+- **CP..CN** China Post
+- **numeric** China Post Ordinary Small Packet Plus, Yanwen or DHL
 
 Locate CTT Expresso Packages using these methods:
 - **E..PT**
@@ -29,7 +37,15 @@ Locate CTT Expresso Packages using these methods:
 - **L..PT**
 
 Locate Ebay Packages using these methods:
-- **ID..CN**
+- **ID..CN** Winit
+- **YF..** Yanwen
+- **UPA..** Pitney Bowes
+- **LA..** Laos Post
+- **HK..AM** SFC
+- **EY..** Chukou1
+- **R..GB** Royal Mail
+- **R..GB** Royal Mail
+- **numeric** PTT Turkey
 
 This is an Express.js app
 
