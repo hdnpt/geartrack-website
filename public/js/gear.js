@@ -2,6 +2,7 @@
  * SORRY BRO, THIS CODE IS A MESS!
  * I NEED TO FIND TIME TO CONVERT THIS TO REACT!
  */
+'use strict'
 
 /*
  |--------------------------------------------------------------------------
@@ -156,7 +157,7 @@ function loadTrackToContent (trackEntity) {
       loadAliProvider(elBody, trackEntity, 'winit', false)
       break
     case 'E':
-      if(trackEntity.id.charAt(1) == 'Y') {
+      if (trackEntity.id.charAt(1) == 'Y') {
         loadAliProvider(elBody, trackEntity, 'track24', false)
       } else {
         loadCttProvider(elBody, trackEntity)
