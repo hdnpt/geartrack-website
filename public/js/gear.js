@@ -46,11 +46,11 @@ var trackEntryTemplate = Handlebars.compile($('#track-list-template').html()),
 storageLoadAll()
 addAllTracksToPage()
 
-let help_block2 = $('#help_block'),
+var help_block2 = $('#help_block'),
   form_group = shippingId.parent('.form-group')
 
 shippingId.on('input paste', function () {
-  let inserted = $(this).val()
+  var inserted = $(this).val()
 
   if (inserted.length == 0) {
     form_group.toggleClass('has-success', false)
@@ -199,7 +199,7 @@ function loadTrackToContent (trackEntity) {
       }
       break
     case 'R': // Aliexpress
-      let ending = trackEntity.id.charAt(trackEntity.id.length - 2)
+      var ending = trackEntity.id.charAt(trackEntity.id.length - 2)
         + trackEntity.id.charAt(trackEntity.id.length - 1)
       switch (ending) {
         case 'MY':

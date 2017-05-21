@@ -34,11 +34,11 @@ Handlebars.registerHelper('HelperHours', function (date) {
 })
 
 Handlebars.registerHelper('HelperCapitalize', function (string) {
-  let lower = string.toLowerCase()
+  var lower = string.toLowerCase()
 
   if (lower.charAt(0) == '[') { // cainiao states have [country] message
     lower = lower.replaceAt(1, lower.charAt(1).toUpperCase())
-    let idx = lower.indexOf(']') + 2
+    var idx = lower.indexOf(']') + 2
     lower = lower.replaceAt(idx, lower.charAt(idx).toUpperCase())
   }
 
