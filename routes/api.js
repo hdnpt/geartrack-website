@@ -108,7 +108,16 @@ router.get('/:provider', validateId, function (req, res, next) {
   if (!providerObj) // no provider found
     return next()
 
-  geartrack[req.params.provider].getInfo(id, (err, entity) => {
+  if(req.params.provider == 'track24') {
+    geartrack[req.params.provider].getInfoProxy(id, 'http://138.68.100.64/track24',providerCallback(res, providerObj))
+  } else {
+    geartrack[req.params.provider].getInfo(id, providerCallback(res, providerObj))
+  }
+
+})
+
+function providerCallback (res, providerObj) {
+  return (err, entity) => {
     if (err) {
       // sets the status code and the appropriate message
       return processErrorResponse(err, res, providerObj.name)
@@ -118,8 +127,8 @@ router.get('/:provider', validateId, function (req, res, next) {
     entity.color = providerObj.cssClass // color of the background, may use bootstrap classes
 
     res.json(entity)
-  })
-})
+  }
+}
 
 /*
  |--------------------------------------------------------------------------
