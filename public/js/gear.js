@@ -147,6 +147,9 @@ function loadTrackToContent (trackEntity) {
     elBody = elId.find('.panel-body')
 
   switch (trackEntity.id.charAt(0)) {
+    case 'A':
+      loadAliProvider(elBody, trackEntity, 'yanwen', false)
+      break
     case 'C':
       loadDoubleAliProvider(elBody, trackEntity, 'track24', 'trackchinapost', true)
       break
@@ -757,6 +760,7 @@ function capitalizeFirstLetter (string) {
 function isValidID (id) {
   if (id.length < 3) return false
 
+  if (/^AA.+YN$/.test(id)) return true
   if (/^PQ.+$/.test(id)) return true
 
   if (/^NL.+$/.test(id)) return true

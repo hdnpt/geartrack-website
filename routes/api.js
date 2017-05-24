@@ -3,6 +3,7 @@ const router = express.Router()
 const geartrack = require('geartrack')
 const mcache = require('memory-cache')
 const http = require('http')
+const roundrobin = require('rr')
 
 /**
  * Cache middleware
@@ -100,6 +101,11 @@ router.get('/adicional', validateId, validatePostalCode, function (req, res) {
 /**
  * General providers that only need an id
  */
+let proxys = [
+  'http://138.68.100.64/track24',
+  'http://207.154.250.209/track24'
+]
+
 router.get('/:provider', validateId, function (req, res, next) {
   let id = req.query.id
 
@@ -109,7 +115,8 @@ router.get('/:provider', validateId, function (req, res, next) {
     return next()
 
   if(req.params.provider == 'track24') {
-    geartrack[req.params.provider].getInfoProxy(id, 'http://138.68.100.64/track24',providerCallback(res, providerObj))
+    let proxy = roundrobin(proxys)
+    geartrack[req.params.provider].getInfoProxy(id, proxy,providerCallback(res, providerObj))
   } else {
     geartrack[req.params.provider].getInfo(id, providerCallback(res, providerObj))
   }
@@ -209,6 +216,12 @@ function validatePostalCode (req, res, next) {
 function Provider (name, cssClass) {
   this.name = name
   this.cssClass = cssClass
+}
+
+function getRandomIntInclusive(min, max) {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
 module.exports = router
