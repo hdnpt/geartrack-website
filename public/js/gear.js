@@ -835,7 +835,7 @@ function storageLoadAll () {
     var key = localStorage.key(i)
 
     if (key.charAt(0) === '#') {
-      if (!/^[#a-zA-Z0-9]+$/.test(key)) {
+      if (/^[#a-zA-Z0-9]+$/.test(key)) {
         //we only load valid ids
         tracks.push(JSON.parse(localStorage.getItem(key)))
       } else {
