@@ -4,6 +4,7 @@ const favicon = require('serve-favicon')
 const logger = require('morgan')
 const hbs = require('hbs')
 const bugsnag = require("bugsnag")
+// error reporting
 bugsnag.register("9d032d4196d6ba90e77e615822442142")
 
 const index = require('./routes/index')

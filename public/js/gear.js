@@ -760,54 +760,45 @@ function capitalizeFirstLetter (string) {
 function isValidID (id) {
   if (id.length < 3) return false
 
-  if (/^AA.+YN$/.test(id)) return true
-  if (/^PQ.+$/.test(id)) return true
+  var allowedFormats = [
+    /^AA[a-zA-Z0-9]+YN$/,
+    /^PQ[a-zA-Z0-9]+$/,
+    /^NL[a-zA-Z0-9]+$/,
+    /^GE[a-zA-Z0-9]+$/,
+    /^LV[a-zA-Z0-9]+$/,
+    /^LP[a-zA-Z0-9]+$/,
+    /^BZ[a-zA-Z0-9]+CN$/,
+    /^CP[a-zA-Z0-9]+CN$/,
+    /^HK[a-zA-Z0-9]+AM$/,
+    /^R[a-zA-Z0-9]+SG$/,
+    /^R[a-zA-Z0-9]+MY$/,
+    /^R[a-zA-Z0-9]+SE$/,
+    /^R[a-zA-Z0-9]+CN$/,
+    /^R[a-zA-Z0-9]+NL$/,
+    /^R[a-zA-Z0-9]+HU$/,
+    /^R[a-zA-Z0-9]+AT$/,
+    /^R[a-zA-Z0-9]+PT$/,
+    /^R[a-zA-Z0-9]+GB$/,
+    /^U[a-zA-Z0-9]+YP$/,
+    /^UPA[a-zA-Z0-9]+$/,
+    /^Q[a-zA-Z0-9]+XX$/,
+    /^SB[a-zA-Z0-9]+$/,
+    /^S\d+$/,
+    /^SY[a-zA-Z0-9]+$/,
+    /^E[a-zA-Z0-9]+PT$/,
+    /^EY[a-zA-Z0-9]+$/,
+    /^L[a-zA-Z0-9]+PT$/,
+    /^LA[a-zA-Z0-9]+$/,
+    /^L[a-zA-Z0-9]+CN$/,
+    /^Y[a-zA-Z0-9]+$/,
+    /^ID[a-zA-Z0-9]+CN$/,
+    /^\d+$/
+  ]
 
-  if (/^NL.+$/.test(id)) return true
-
-  if (/^GE.+$/.test(id)) return true
-
-  if (/^LV.+$/.test(id)) return true
-  if (/^LP.+$/.test(id)) return true
-
-  if (/^BZ.+CN$/.test(id)) return true
-
-  if (/^CP.+CN$/.test(id)) return true
-
-  if (/^HK.+AM$/.test(id)) return true
-
-  if (/^R.+SG$/.test(id)) return true
-  if (/^R.+MY$/.test(id)) return true
-  if (/^R.+SE$/.test(id)) return true
-  if (/^R.+CN$/.test(id)) return true
-  if (/^R.+NL$/.test(id)) return true
-  if (/^R.+HU$/.test(id)) return true
-  if (/^R.+AT$/.test(id)) return true
-  if (/^R.+PT$/.test(id)) return true
-  if (/^R.+GB$/.test(id)) return true
-
-  if (/^U.+YP$/.test(id)) return true
-  if (/^UPA.+$/.test(id)) return true
-
-  if (/^Q.+XX$/.test(id)) return true
-
-  if (/^SB.+$/.test(id)) return true
-  if (/^S\d+$/.test(id)) return true
-  if (/^SY.+$/.test(id)) return true
-
-  if (/^E.+PT$/.test(id)) return true
-  if (/^EY.+$/.test(id)) return true
-
-  if (/^L.+PT$/.test(id)) return true
-  if (/^LA.+$/.test(id)) return true
-  if (/^L.+CN$/.test(id)) return true
-
-  if (/^Y.+$/.test(id)) return true
-
-  // Winit
-  if (/^ID.+CN$/.test(id)) return true
-
-  if (/^\d+$/.test(id)) return true
+  for (var i = 0; i < allowedFormats.length; i++) {
+    if (allowedFormats[i].test(id))
+      return true
+  }
 
   return false
 }
@@ -843,8 +834,14 @@ function storageLoadAll () {
   for (var i = 0; i < localStorage.length; i++) {
     var key = localStorage.key(i)
 
-    if (key.charAt(0) == '#') { //we only load valid ids
-      tracks.push(JSON.parse(localStorage.getItem(key)))
+    if (key.charAt(0) === '#') {
+      if (!/^[#a-zA-Z0-9]+$/.test(key)) {
+        //we only load valid ids
+        tracks.push(JSON.parse(localStorage.getItem(key)))
+      } else {
+        // not valid id, remove
+        localStorage.removeItem(key)
+      }
     }
   }
 }
