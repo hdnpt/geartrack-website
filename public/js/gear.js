@@ -148,7 +148,7 @@ function loadTrackToContent (trackEntity) {
 
   switch (trackEntity.id.charAt(0)) {
     case 'A':
-      if(/^A[0-9]+$/.test(trackEntity.id)) {
+      if (/^A[0-9]+$/.test(trackEntity.id)) {
         loadAliProvider(elBody, trackEntity, 'track24', false)
       } else {
         loadAliProvider(elBody, trackEntity, 'yanwen', false)
@@ -190,6 +190,8 @@ function loadTrackToContent (trackEntity) {
         loadSBSwitzerlandPost(elBody, trackEntity)
       } else if (/S\d+/.test(trackEntity.id)) {
         loadAliProvider(elBody, trackEntity, 'cainiao', false)
+      } else if (/^SY[a-zA-Z0-9]+$/.test(trackEntity.id)) {
+        loadSkyAndAliProvider(elBody, trackEntity, 'track24')
       } else {
         loadNetherlandsPost(elBody, trackEntity)
       }
@@ -393,6 +395,37 @@ function loadSBSwitzerlandPost (elBody, trackEntity) {
     if (++count == total) removeLoading(elBody)
   }).catch(function (error) {
     alicontainer.append(failedTemplate(error.responseJSON))
+    if (++count == total) removeLoading(elBody)
+  })
+}
+
+function loadSkyAndAliProvider (elBody, trackEntity, provider) {
+  // Make both requests at the same time
+  var total = 2,
+    count = 0
+
+  var alicontainer = elBody.find('.c-aligeneral'),
+    skyContainer = elBody.find('.c-sky')
+
+  getProviderData('sky', trackEntity.id).then(function (data) { // add sky response to the page
+    skyContainer.append(skyTemplate(data))
+    if (++count == total) removeLoading(elBody)
+  }).catch(function (error) {
+    skyContainer.append(failedTemplate(error.responseJSON))
+    if (++count == total) removeLoading(elBody)
+  })
+
+  getProviderData(provider, trackEntity.id).then(function (data) {
+    if (provider == 'cainiao' && data.states.length == 0) {
+      alicontainer.append(cainiaoEmpty(data))
+    } else {
+      alicontainer.append(aliExpressTemplate(data))
+    }
+
+    if (++count == total) removeLoading(elBody)
+  }).catch(function (error) {
+    if (showFailedTemplateOnError)
+      alicontainer.append(failedTemplate(error.responseJSON))
     if (++count == total) removeLoading(elBody)
   })
 }
