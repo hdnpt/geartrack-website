@@ -424,8 +424,7 @@ function loadSkyAndAliProvider (elBody, trackEntity, provider) {
 
     if (++count == total) removeLoading(elBody)
   }).catch(function (error) {
-    if (showFailedTemplateOnError)
-      alicontainer.append(failedTemplate(error.responseJSON))
+    alicontainer.append(failedTemplate(error.responseJSON))
     if (++count == total) removeLoading(elBody)
   })
 }
