@@ -199,9 +199,14 @@ function loadTrackToContent (trackEntity) {
     case 'P':
       loadSpainExpress(elBody, trackEntity)
       break
+    case 'K':
+      loadAliProvider(elBody, trackEntity, 'track24', false)
+      break
     case 'U':
       if (/UPA.+$/.test(trackEntity.id)) {
         loadAliProvider(elBody, trackEntity, 'pitneybowes', false)
+      } else if (/^U[a-zA-Z0-9]+SE$/.test(trackEntity.id)) {
+        loadAliProvider(elBody, trackEntity, 'track24', false)
       } else {
         loadYanwen(elBody, trackEntity)
       }
@@ -817,6 +822,7 @@ function isValidID (id) {
     /^R[a-zA-Z0-9]+GB$/,
     /^U[a-zA-Z0-9]+YP$/,
     /^UPA[a-zA-Z0-9]+$/,
+    /^U[a-zA-Z0-9]+SE$/,
     /^Q[a-zA-Z0-9]+XX$/,
     /^SB[a-zA-Z0-9]+$/,
     /^S\d+$/,
@@ -828,6 +834,7 @@ function isValidID (id) {
     /^L[a-zA-Z0-9]+CN$/,
     /^Y[a-zA-Z0-9]+$/,
     /^ID[a-zA-Z0-9]+CN$/,
+    /^KW[a-zA-Z0-9]+$/,
     /^\d+$/
   ]
 
