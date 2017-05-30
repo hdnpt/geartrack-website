@@ -102,8 +102,8 @@ router.get('/adicional', validateId, validatePostalCode, function (req, res) {
  * General providers that only need an id
  */
 let proxys = [
-  'http://46.101.24.192/track24',
-  'http://207.154.250.209/track24'
+  'http://95.85.57.184/track24',
+  'http://128.199.39.40/track24'
 ]
 
 router.get('/:provider', validateId, function (req, res, next) {
