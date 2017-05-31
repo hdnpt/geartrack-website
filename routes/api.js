@@ -101,7 +101,6 @@ router.get('/adicional', validateId, validatePostalCode, function (req, res) {
 let proxys = []
 if(process.env.GEARTRACK_PROXYS) {
   proxys = process.env.GEARTRACK_PROXYS.split(',').map(ip => ip.trim()).filter(ip => ip.length > 0)
-  console.log("!!!!!!!!!!!!!!!!!!!!!!!!Proxys!!!!!", proxys)
 }
 
 /**
@@ -118,7 +117,6 @@ router.get('/:provider', validateId, function (req, res, next) {
   if (req.params.provider == 'track24' && proxys.length > 0) {
     let proxy = roundrobin(proxys)
     let proxyUrl = 'http://' + proxy + '/track24/ajax/tracking100500.ajax.php'
-    console.log("!!!!!!!!!!!!!!!!!!!!!!!!proxyUrl!!!!!", proxyUrl)
     geartrack[req.params.provider].getInfoProxy(id, proxyUrl, providerCallback(res, providerObj))
   } else {
     geartrack[req.params.provider].getInfo(id, providerCallback(res, providerObj))
