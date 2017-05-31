@@ -239,6 +239,9 @@ function loadTrackToContent (trackEntity) {
         case 'GB':
           loadAliProvider(elBody, trackEntity, 'track24', false)
           break
+        case 'LA':
+          loadAliProvider(elBody, trackEntity, 'track24', false)
+          break
         default:
           loadAliProvider(elBody, trackEntity, 'singpost')
       }
@@ -820,6 +823,7 @@ function isValidID (id) {
     /^R[a-zA-Z0-9]+AT$/,
     /^R[a-zA-Z0-9]+PT$/,
     /^R[a-zA-Z0-9]+GB$/,
+    /^R[a-zA-Z0-9]+LA$/,
     /^U[a-zA-Z0-9]+YP$/,
     /^UPA[a-zA-Z0-9]+$/,
     /^U[a-zA-Z0-9]+SE$/,
