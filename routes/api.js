@@ -77,7 +77,7 @@ let providers = {
   'dhl': new Provider('DHL', 'yellow'),
   'track24': new Provider('Track24', 'info'),
   'correos': new Provider('Correos Express Novo', 'danger'),
-  'correosOld': new Provider('Correos Express Antigo', 'danger'),
+  'correosOld': new Provider('Correos Express Antigo', 'danger')
 }
 
 /**
@@ -98,14 +98,14 @@ router.get('/adicional', validateId, validatePostalCode, function (req, res) {
   })
 })
 
+let proxys = []
+if(process.env.GEARTRACK_PROXYS) {
+  proxys = process.env.GEARTRACK_PROXYS.split(',').map(ip => ip.trim()).filter(ip => ip.length > 0)
+}
+
 /**
  * General providers that only need an id
  */
-let proxys = [
-  'http://95.85.57.184/track24',
-  'http://128.199.39.40/track24'
-]
-
 router.get('/:provider', validateId, function (req, res, next) {
   let id = req.query.id
 
@@ -114,9 +114,10 @@ router.get('/:provider', validateId, function (req, res, next) {
   if (!providerObj) // no provider found
     return next()
 
-  if(req.params.provider == 'track24') {
+  if (req.params.provider == 'track24' && proxys.length > 0) {
     let proxy = roundrobin(proxys)
-    geartrack[req.params.provider].getInfoProxy(id, proxy,providerCallback(res, providerObj))
+    let proxyUrl = 'http://' + proxy + '/track24/ajax/tracking100500.ajax.php'
+    geartrack[req.params.provider].getInfoProxy(id, proxyUrl, providerCallback(res, providerObj))
   } else {
     geartrack[req.params.provider].getInfo(id, providerCallback(res, providerObj))
   }
@@ -218,10 +219,10 @@ function Provider (name, cssClass) {
   this.cssClass = cssClass
 }
 
-function getRandomIntInclusive(min, max) {
-  min = Math.ceil(min);
-  max = Math.floor(max);
-  return Math.floor(Math.random() * (max - min + 1)) + min;
+function getRandomIntInclusive (min, max) {
+  min = Math.ceil(min)
+  max = Math.floor(max)
+  return Math.floor(Math.random() * (max - min + 1)) + min
 }
 
 module.exports = router
