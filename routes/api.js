@@ -99,7 +99,7 @@ router.get('/adicional', validateId, validatePostalCode, function (req, res) {
 })
 
 let proxys = []
-if(process.env.GEARTRACK_PROXYS) {
+if (process.env.GEARTRACK_PROXYS) {
   proxys = process.env.GEARTRACK_PROXYS.split(',').map(ip => ip.trim()).filter(ip => ip.length > 0)
 }
 
@@ -131,13 +131,15 @@ function providerCallback (res, providerObj) {
       return processErrorResponse(err, res, providerObj.name)
     }
 
-    if(entity.constructor &&
+    if (entity.constructor &&
       entity.constructor.name &&
       entity.constructor.name == 'SkyInfo' &&
+      entity.messages &&
       entity.messages.length == 0 &&
+      entity.status &&
       entity.status.length == 0) {
       // Sky has no info
-      return processErrorResponse(new Error("DEFAULT - no info"), res, providerObj.name)
+      return processErrorResponse(new Error('DEFAULT - no info'), res, providerObj.name)
     }
 
     entity.provider = providerObj.name // name shown: 'Informação [provider]'
