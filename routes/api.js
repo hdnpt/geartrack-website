@@ -131,6 +131,15 @@ function providerCallback (res, providerObj) {
       return processErrorResponse(err, res, providerObj.name)
     }
 
+    if(entity.constructor &&
+      entity.constructor.name &&
+      entity.constructor.name == 'SkyInfo' &&
+      entity.messages.length == 0 &&
+      entity.status.length == 0) {
+      // Sky has no info
+      return processErrorResponse(new Error("DEFAULT - no info"), res, providerObj.name)
+    }
+
     entity.provider = providerObj.name // name shown: 'Informação [provider]'
     entity.color = providerObj.cssClass // color of the background, may use bootstrap classes
 

@@ -50,7 +50,9 @@ var help_block2 = $('#help_block'),
   form_group = shippingId.parent('.form-group')
 
 shippingId.on('input paste', function () {
-  var inserted = $(this).val()
+  var inserted = $(this).val().replace(/[^\x00-\x7F]/, '') // remove non asci chars
+
+  $(this).val(inserted) // update the input
 
   if (inserted.length == 0) {
     form_group.toggleClass('has-success', false)
