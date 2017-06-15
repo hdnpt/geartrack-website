@@ -116,7 +116,7 @@ router.get('/:provider', validateId, function (req, res, next) {
 
   if (req.params.provider == 'track24' && proxys.length > 0) {
     let proxy = roundrobin(proxys)
-    let proxyUrl = 'http://' + proxy + '/track24/ajax/tracking100500.ajax.php'
+    let proxyUrl = 'http://' + proxy + '/track24/ajax/tracking100600.ajax.php'
     geartrack[req.params.provider].getInfoProxy(id, proxyUrl, providerCallback(res, providerObj))
   } else {
     geartrack[req.params.provider].getInfo(id, providerCallback(res, providerObj))
