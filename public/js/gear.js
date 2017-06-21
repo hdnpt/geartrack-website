@@ -117,7 +117,7 @@ $(document).on('click', '.remove', function (e) {
 
   storageRemoveTrack(id)
 
-  if (tracks.length == 0) {
+  if (tracks.length == 0 || content.children().length == 0) {
     info.show()
     jumbotron.show()
     localStorage.removeItem('info5')
