@@ -12,10 +12,11 @@
     "bugsnag": "^1.10.0",
     "debug": "~2.2.0",
     "express": "~4.14.0",
-    "geartrack": "^2.0.0",
+    "geartrack": "^2.7.9",
     "hbs": "~4.0.1",
     "memory-cache": "^0.1.6",
     "morgan": "~1.7.0",
+    "rr": "^0.1.0",
     "serve-favicon": "~2.3.0"
   }
 }

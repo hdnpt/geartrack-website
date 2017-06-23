@@ -2,6 +2,7 @@
  * SORRY BRO, THIS CODE IS A MESS!
  * I NEED TO FIND TIME TO CONVERT THIS TO REACT!
  */
+'use strict'
 
 /*
  |--------------------------------------------------------------------------
@@ -45,11 +46,13 @@ var trackEntryTemplate = Handlebars.compile($('#track-list-template').html()),
 storageLoadAll()
 addAllTracksToPage()
 
-let help_block2 = $('#help_block'),
+var help_block2 = $('#help_block'),
   form_group = shippingId.parent('.form-group')
 
 shippingId.on('input paste', function () {
-  let inserted = $(this).val()
+  var inserted = $(this).val().replace(/[^\x00-\x7F]/, '') // remove non asci chars
+
+  $(this).val(inserted) // update the input
 
   if (inserted.length == 0) {
     form_group.toggleClass('has-success', false)
@@ -114,7 +117,7 @@ $(document).on('click', '.remove', function (e) {
 
   storageRemoveTrack(id)
 
-  if (tracks.length == 0) {
+  if (tracks.length == 0 || content.children().length == 0) {
     info.show()
     jumbotron.show()
     localStorage.removeItem('info5')
@@ -146,6 +149,13 @@ function loadTrackToContent (trackEntity) {
     elBody = elId.find('.panel-body')
 
   switch (trackEntity.id.charAt(0)) {
+    case 'A':
+      if (/^A[0-9]+$/.test(trackEntity.id)) {
+        loadAliProvider(elBody, trackEntity, 'track24', false)
+      } else {
+        loadAliProvider(elBody, trackEntity, 'yanwen', false)
+      }
+      break
     case 'C':
       loadDoubleAliProvider(elBody, trackEntity, 'track24', 'trackchinapost', true)
       break
@@ -156,12 +166,11 @@ function loadTrackToContent (trackEntity) {
       loadAliProvider(elBody, trackEntity, 'winit', false)
       break
     case 'E':
-      if(trackEntity.id.charAt(1) == 'Y') {
+      if (trackEntity.id.charAt(1) == 'Y') {
         loadAliProvider(elBody, trackEntity, 'track24', false)
       } else {
         loadCttProvider(elBody, trackEntity)
       }
-
       break
     case 'N':
     case 'L':
@@ -183,6 +192,8 @@ function loadTrackToContent (trackEntity) {
         loadSBSwitzerlandPost(elBody, trackEntity)
       } else if (/S\d+/.test(trackEntity.id)) {
         loadAliProvider(elBody, trackEntity, 'cainiao', false)
+      } else if (/^SY[a-zA-Z0-9]+$/.test(trackEntity.id)) {
+        loadSkyAndAliProvider(elBody, trackEntity, 'track24')
       } else {
         loadNetherlandsPost(elBody, trackEntity)
       }
@@ -190,15 +201,20 @@ function loadTrackToContent (trackEntity) {
     case 'P':
       loadSpainExpress(elBody, trackEntity)
       break
+    case 'K':
+      loadAliProvider(elBody, trackEntity, 'track24', false)
+      break
     case 'U':
       if (/UPA.+$/.test(trackEntity.id)) {
         loadAliProvider(elBody, trackEntity, 'pitneybowes', false)
+      } else if (/^U[a-zA-Z0-9]+SE$/.test(trackEntity.id)) {
+        loadAliProvider(elBody, trackEntity, 'track24', false)
       } else {
         loadYanwen(elBody, trackEntity)
       }
       break
     case 'R': // Aliexpress
-      let ending = trackEntity.id.charAt(trackEntity.id.length - 2)
+      var ending = trackEntity.id.charAt(trackEntity.id.length - 2)
         + trackEntity.id.charAt(trackEntity.id.length - 1)
       switch (ending) {
         case 'MY':
@@ -219,10 +235,16 @@ function loadTrackToContent (trackEntity) {
         case 'HU':
           loadAliProvider(elBody, trackEntity, 'track24', false)
           break
+        case 'DE':
+          loadCttProvider(elBody, trackEntity)
+          break
         case 'AT':
           loadAliProvider(elBody, trackEntity, 'track24', false)
           break
         case 'GB':
+          loadAliProvider(elBody, trackEntity, 'track24', false)
+          break
+        case 'LA':
           loadAliProvider(elBody, trackEntity, 'track24', false)
           break
         default:
@@ -383,6 +405,36 @@ function loadSBSwitzerlandPost (elBody, trackEntity) {
 
   getProviderData('cjah', trackEntity.id).then(function (data) {
     alicontainer.append(aliExpressTemplate(data))
+    if (++count == total) removeLoading(elBody)
+  }).catch(function (error) {
+    alicontainer.append(failedTemplate(error.responseJSON))
+    if (++count == total) removeLoading(elBody)
+  })
+}
+
+function loadSkyAndAliProvider (elBody, trackEntity, provider) {
+  // Make both requests at the same time
+  var total = 2,
+    count = 0
+
+  var alicontainer = elBody.find('.c-aligeneral'),
+    skyContainer = elBody.find('.c-sky')
+
+  getProviderData('sky', trackEntity.id).then(function (data) { // add sky response to the page
+    skyContainer.append(skyTemplate(data))
+    if (++count == total) removeLoading(elBody)
+  }).catch(function (error) {
+    skyContainer.append(failedTemplate(error.responseJSON))
+    if (++count == total) removeLoading(elBody)
+  })
+
+  getProviderData(provider, trackEntity.id).then(function (data) {
+    if (provider == 'cainiao' && data.states.length == 0) {
+      alicontainer.append(cainiaoEmpty(data))
+    } else {
+      alicontainer.append(aliExpressTemplate(data))
+    }
+
     if (++count == total) removeLoading(elBody)
   }).catch(function (error) {
     alicontainer.append(failedTemplate(error.responseJSON))
@@ -756,53 +808,50 @@ function capitalizeFirstLetter (string) {
 function isValidID (id) {
   if (id.length < 3) return false
 
-  if (/^PQ.+$/.test(id)) return true
+  var allowedFormats = [
+    /^AA[a-zA-Z0-9]+YN$/,
+    /^A[0-9]+$/,
+    /^PQ[a-zA-Z0-9]+$/,
+    /^NL[a-zA-Z0-9]+$/,
+    /^GE[a-zA-Z0-9]+$/,
+    /^LV[a-zA-Z0-9]+$/,
+    /^LP[a-zA-Z0-9]+$/,
+    /^BZ[a-zA-Z0-9]+CN$/,
+    /^CP[a-zA-Z0-9]+CN$/,
+    /^HK[a-zA-Z0-9]+AM$/,
+    /^R[a-zA-Z0-9]+SG$/,
+    /^R[a-zA-Z0-9]+DE$/,
+    /^R[a-zA-Z0-9]+MY$/,
+    /^R[a-zA-Z0-9]+SE$/,
+    /^R[a-zA-Z0-9]+CN$/,
+    /^R[a-zA-Z0-9]+NL$/,
+    /^R[a-zA-Z0-9]+HU$/,
+    /^R[a-zA-Z0-9]+AT$/,
+    /^R[a-zA-Z0-9]+PT$/,
+    /^R[a-zA-Z0-9]+GB$/,
+    /^R[a-zA-Z0-9]+LA$/,
+    /^U[a-zA-Z0-9]+YP$/,
+    /^UPA[a-zA-Z0-9]+$/,
+    /^U[a-zA-Z0-9]+SE$/,
+    /^Q[a-zA-Z0-9]+XX$/,
+    /^SB[a-zA-Z0-9]+$/,
+    /^S\d+$/,
+    /^SY[a-zA-Z0-9]+$/,
+    /^E[a-zA-Z0-9]+PT$/,
+    /^EY[a-zA-Z0-9]+$/,
+    /^L[a-zA-Z0-9]+PT$/,
+    /^LA[a-zA-Z0-9]+$/,
+    /^L[a-zA-Z0-9]+CN$/,
+    /^Y[a-zA-Z0-9]+$/,
+    /^ID[a-zA-Z0-9]+CN$/,
+    /^KW[a-zA-Z0-9]+$/,
+    /^\d+$/
+  ]
 
-  if (/^NL.+$/.test(id)) return true
-
-  if (/^GE.+$/.test(id)) return true
-
-  if (/^LV.+$/.test(id)) return true
-  if (/^LP.+$/.test(id)) return true
-
-  if (/^BZ.+CN$/.test(id)) return true
-
-  if (/^CP.+CN$/.test(id)) return true
-
-  if (/^HK.+AM$/.test(id)) return true
-
-  if (/^R.+SG$/.test(id)) return true
-  if (/^R.+MY$/.test(id)) return true
-  if (/^R.+SE$/.test(id)) return true
-  if (/^R.+CN$/.test(id)) return true
-  if (/^R.+NL$/.test(id)) return true
-  if (/^R.+HU$/.test(id)) return true
-  if (/^R.+AT$/.test(id)) return true
-  if (/^R.+PT$/.test(id)) return true
-  if (/^R.+GB$/.test(id)) return true
-
-  if (/^U.+YP$/.test(id)) return true
-  if (/^UPA.+$/.test(id)) return true
-
-  if (/^Q.+XX$/.test(id)) return true
-
-  if (/^SB.+$/.test(id)) return true
-  if (/^S\d+$/.test(id)) return true
-  if (/^SY.+$/.test(id)) return true
-
-  if (/^E.+PT$/.test(id)) return true
-  if (/^EY.+$/.test(id)) return true
-
-  if (/^L.+PT$/.test(id)) return true
-  if (/^LA.+$/.test(id)) return true
-  if (/^L.+CN$/.test(id)) return true
-
-  if (/^Y.+$/.test(id)) return true
-
-  // Winit
-  if (/^ID.+CN$/.test(id)) return true
-
-  if (/^\d+$/.test(id)) return true
+  for (var i = 0; i < allowedFormats.length; i++) {
+    if (allowedFormats[i].test(id))
+      return true
+  }
 
   return false
 }
@@ -838,8 +887,14 @@ function storageLoadAll () {
   for (var i = 0; i < localStorage.length; i++) {
     var key = localStorage.key(i)
 
-    if (key.charAt(0) == '#') { //we only load valid ids
-      tracks.push(JSON.parse(localStorage.getItem(key)))
+    if (key.charAt(0) === '#') {
+      if (/^[#a-zA-Z0-9]+$/.test(key)) {
+        //we only load valid ids
+        tracks.push(JSON.parse(localStorage.getItem(key)))
+      } else {
+        // not valid id, remove
+        localStorage.removeItem(key)
+      }
     }
   }
 }

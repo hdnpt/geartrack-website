@@ -3,6 +3,7 @@ const router = express.Router()
 const geartrack = require('geartrack')
 const mcache = require('memory-cache')
 const http = require('http')
+const roundrobin = require('rr')
 
 /**
  * Cache middleware
@@ -76,7 +77,7 @@ let providers = {
   'dhl': new Provider('DHL', 'yellow'),
   'track24': new Provider('Track24', 'info'),
   'correos': new Provider('Correos Express Novo', 'danger'),
-  'correosOld': new Provider('Correos Express Antigo', 'danger'),
+  'correosOld': new Provider('Correos Express Antigo', 'danger')
 }
 
 /**
@@ -97,6 +98,11 @@ router.get('/adicional', validateId, validatePostalCode, function (req, res) {
   })
 })
 
+let proxys = []
+if (process.env.GEARTRACK_PROXYS) {
+  proxys = process.env.GEARTRACK_PROXYS.split(',').map(ip => ip.trim()).filter(ip => ip.length > 0)
+}
+
 /**
  * General providers that only need an id
  */
@@ -108,18 +114,40 @@ router.get('/:provider', validateId, function (req, res, next) {
   if (!providerObj) // no provider found
     return next()
 
-  geartrack[req.params.provider].getInfo(id, (err, entity) => {
+  if (req.params.provider == 'track24' && proxys.length > 0) {
+    let proxy = roundrobin(proxys)
+    let proxyUrl = 'http://' + proxy + '/track24/ajax/tracking100600.ajax.php'
+    geartrack[req.params.provider].getInfoProxy(id, proxyUrl, providerCallback(res, providerObj))
+  } else {
+    geartrack[req.params.provider].getInfo(id, providerCallback(res, providerObj))
+  }
+
+})
+
+function providerCallback (res, providerObj) {
+  return (err, entity) => {
     if (err) {
       // sets the status code and the appropriate message
       return processErrorResponse(err, res, providerObj.name)
+    }
+
+    if (entity.constructor &&
+      entity.constructor.name &&
+      entity.constructor.name == 'SkyInfo' &&
+      entity.messages &&
+      entity.messages.length == 0 &&
+      entity.status &&
+      entity.status.length == 0) {
+      // Sky has no info
+      return processErrorResponse(new Error('DEFAULT - no info'), res, providerObj.name)
     }
 
     entity.provider = providerObj.name // name shown: 'Informação [provider]'
     entity.color = providerObj.cssClass // color of the background, may use bootstrap classes
 
     res.json(entity)
-  })
-})
+  }
+}
 
 /*
  |--------------------------------------------------------------------------
@@ -200,6 +228,12 @@ function validatePostalCode (req, res, next) {
 function Provider (name, cssClass) {
   this.name = name
   this.cssClass = cssClass
+}
+
+function getRandomIntInclusive (min, max) {
+  min = Math.ceil(min)
+  max = Math.floor(max)
+  return Math.floor(Math.random() * (max - min + 1)) + min
 }
 
 module.exports = router

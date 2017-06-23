@@ -51,6 +51,7 @@ This is an Express.js app
 
 ### Requirements
 - Node
+- Environment variable: `GEARTRACK_PROXYS` with `ip,ip,ip` 
 
 ### Instructions
 - clone this repo to a folder
