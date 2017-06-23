@@ -10,3 +10,5 @@ node_modules
 ### VS Code
 .vscode/*
 
+### PM2 configuration file
+gear.json

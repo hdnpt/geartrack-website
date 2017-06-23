@@ -4,11 +4,15 @@ const favicon = require('serve-favicon')
 const logger = require('morgan')
 const hbs = require('hbs')
 const bugsnag = require("bugsnag")
-// error reporting
-bugsnag.register("9d032d4196d6ba90e77e615822442142")
-
 const index = require('./routes/index')
 const api = require('./routes/api')
+const hbsService = require('./services/hbsService')
+
+// Error reporting on production
+console.log("BUGSNAG", process.env.GEARTRACK_BUGSNAG)
+bugsnag.register(process.env.GEARTRACK_BUGSNAG, {
+  notifyReleaseStages: ['production']
+})
 
 const app = express()
 
@@ -20,18 +24,7 @@ const app = express()
 app.set('views', path.join(__dirname, 'views'))
 app.set('view engine', 'hbs')
 app.locals.app_name = 'Geartrack'
-
-hbs.registerHelper('section', function (name, options) {
-    if(!this._sections) this._sections = {}
-    this._sections[name] = options.fn(this)
-    return null
-})
-
-hbs.registerHelper('year', function () {
-    return new Date().getFullYear()
-})
-
-hbs.registerPartials(__dirname + '/views/partials')
+hbsService(hbs) // Register hbs partials and helpers
 
 /*
 |--------------------------------------------------------------------------
@@ -39,8 +32,8 @@ hbs.registerPartials(__dirname + '/views/partials')
 |--------------------------------------------------------------------------
 */
 app.use(bugsnag.requestHandler)
-app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')))
 app.use(logger('dev'))
+app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')))
 app.use(express.static(path.join(__dirname, 'public')))
 
 /*
