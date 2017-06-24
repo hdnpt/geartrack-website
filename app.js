@@ -9,7 +9,6 @@ const api = require('./routes/api')
 const hbsService = require('./services/hbsService')
 
 // Error reporting on production
-console.log("BUGSNAG", process.env.GEARTRACK_BUGSNAG)
 bugsnag.register(process.env.GEARTRACK_BUGSNAG, {
   notifyReleaseStages: ['production']
 })

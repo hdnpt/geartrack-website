@@ -7,16 +7,17 @@
     "test": "supervisor -w routes,views/partials,app.js -e hbs,js bin/www"
   },
   "license": "MIT",
-  "homepage": "https://geartrack.hdn.pt",
+  "homepage": "https://geartrack.pt",
   "dependencies": {
-    "bugsnag": "^1.10.0",
-    "debug": "~2.2.0",
-    "express": "~4.14.0",
-    "geartrack": "^2.7.9",
+    "bugsnag": "^1.11.0",
+    "debug": "^2.6.8",
+    "express": "^4.15.3",
+    "geartrack": "^2.7.11",
     "hbs": "~4.0.1",
-    "memory-cache": "^0.1.6",
-    "morgan": "~1.7.0",
+    "memory-cache": "^0.2.0",
+    "morgan": "^1.8.2",
+    "qs": "^6.4.0",
     "rr": "^0.1.0",
-    "serve-favicon": "~2.3.0"
+    "serve-favicon": "^2.4.3"
   }
 }

@@ -156,11 +156,14 @@ function loadTrackToContent (trackEntity) {
         loadAliProvider(elBody, trackEntity, 'yanwen', false)
       }
       break
+    case 'B':
+      loadDoubleAliProvider(elBody, trackEntity, 'track24', 'cainiao', false)
+      break
     case 'C':
       loadDoubleAliProvider(elBody, trackEntity, 'track24', 'trackchinapost', true)
       break
-    case 'B':
-      loadDoubleAliProvider(elBody, trackEntity, 'track24', 'cainiao', false)
+    case 'D':
+      loadCttProvider(elBody, trackEntity)
       break
     case 'I':
       loadAliProvider(elBody, trackEntity, 'winit', false)
@@ -840,6 +843,7 @@ function isValidID (id) {
     /^E[a-zA-Z0-9]+PT$/,
     /^EY[a-zA-Z0-9]+$/,
     /^L[a-zA-Z0-9]+PT$/,
+    /^D[a-zA-Z0-9]+PT$/,
     /^LA[a-zA-Z0-9]+$/,
     /^L[a-zA-Z0-9]+CN$/,
     /^Y[a-zA-Z0-9]+$/,
