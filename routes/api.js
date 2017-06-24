@@ -1,54 +1,8 @@
 const express = require('express')
 const router = express.Router()
 const geartrack = require('geartrack')
-const mcache = require('memory-cache')
-const http = require('http')
 const roundrobin = require('rr')
-
-/**
- * Cache middleware
- * Caches the response for a period of time
- *
- * Uses memory cache (RAM)
- *
- * Modify res.locals.expire to control the seconds of the cache
- * res.locals.expire = 0 will prevent caching the response
- *
- * @param seconds
- * @param type default = json
- * @return {function(*, *, *)}
- */
-const cache = (seconds, type = 'json') => {
-  return (req, res, next) => {
-    let key = req.originalUrl
-    let cachedBody = mcache.get(key)
-    res.type(type)
-
-    if (cachedBody) {
-      let body = JSON.parse(cachedBody) // we know that is json
-      if (body.error) res.status(400)
-
-      res.send(cachedBody)
-      return
-    }
-
-    res.sendResponse = res.send
-    res.send = (body) => {
-
-      let time = seconds
-      if (typeof res.locals.expire != 'undefined')
-        time = parseInt(res.locals.expire)
-
-      if (time > 0) {
-        mcache.put(key, body, time * 1000) //ms
-        //res.header('cache-control', 'max-age=' + time) browser was not clearing cache right :/
-      }
-
-      res.sendResponse(body)
-    }
-    next()
-  }
-}
+const cache = require('../services/cacheMiddleware')
 
 // default cache time - 10 min
 const CACHE_TIME = 10 * 60
@@ -174,6 +128,9 @@ function processErrorResponse (err, res, provider) {
       message = 'De momento este serviço está com problemas. Tente mais tarde.'
       break
     case 'PARSER':
+      let bugsnag = res.app.get('bugsnag')
+      if(bugsnag) bugsnag.notify(err) // send error to be analysed
+
       message = 'De momento estamos com dificuldade em aceder à informação deste servidor. Tente mais tarde.'
       break
     default: // NO_DATA

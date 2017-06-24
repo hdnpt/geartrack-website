@@ -22,6 +22,7 @@ const app = express()
 */
 app.set('views', path.join(__dirname, 'views'))
 app.set('view engine', 'hbs')
+app.set('bugsnag', bugsnag) // save the object for responses notify when a parse fails
 app.locals.app_name = 'Geartrack'
 hbsService(hbs) // Register hbs partials and helpers
 
