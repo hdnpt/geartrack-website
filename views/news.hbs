@@ -10,6 +10,18 @@
                     <div class="row">
                         <div class="col-sm-2">
                             <strong>
+                                <time class="timeago" datetime="2017-06-24T022:04:33+00:00"></time>
+                            </strong>
+                        </div>
+                        <div class="col-sm-10">
+                            <p>Adicionado suporte para a transportadora <strong>MRW</strong> usada nas encomendas da Amazon. Ids numéricos.</p>
+                        </div>
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    <div class="row">
+                        <div class="col-sm-2">
+                            <strong>
                                 <time class="timeago" datetime="2017-06-08T016:34:33+00:00"></time>
                             </strong>
                         </div>
@@ -401,7 +413,7 @@
     </div>
 </div>
 
-{{#section 'script'}}
+{{#append 'scripts'}}
     <script src="js/vendor/jquery.timeago.js"></script>
     <script>
         jQuery.timeago.settings.strings = {
@@ -423,4 +435,4 @@
             jQuery("time.timeago").timeago();
         });
     </script>
-{{/section}}
+{{/append}}

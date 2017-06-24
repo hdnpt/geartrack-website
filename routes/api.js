@@ -31,7 +31,8 @@ let providers = {
   'dhl': new Provider('DHL', 'yellow'),
   'track24': new Provider('Track24', 'info'),
   'correos': new Provider('Correos Express Novo', 'danger'),
-  'correosOld': new Provider('Correos Express Antigo', 'danger')
+  'correosOld': new Provider('Correos Express Antigo', 'danger'),
+  'mrw': new Provider('MRW', 'primary')
 }
 
 /**
