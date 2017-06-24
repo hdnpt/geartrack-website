@@ -32,7 +32,8 @@ let providers = {
   'track24': new Provider('Track24', 'info'),
   'correos': new Provider('Correos Express Novo', 'danger'),
   'correosOld': new Provider('Correos Express Antigo', 'danger'),
-  'mrw': new Provider('MRW', 'primary')
+  'mrw': new Provider('MRW', 'primary'),
+  'ips': new Provider('IPS', 'yellow'),
 }
 
 /**

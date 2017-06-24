@@ -250,6 +250,9 @@ function loadTrackToContent (trackEntity) {
         case 'LA':
           loadAliProvider(elBody, trackEntity, 'track24', false)
           break
+        case 'IN':
+          loadAliProvider(elBody, trackEntity, 'ips', true)
+          break
         default:
           loadAliProvider(elBody, trackEntity, 'singpost')
       }
@@ -841,6 +844,7 @@ function isValidID (id) {
     /^R[a-zA-Z0-9]+PT$/,
     /^R[a-zA-Z0-9]+GB$/,
     /^R[a-zA-Z0-9]+LA$/,
+    /^R[a-zA-Z0-9]+IN$/,
     /^U[a-zA-Z0-9]+YP$/,
     /^UPA[a-zA-Z0-9]+$/,
     /^U[a-zA-Z0-9]+SE$/,
