@@ -236,7 +236,7 @@ function loadTrackToContent (trackEntity) {
           loadCttProvider(elBody, trackEntity)
           break
         case 'HU':
-          loadAliProvider(elBody, trackEntity, 'track24', false)
+          loadAliProvider(elBody, trackEntity, 'track24', true)
           break
         case 'DE':
           loadCttProvider(elBody, trackEntity)
@@ -249,6 +249,9 @@ function loadTrackToContent (trackEntity) {
           break
         case 'LA':
           loadAliProvider(elBody, trackEntity, 'track24', false)
+          break
+        case 'IN':
+          loadAliProvider(elBody, trackEntity, 'ips', true)
           break
         default:
           loadAliProvider(elBody, trackEntity, 'singpost')
@@ -627,7 +630,7 @@ function loadDoubleAliProvider (elBody, trackEntity, provider1, provider2, showC
  */
 function loadNumbersMultiple (elBody, trackEntity) {
 // Make both requests at the same time
-  var total = 5,
+  var total = 6,
     count = 0,
     success = 0
 
@@ -672,6 +675,14 @@ function loadNumbersMultiple (elBody, trackEntity) {
   })
 
   getProviderData('dhl', trackEntity.id).then(function (data) {
+    alicontainer.append(aliExpressTemplate(data))
+    success++
+    if (++count == total) failed()
+  }).catch(function (error) {
+    if (++count == total) failed()
+  })
+
+  getProviderData('mrw', trackEntity.id).then(function (data) {
     alicontainer.append(aliExpressTemplate(data))
     success++
     if (++count == total) failed()
@@ -833,6 +844,7 @@ function isValidID (id) {
     /^R[a-zA-Z0-9]+PT$/,
     /^R[a-zA-Z0-9]+GB$/,
     /^R[a-zA-Z0-9]+LA$/,
+    /^R[a-zA-Z0-9]+IN$/,
     /^U[a-zA-Z0-9]+YP$/,
     /^UPA[a-zA-Z0-9]+$/,
     /^U[a-zA-Z0-9]+SE$/,
