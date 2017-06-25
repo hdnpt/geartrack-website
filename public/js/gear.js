@@ -236,7 +236,7 @@ function loadTrackToContent (trackEntity) {
           loadCttProvider(elBody, trackEntity)
           break
         case 'HU':
-          loadAliProvider(elBody, trackEntity, 'track24', false)
+          loadAliProvider(elBody, trackEntity, 'track24', true)
           break
         case 'DE':
           loadCttProvider(elBody, trackEntity)
