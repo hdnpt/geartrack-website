@@ -134,7 +134,7 @@ function processErrorResponse (err, res, provider) {
     case 'PARSER':
       if(bugsnag) bugsnag.notify(err) // send error to be analysed
       message = 'De momento estamos com dificuldade em aceder à informação deste servidor. Tenta mais tarde.'
-      breakK
+      break
     case 'ACTION_REQUIRED':
       if(bugsnag) bugsnag.notify(err) // send error to be analysed
       cacheSeconds = 0 // prevent cache
