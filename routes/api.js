@@ -129,7 +129,6 @@ function processErrorResponse (err, res, provider) {
       break
     case 'DOWN':
     case 'EMPTY':
-      if(bugsnag) bugsnag.notify(err) // send error to be analysed
       message = 'De momento este serviço está com problemas. Tenta mais tarde.'
       break
     case 'PARSER':
