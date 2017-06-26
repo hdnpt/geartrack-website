@@ -63,21 +63,22 @@ if (process.env.GEARTRACK_PROXYS) {
  * General providers that only need an id
  */
 router.get('/:provider', validateId, function (req, res, next) {
-  let id = req.query.id
+  const id = req.query.id
+  const tracker = req.params.provider
 
-  let providerObj = providers[req.params.provider]
+  let providerObj = providers[tracker]
 
   if (!providerObj) // no provider found
     return next()
 
-  if (req.params.provider == 'track24' && proxys.length > 0) {
+  if(geartrack[tracker].getInfoProxy && proxys.length > 0) { // this tracker supports proxy requests
     let proxy = roundrobin(proxys)
-    let proxyUrl = 'http://' + proxy + '/track24/ajax/tracking100600.ajax.php'
-    geartrack[req.params.provider].getInfoProxy(id, proxyUrl, providerCallback(res, providerObj))
-  } else {
-    geartrack[req.params.provider].getInfo(id, providerCallback(res, providerObj))
-  }
+    let proxyUrl = 'http://' + proxy + '/' + tracker
 
+    geartrack[tracker].getInfoProxy(id, proxyUrl, providerCallback(res, providerObj))
+  } else {
+    geartrack[tracker].getInfo(id, providerCallback(res, providerObj))
+  }
 })
 
 function providerCallback (res, providerObj) {
@@ -116,24 +117,28 @@ function processErrorResponse (err, res, provider) {
   let message = ''
 
   let type = getErrorType(err.message)
+  let bugsnag = res.app.get('bugsnag')
 
   switch (type) {
     case 'BUSY':
-      message = 'O servidor está sobrecarregado, tente novamente daqui a uns segundos.'
+      message = 'O servidor está sobrecarregado, tenta novamente daqui a uns segundos.'
       cacheSeconds = 0 // prevent cache
       break
     case 'UNAVAILABLE':
-      message = 'O servidor não está disponível de momento. Tente mais tarde.'
+      message = 'O servidor não está disponível de momento. Tenta mais tarde.'
       break
     case 'DOWN':
     case 'EMPTY':
-      message = 'De momento este serviço está com problemas. Tente mais tarde.'
+      message = 'De momento este serviço está com problemas. Tenta mais tarde.'
       break
     case 'PARSER':
-      let bugsnag = res.app.get('bugsnag')
       if(bugsnag) bugsnag.notify(err) // send error to be analysed
-
-      message = 'De momento estamos com dificuldade em aceder à informação deste servidor. Tente mais tarde.'
+      message = 'De momento estamos com dificuldade em aceder à informação deste servidor. Tenta mais tarde.'
+      breakK
+    case 'ACTION_REQUIRED':
+      if(bugsnag) bugsnag.notify(err) // send error to be analysed
+      cacheSeconds = 0 // prevent cache
+      message = 'Este tracker requere um passo adicional no seu website. Depois de efetuares esse passo volta e atualiza a pagina para tentarmos de novo! :)'
       break
     default: // NO_DATA
       message = 'Ainda não existe informação disponível para este ID.'
