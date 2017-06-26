@@ -63,21 +63,22 @@ if (process.env.GEARTRACK_PROXYS) {
  * General providers that only need an id
  */
 router.get('/:provider', validateId, function (req, res, next) {
-  let id = req.query.id
+  const id = req.query.id
+  const tracker = req.params.provider
 
-  let providerObj = providers[req.params.provider]
+  let providerObj = providers[tracker]
 
   if (!providerObj) // no provider found
     return next()
 
-  if (req.params.provider == 'track24' && proxys.length > 0) {
+  if(geartrack[tracker].getInfoProxy && proxys.length > 0) { // this tracker supports proxy requests
     let proxy = roundrobin(proxys)
-    let proxyUrl = 'http://' + proxy + '/track24/ajax/tracking118.ajax.php'
-    geartrack[req.params.provider].getInfoProxy(id, proxyUrl, providerCallback(res, providerObj))
-  } else {
-    geartrack[req.params.provider].getInfo(id, providerCallback(res, providerObj))
-  }
+    let proxyUrl = 'http://' + proxy + '/' + tracker
 
+    geartrack[tracker].getInfoProxy(id, proxyUrl, providerCallback(res, providerObj))
+  } else {
+    geartrack[tracker].getInfo(id, providerCallback(res, providerObj))
+  }
 })
 
 function providerCallback (res, providerObj) {
@@ -134,7 +135,7 @@ function processErrorResponse (err, res, provider) {
     case 'PARSER':
       if(bugsnag) bugsnag.notify(err) // send error to be analysed
       message = 'De momento estamos com dificuldade em aceder à informação deste servidor. Tenta mais tarde.'
-      break
+      breakK
     case 'ACTION_REQUIRED':
       if(bugsnag) bugsnag.notify(err) // send error to be analysed
       cacheSeconds = 0 // prevent cache
