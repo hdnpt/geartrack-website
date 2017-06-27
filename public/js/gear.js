@@ -728,7 +728,7 @@ function loadTripleAliProvider (elBody, trackEntity, provider1, provider2, provi
  */
 function loadNumbersMultiple (elBody, trackEntity) {
 // Make both requests at the same time
-  var total = 7,
+  var total = 6,
     count = 0,
     success = 0
 
@@ -800,17 +800,6 @@ function loadNumbersMultiple (elBody, trackEntity) {
     removeLoading(elBody)
     if (++count == total) failed()
   }).catch(function (error) {
-    if (++count == total) failed()
-  })
-
-  getProviderData('track17', trackEntity.id).then(function (data) {
-    aliContainer5.append(aliExpressTemplate(data))
-    success++
-    removeLoading(elBody)
-    if (++count == total) failed()
-  }).catch(function (error) {
-    aliContainer5.append(failedTemplate(error.responseJSON))
-
     if (++count == total) failed()
   })
 
