@@ -190,6 +190,7 @@
                     <div class="c-aligeneral2"></div>
                     <div class="c-aligeneral3"></div>
                     <div class="c-aligeneral4"></div>
+                    <div class="c-aligeneral5"></div>
                 </div>
             </div>
         </div>
@@ -217,7 +218,13 @@
 <script id="failed-template" type="text/x-handlebars-template">
     <div class="row">
         <div class="col-md-12">
-            <strong>\{{provider}}:</strong>
+            <h2 class="label-\{{ color }} clearfix">
+                <span>Falhou: \{{ provider }}</span>
+                <a href="\{{ link }}" target="_blank">
+                    <i class="fa fa-external-link"></i>
+                </a>
+            </h2>
+
             \{{{ error }}}
         </div>
     </div>
@@ -225,5 +232,5 @@
 <!-- /No data template -->
 
 {{#append 'scripts'}}
-    <script src="js/gear.js?v=47"></script>
+    <script src="js/gear.js?v=48"></script>
 {{/append}}

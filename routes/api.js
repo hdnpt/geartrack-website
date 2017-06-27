@@ -4,8 +4,8 @@ const geartrack = require('geartrack')
 const roundrobin = require('rr')
 const cache = require('../services/cacheMiddleware')
 
-// default cache time - 10 min
-const CACHE_TIME = 10 * 60
+// default cache time - 30 min
+const CACHE_TIME = 30 * 60
 
 // All this routes will be cached
 // Error responses can manipulate cache time
@@ -34,6 +34,7 @@ let providers = {
   'correosOld': new Provider('Correos Express Antigo', 'danger'),
   'mrw': new Provider('MRW', 'primary'),
   'ips': new Provider('IPS', 'yellow'),
+  'track17': new Provider('17track', 'warning')
 }
 
 /**
@@ -47,7 +48,11 @@ router.get('/adicional', validateId, validatePostalCode, function (req, res) {
   geartrack.adicional.getInfo(id, postalcode, (err, adicionalEntity) => {
     if (err) {
       // sets the status code and the appropriate message
-      return processErrorResponse(err, res, 'Adicional')
+      return processErrorResponse(err, res, {
+        provider: 'adicional',
+        providerInfo: new Provider('Adicional', 'success'),
+        id: id
+      })
     }
 
     res.json(adicionalEntity)
@@ -75,17 +80,21 @@ router.get('/:provider', validateId, function (req, res, next) {
     let proxy = roundrobin(proxys)
     let proxyUrl = 'http://' + proxy + '/' + tracker
 
-    geartrack[tracker].getInfoProxy(id, proxyUrl, providerCallback(res, providerObj))
+    geartrack[tracker].getInfoProxy(id, proxyUrl, providerCallback(res, tracker, providerObj, id))
   } else {
-    geartrack[tracker].getInfo(id, providerCallback(res, providerObj))
+    geartrack[tracker].getInfo(id, providerCallback(res, tracker, providerObj, id))
   }
 })
 
-function providerCallback (res, providerObj) {
+function providerCallback (res, tracker, providerObj, id) {
   return (err, entity) => {
     if (err) {
       // sets the status code and the appropriate message
-      return processErrorResponse(err, res, providerObj.name)
+      return processErrorResponse(err, res, {
+        provider: tracker,
+        providerInfo: providerObj,
+        id: id
+      })
     }
 
     if (entity.constructor &&
@@ -96,7 +105,11 @@ function providerCallback (res, providerObj) {
       entity.status &&
       entity.status.length == 0) {
       // Sky has no info
-      return processErrorResponse(new Error('DEFAULT - no info'), res, providerObj.name)
+      return processErrorResponse(new Error('DEFAULT - no info'), res, {
+        provider: tracker,
+        providerInfo: providerObj,
+        id: id
+      })
     }
 
     entity.provider = providerObj.name // name shown: 'Informação [provider]'
@@ -111,8 +124,8 @@ function providerCallback (res, providerObj) {
  | Process Error Response
  |--------------------------------------------------------------------------
  */
-function processErrorResponse (err, res, provider) {
-  let cacheSeconds = CACHE_TIME // default cache time
+function processErrorResponse (err, res, info) {
+  let cacheSeconds = 10 * 60 // error responses are cached for 10 min
   let code = 400
   let message = ''
 
@@ -138,7 +151,7 @@ function processErrorResponse (err, res, provider) {
     case 'ACTION_REQUIRED':
       if(bugsnag) bugsnag.notify(err) // send error to be analysed
       cacheSeconds = 0 // prevent cache
-      message = 'Este tracker requere um passo adicional no seu website. Depois de efetuares esse passo volta e atualiza a pagina para tentarmos de novo! :)'
+      message = 'Este tracker pode precisar de um passo adicional no seu website. Se efetuares esse passo volta e atualiza a pagina para tentarmos de novo! :)'
       break
     default: // NO_DATA
       message = 'Ainda não existe informação disponível para este ID.'
@@ -148,7 +161,9 @@ function processErrorResponse (err, res, provider) {
   res.locals.expire = cacheSeconds
   return res.status(code).json({
     error: message,
-    provider: provider
+    provider: info.providerInfo.name,
+    link: geartrack[info.provider].getLink(info.id),
+    color: info.providerInfo.cssClass // color of the background, may use bootstrap classes
   })
 }
 
