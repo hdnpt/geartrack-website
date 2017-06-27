@@ -245,13 +245,13 @@ function loadTrackToContent (trackEntity) {
     case 'R': // Aliexpress
       switch (ending) {
         case 'MY':
-          loadAliProvider(elBody, trackEntity, 'malaysiaPos')
+          loadAliProvider(elBody, trackEntity, 'malaysiaPos', true)
           break
         case 'SE':
-          loadAliProvider(elBody, trackEntity, 'directlink')
+          loadAliProvider(elBody, trackEntity, 'directlink', true)
           break
         case 'CN':
-          loadAliProvider(elBody, trackEntity, 'trackchinapost')
+          loadAliProvider(elBody, trackEntity, 'trackchinapost', true)
           break
         case 'NL':
           loadAliProvider(elBody, trackEntity, 'postNL', true)
@@ -266,22 +266,22 @@ function loadTrackToContent (trackEntity) {
           loadDoubleAliProvider(elBody, trackEntity, 'track24', 'track17', true)
           break
         case 'AT':
-          loadDoubleAliProvider(elBody, trackEntity, 'track24', 'track17', false)
+          loadDoubleAliProvider(elBody, trackEntity, 'track24', 'track17', true)
           break
         case 'GB':
           loadDoubleAliProvider(elBody, trackEntity, 'track24', 'track17', false)
           break
         case 'LA':
-          loadDoubleAliProvider(elBody, trackEntity, 'track24', 'track17', false)
+          loadDoubleAliProvider(elBody, trackEntity, 'track24', 'track17', true)
           break
         case 'IN':
           loadAliProvider(elBody, trackEntity, 'ips', true)
           break
         case 'SG':
-          loadAliProvider(elBody, trackEntity, 'singpost')
+          loadAliProvider(elBody, trackEntity, 'singpost', true)
           break
         default:
-          loadDoubleAliProvider(elBody, trackEntity, 'track24', 'track17', false)
+          loadDoubleAliProvider(elBody, trackEntity, 'track24', 'track17', true)
       }
       break
     case 'Q':

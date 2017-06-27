@@ -134,8 +134,8 @@ function processErrorResponse (err, res, info) {
 
   switch (type) {
     case 'BUSY':
-      message = 'O servidor está sobrecarregado, tenta novamente daqui a uns segundos.'
-      cacheSeconds = 0 // prevent cache
+      message = 'O servidor está sobrecarregado, tenta novamente daqui a um minuto.'
+      cacheSeconds = 60 // cache for 1min
       break
     case 'UNAVAILABLE':
       message = 'O servidor não está disponível de momento. Tenta mais tarde.'
