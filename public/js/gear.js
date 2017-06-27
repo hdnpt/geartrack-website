@@ -808,7 +808,7 @@ function loadNumbersMultiple (elBody, trackEntity) {
       aliContainerG.append(failedTemplate({
         provider: 'Nenhum tracker com informação',
         color: 'primary',
-        error: 'Não foi encontrado nenhum tracking com informação sobre esse ID. <br> Fale connosco no Facebook para adicionarmos!',
+        error: 'Não foi encontrado nenhum tracking com informação para esse ID. <br> Fala connosco no Facebook para adicionarmos!',
         link: 'https://www.facebook.com/geartrackpt'
       }))
 
