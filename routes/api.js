@@ -145,7 +145,7 @@ function processErrorResponse (err, res, info) {
       message = 'De momento este serviço está com problemas. Tenta mais tarde.'
       break
     case 'PARSER':
-      if(bugsnag) bugsnag.notify(err) // send error to be analysed
+      if(info.provider != 'correosOld' && bugsnag) bugsnag.notify(err) // send error to be analysed
       message = 'De momento estamos com dificuldade em aceder à informação deste servidor. Tenta mais tarde.'
       break
     case 'ACTION_REQUIRED':
