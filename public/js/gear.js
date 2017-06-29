@@ -209,6 +209,8 @@ function loadTrackToContent (trackEntity) {
         notifyNewId(trackEntity.id)
       } else if (/^LV.+$/.test(trackEntity.id)) {
         loadNetherlandsPost(elBody, trackEntity)
+      } else if(/^NL.+$/.test(trackEntity.id)) {
+        loadNetherlandsPost(elBody, trackEntity)
       } else {
         loadDoubleAliProvider(elBody, trackEntity, 'track24', 'track17', false)
         notifyNewId(trackEntity.id)
