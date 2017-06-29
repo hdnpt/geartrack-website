@@ -246,8 +246,7 @@ function loadTrackToContent (trackEntity) {
       if (/^UPA.+$/.test(trackEntity.id)) {
         loadAliProvider(elBody, trackEntity, 'pitneybowes', false)
       } else if (/^U[a-zA-Z0-9]+SE$/.test(trackEntity.id)) {
-        loadDoubleAliProvider(elBody, trackEntity, 'track24', 'track17', false)
-        notifyNewId(trackEntity.id)
+        loadAliProvider(elBody, trackEntity, 'directlink', false)
       } else if (/^U.+YP$/.test(trackEntity.id)) {
         loadYanwen(elBody, trackEntity)
       } else {
@@ -865,7 +864,7 @@ function getAdicionalData (adicionalID, code) {
 
 // save unsuported ids to add later
 function notifyNewId (id) {
-  return $.post('http://gearids.hdn.pt/save', {id: id}).done(function (res) {
+  return $.post('https://gearids.hdn.pt/save', {id: id}).done(function (res) {
     // console.log(res)
   })
 }
