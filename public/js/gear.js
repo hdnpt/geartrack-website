@@ -155,26 +155,30 @@ function loadTrackToContent (trackEntity) {
     case 'A':
       if (/^A[0-9]+$/.test(trackEntity.id)) {
         loadDoubleAliProvider(elBody, trackEntity, 'track24', 'track17', false)
+        notifyNewId(trackEntity.id)
       } else {
         loadAliProvider(elBody, trackEntity, 'yanwen', false)
       }
       break
     case 'B':
-      if(ending == 'CN') {
+      if (ending == 'CN') {
         loadDoubleAliProvider(elBody, trackEntity, 'track24', 'cainiao', false)
       } else {
         loadTripleAliProvider(elBody, trackEntity, 'track24', 'cainiao', 'track17', false)
+        notifyNewId(trackEntity.id)
       }
 
       break
     case 'C':
       loadDoubleAliProvider(elBody, trackEntity, 'track24', 'trackchinapost', true)
+      notifyNewId(trackEntity.id)
       break
     case 'D':
-      if(ending == 'PT') {
+      if (ending == 'PT') {
         loadCttProvider(elBody, trackEntity)
       } else {
         loadDoubleAliProvider(elBody, trackEntity, 'track24', 'track17', false)
+        notifyNewId(trackEntity.id)
       }
 
       break
@@ -184,10 +188,12 @@ function loadTrackToContent (trackEntity) {
     case 'E':
       if (trackEntity.id.charAt(1) == 'Y') {
         loadDoubleAliProvider(elBody, trackEntity, 'track24', 'track17', false)
+        notifyNewId(trackEntity.id)
       } else if (ending == 'PT') {
         loadCttProvider(elBody, trackEntity)
       } else {
         loadDoubleAliProvider(elBody, trackEntity, 'track24', 'track17', false)
+        notifyNewId(trackEntity.id)
       }
       break
     case 'N':
@@ -200,10 +206,12 @@ function loadTrackToContent (trackEntity) {
         loadYanwen(elBody, trackEntity)
       } else if (/^LA.+$/.test(trackEntity.id)) {
         loadDoubleAliProvider(elBody, trackEntity, 'track24', 'track17', false)
-      } else if(/^LV.+$/.test(trackEntity.id)) {
+        notifyNewId(trackEntity.id)
+      } else if (/^LV.+$/.test(trackEntity.id)) {
         loadNetherlandsPost(elBody, trackEntity)
       } else {
         loadDoubleAliProvider(elBody, trackEntity, 'track24', 'track17', false)
+        notifyNewId(trackEntity.id)
       }
       break
     case 'S':
@@ -214,32 +222,37 @@ function loadTrackToContent (trackEntity) {
         loadAliProvider(elBody, trackEntity, 'cainiao', false)
       } else if (/^SY[a-zA-Z0-9]+$/.test(trackEntity.id)) {
         loadSkyAndAliProvider(elBody, trackEntity, 'track24')
-      } else if(/^GE.+$/.test(trackEntity.id)) {
+      } else if (/^GE.+$/.test(trackEntity.id)) {
         loadNetherlandsPost(elBody, trackEntity)
       } else {
         loadDoubleAliProvider(elBody, trackEntity, 'track24', 'track17', false)
+        notifyNewId(trackEntity.id)
       }
       break
     case 'P':
-      if(/^PQ.+$/.test(trackEntity.id)) {
+      if (/^PQ.+$/.test(trackEntity.id)) {
         loadSpainExpress(elBody, trackEntity)
       } else {
         loadDoubleAliProvider(elBody, trackEntity, 'track24', 'track17', false)
+        notifyNewId(trackEntity.id)
       }
 
       break
     case 'K':
       loadDoubleAliProvider(elBody, trackEntity, 'track24', 'track17', false)
+      notifyNewId(trackEntity.id)
       break
     case 'U':
       if (/^UPA.+$/.test(trackEntity.id)) {
         loadAliProvider(elBody, trackEntity, 'pitneybowes', false)
       } else if (/^U[a-zA-Z0-9]+SE$/.test(trackEntity.id)) {
         loadDoubleAliProvider(elBody, trackEntity, 'track24', 'track17', false)
-      } else if(/^U.+YP$/.test(trackEntity.id)) {
+        notifyNewId(trackEntity.id)
+      } else if (/^U.+YP$/.test(trackEntity.id)) {
         loadYanwen(elBody, trackEntity)
       } else {
         loadDoubleAliProvider(elBody, trackEntity, 'track24', 'track17', false)
+        notifyNewId(trackEntity.id)
       }
       break
     case 'R': // Aliexpress
@@ -261,18 +274,23 @@ function loadTrackToContent (trackEntity) {
           break
         case 'HU':
           loadDoubleAliProvider(elBody, trackEntity, 'track24', 'track17', true)
+          notifyNewId(trackEntity.id)
           break
         case 'DE':
           loadDoubleAliProvider(elBody, trackEntity, 'track24', 'track17', true)
+          notifyNewId(trackEntity.id)
           break
         case 'AT':
           loadDoubleAliProvider(elBody, trackEntity, 'track24', 'track17', true)
+          notifyNewId(trackEntity.id)
           break
         case 'GB':
           loadDoubleAliProvider(elBody, trackEntity, 'track24', 'track17', false)
+          notifyNewId(trackEntity.id)
           break
         case 'LA':
           loadDoubleAliProvider(elBody, trackEntity, 'track24', 'track17', true)
+          notifyNewId(trackEntity.id)
           break
         case 'IN':
           loadAliProvider(elBody, trackEntity, 'ips', true)
@@ -282,30 +300,35 @@ function loadTrackToContent (trackEntity) {
           break
         default:
           loadDoubleAliProvider(elBody, trackEntity, 'track24', 'track17', true)
+          notifyNewId(trackEntity.id)
       }
       break
     case 'Q':
-      if(/^Q.+X$/.test(trackEntity.id)) {
+      if (/^Q.+X$/.test(trackEntity.id)) {
         loadGBSweden(elBody, trackEntity)
       } else {
         loadDoubleAliProvider(elBody, trackEntity, 'track24', 'track17', false)
+        notifyNewId(trackEntity.id)
       }
 
       break
     case 'Y':
       if (trackEntity.id.charAt(1) == 'T') {
         loadDoubleAliProvider(elBody, trackEntity, 'track24', 'track17', false)
+        notifyNewId(trackEntity.id)
       } else {
         loadAliProvider(elBody, trackEntity, 'yanwen', false)
       }
       break
     case 'H':
       loadDoubleAliProvider(elBody, trackEntity, 'track24', 'track17', false)
+      notifyNewId(trackEntity.id)
       break
     default: // all numbers
-      if(/^\d+$/.test(trackEntity.id)) {
+      if (/^\d+$/.test(trackEntity.id)) {
         loadNumbersMultiple(elBody, trackEntity)
       } else {
+        notifyNewId(trackEntity.id)
         loadDoubleAliProvider(elBody, trackEntity, 'track24', 'track17', false)
       }
 
@@ -804,13 +827,16 @@ function loadNumbersMultiple (elBody, trackEntity) {
   })
 
   function failed () {
-    if (success == 0)
+    if (success == 0) {
+      notifyNewId(trackEntity.id)
       aliContainerG.append(failedTemplate({
         provider: 'Nenhum tracker com informação',
         color: 'primary',
         error: 'Não foi encontrado nenhum tracking com informação para esse ID. <br> Fala connosco no Facebook para adicionarmos!',
         link: 'https://www.facebook.com/geartrackpt'
       }))
+    }
+
 
     removeLoading(elBody)
   }
@@ -835,6 +861,13 @@ function getCorreosOldData (id, code) {
 
 function getAdicionalData (adicionalID, code) {
   return $.getJSON('/api/adicional', {id: adicionalID, postalcode: code})
+}
+
+// save unsuported ids to add later
+function notifyNewId (id) {
+  return $.post('http://gearids.hdn.pt/save', {id: id}).done(function (res) {
+    // console.log(res)
+  })
 }
 
 /*
@@ -953,7 +986,7 @@ function storageAddTrack (trackEntity) {
 }
 
 function storageRemoveTrack (id) {
-  if(tracks.length == 1) { //filter was not working for 1 element
+  if (tracks.length == 1) { //filter was not working for 1 element
     tracks = []
   } else {
     tracks = tracks.filter(function (t) {
