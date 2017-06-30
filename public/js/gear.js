@@ -325,6 +325,11 @@ function loadTrackToContent (trackEntity) {
       loadDoubleAliProvider(elBody, trackEntity, 'track24', 'track17', false)
       notifyNewId(trackEntity.id)
       break
+    case 'T':
+      if(/^TH.+$/.test(trackEntity.id)) {
+        loadAliProvider(elBody, trackEntity, 'panasia', false)
+        break
+      }
     default: // all numbers
       if (/^\d+$/.test(trackEntity.id)) {
         loadNumbersMultiple(elBody, trackEntity)
