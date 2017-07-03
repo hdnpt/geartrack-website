@@ -209,7 +209,7 @@ function loadTrackToContent (trackEntity) {
         notifyNewId(trackEntity.id)
       } else if (/^LV.+$/.test(trackEntity.id)) {
         loadNetherlandsPost(elBody, trackEntity)
-      } else if(/^NL.+$/.test(trackEntity.id)) {
+      } else if (/^NL.+$/.test(trackEntity.id)) {
         loadNetherlandsPost(elBody, trackEntity)
       } else {
         loadDoubleAliProvider(elBody, trackEntity, 'track24', 'track17', false)
@@ -326,7 +326,7 @@ function loadTrackToContent (trackEntity) {
       notifyNewId(trackEntity.id)
       break
     case 'T':
-      if(/^TH.+$/.test(trackEntity.id)) {
+      if (/^TH.+$/.test(trackEntity.id)) {
         loadAliProvider(elBody, trackEntity, 'panasia', false)
         break
       }
@@ -404,44 +404,26 @@ function loadSpainExpress (elBody, trackEntity) {
     if (++count == total) removeLoading(elBody)
   })
 
-  getCorreosOldData(trackEntity.id, trackEntity.postalcode)
-  .then(function (correosData) {
-    correosOldContainer.append(correosOldTemplate(correosData))
-
+  var adicionalId = trackEntity.id.slice(0, -3)
+  getAdicionalData(adicionalId, trackEntity.postalcode)
+  .then(function (adicionalData) {
     if (++count == total) removeLoading(elBody)
-    getProviderData('expresso24', correosData.product.ref)
-    .then(function (expressoInfo) { // load expresso24 before adicional
-      expresso24Container.append(expresso24Template(expressoInfo))
-      //if (++count == total) removeLoading(elBody)
-    })
-    .catch(function (error) {
-      expresso24Container.append(failedTemplate(error.responseJSON))
-      //if (++count == total) removeLoading(elBody)
-    })
 
-    getAdicionalData(correosData.id, trackEntity.postalcode)
-    .then(function (adicionalData) {
-      // Hide the second phone if is the same
-      if (adicionalData.phone2 == adicionalData.phone1)
-        adicionalData.phone2 = null
+    // Hide the second phone if is the same
+    if (adicionalData.phone2 == adicionalData.phone1)
+      adicionalData.phone2 = null
 
-      if (adicionalData.status == 'DESCARTADO') {
-        adicionalContainer.append(failedTemplate({
-          provider: 'Adicional',
-          error: 'Estado descartado.'
-        }))
-      } else {
-        adicionalContainer.append(adicionalTemplate(adicionalData))
-      }
-
-    })
-    .catch(function (error) {
-      adicionalContainer.append(failedTemplate(error.responseJSON))
-    })
-
+    if (adicionalData.status == 'DESCARTADO') {
+      adicionalContainer.append(failedTemplate({
+        provider: 'Adicional',
+        error: 'Estado descartado.'
+      }))
+    } else {
+      adicionalContainer.append(adicionalTemplate(adicionalData))
+    }
   })
   .catch(function (error) {
-    correosContainer.append(failedTemplate(error.responseJSON))
+    adicionalContainer.append(failedTemplate(error.responseJSON))
     if (++count == total) removeLoading(elBody)
   })
 }
@@ -842,7 +824,6 @@ function loadNumbersMultiple (elBody, trackEntity) {
         link: 'https://www.facebook.com/geartrackpt'
       }))
     }
-
 
     removeLoading(elBody)
   }
