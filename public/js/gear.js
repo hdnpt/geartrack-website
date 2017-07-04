@@ -30,9 +30,9 @@ var trackEntryTemplate = Handlebars.compile($('#track-list-template').html()),
   trackContentTemplate = Handlebars.compile($('#track-content-template').html()),
   skyTemplate = Handlebars.compile($('#sky-template').html()),
   correosTemplate = Handlebars.compile($('#correos-template').html()),
-  correosOldTemplate = Handlebars.compile($('#correos-old-template').html()),
+  //correosOldTemplate = Handlebars.compile($('#correos-old-template').html()),
   adicionalTemplate = Handlebars.compile($('#adicional-template').html()),
-  expresso24Template = Handlebars.compile($('#expresso24-template').html()),
+  //expresso24Template = Handlebars.compile($('#expresso24-template').html()),
   cttTemplate = Handlebars.compile($('#ctt-template').html()),
   aliExpressTemplate = Handlebars.compile($('#ali-template').html()),
   failedTemplate = Handlebars.compile($('#failed-template').html()),
@@ -47,7 +47,10 @@ storageLoadAll()
 addAllTracksToPage()
 
 var help_block2 = $('#help_block'),
-  form_group = shippingId.parent('.form-group')
+  form_group = $('#id-input')
+
+var idInvalidString = 'Esse tipo de ID ainda não é suportado <i class="fa fa-frown-o"></i>, fala connosco para adicionarmos!',
+  idMaybeNotValid = 'Esse id parece ser o order number da Gearbest, não será o <strong>tracking number</strong> que pretendes? <i class="fa fa-smile-o"></i>'
 
 shippingId.on('input paste', function () {
   var inserted = $(this).val().replace(/[^\x00-\x7F]/, '') // remove non asci chars
@@ -55,22 +58,33 @@ shippingId.on('input paste', function () {
   $(this).val(inserted) // update the input
 
   if (inserted.length == 0) {
-    form_group.toggleClass('has-success', false)
-    form_group.toggleClass('has-error', false)
-    help_block2.hide()
+    inputFeedback('', null, false)
     return
   }
 
   if (isValidID(inserted)) {
-    form_group.toggleClass('has-error', false)
-    form_group.toggleClass('has-success', true)
-    help_block2.hide()
+    if (/^W.+$/.test(inserted)) {
+      inputFeedback('has-warning', idMaybeNotValid, true)
+      return
+    }
+
+    inputFeedback('has-success', null, false)
   } else {
-    form_group.toggleClass('has-success', false)
-    form_group.toggleClass('has-error', true)
-    help_block2.show()
+    inputFeedback('has-error', idInvalidString, true)
   }
 })
+
+function inputFeedback (classType, message, showHelp) {
+  form_group.attr('class', 'form-group ' + classType)
+
+  if (message)
+    help_block2.html(message)
+
+  if (showHelp)
+    help_block2.show()
+  else
+    help_block2.hide()
+}
 
 /**
  * Add track
