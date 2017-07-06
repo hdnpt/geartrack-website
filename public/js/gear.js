@@ -239,7 +239,7 @@ function loadTrackToContent (trackEntity) {
       } else if (/^SY[a-zA-Z0-9]+$/.test(trackEntity.id)) {
         loadSkyAndAliProvider(elBody, trackEntity, 'track24')
       } else if (/^GE.+$/.test(trackEntity.id)) {
-        loadNetherlandsPost(elBody, trackEntity)
+        loadSkyAndAliProvider(elBody, trackEntity, 'malaysiaPos')
       } else {
         loadDoubleAliProvider(elBody, trackEntity, 'track24', 'track17', false)
         notifyNewId(trackEntity.id)
