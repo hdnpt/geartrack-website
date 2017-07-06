@@ -46,6 +46,10 @@ Handlebars.registerHelper('HelperCapitalize', function (string) {
 })
 
 Handlebars.registerHelper('HelperCapitalizeWords', function (string) {
+  if(string.length == 2) { // uppercase country codes
+    return string.toUpperCase()
+  }
+
   string = string.toLowerCase()
   return string.replace(/(?:^|\s)\S/g, function (a) {
     return a.toUpperCase()
@@ -63,6 +67,7 @@ Handlebars.registerHelper('HelperState', function (state, first, insideFirst) {
     case 'entregado':
     case 'delivery success':
     case 'order delivered':
+    case 'item delivered':
     case 'the item has been delivered successfully':
     case 'entregado. su envío está entregado.':
       return 'delivered'

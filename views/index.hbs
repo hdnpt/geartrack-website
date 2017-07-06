@@ -126,11 +126,11 @@
                     <h4 class="modal-title" id="myModalLabel">Seguir nova encomenda</h4>
                 </div>
                 <div class="modal-body">
-                    <div class="form-group">
+                    <div id='id-input' class="form-group">
                         <label for="shipping_id">Tracking ID:</label>
                         <input type="text" class="form-control" required id="shipping_id"
                                placeholder="Insere o ID de tracking da encomenda.." maxlength="50" >
-                        <span class="help-block" id="help_block">Esse tipo de ID ainda não é suportado <i class="fa fa-frown-o"></i>, fala connosco para adicionarmos!</span>
+                        <span class="help-block" id="help_block"></span>
                     </div>
                     <div class="form-group">
                         <label for="postal_code">Descrição</label>
@@ -190,6 +190,7 @@
                     <div class="c-aligeneral2"></div>
                     <div class="c-aligeneral3"></div>
                     <div class="c-aligeneral4"></div>
+                    <div class="c-aligeneral5"></div>
                 </div>
             </div>
         </div>
@@ -217,7 +218,13 @@
 <script id="failed-template" type="text/x-handlebars-template">
     <div class="row">
         <div class="col-md-12">
-            <strong>\{{provider}}:</strong>
+            <h2 class="label-\{{ color }} clearfix">
+                <span>\{{ provider }}:</span>
+                <a href="\{{ link }}" target="_blank">
+                    <i class="fa fa-external-link"></i>
+                </a>
+            </h2>
+
             \{{{ error }}}
         </div>
     </div>
@@ -225,5 +232,5 @@
 <!-- /No data template -->
 
 {{#append 'scripts'}}
-    <script src="js/gear.js?v=47"></script>
+    <script src="js/gear.js?v=55"></script>
 {{/append}}
