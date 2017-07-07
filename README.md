@@ -1,10 +1,12 @@
-# Geartrack
+# Geartrack 1.0 (No further updates to this version)
 
 [![Join the chat at https://gitter.im/hdnpt/geartrack-website](https://badges.gitter.im/hdnpt/geartrack-website.svg)](https://gitter.im/hdnpt/geartrack-website?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 >Online version: [https://geartrack.pt](https://geartrack.pt)
 
-This is an Express.js app
+**Geartrack 2.0 is under development, this version will no longer be mantained. Use the online version which will always be updated :)**
+
+This is an Express.js app.
 
 ### Screenshot
 ![Screen](http://i.imgur.com/wUhzJO3.png)
