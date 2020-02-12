@@ -14,7 +14,7 @@ This is an Express.js app.
 ### Requirements
 - Node
 - Environment variables:
-    - (optional) **GEARTRACK_PROXYS**: `ip,ip,ip`  - Some trackers may block your machine ip, use different proxys to get the data.
+    - (optional) **GEARTRACK_PROXYS**: `ip,ip,ip`  - Some trackers may block your machine ip, use different proxies to get the data.
     - (optional) **GEARTRACK_BUGSNAG**: `apikey` - When an exception occurs on production you are notified by email.
 
 ### Instructions
@@ -31,7 +31,7 @@ To build and run locally:
 - `docker run -d -p 80:3000 geartrack-website`
 
 Using the public image on docker hub:
-- `docker run -d -p 80:3000 hdnpt/geartrack-website` - the latest image will be downloaded and the geartrack will be availabe at `http://localhost` (to stop use `docker stop [containerid]`)
+- `docker run -d -p 80:3000 hdnpt/geartrack-website` - the latest image will be downloaded and the geartrack will be available at `http://localhost` (to stop use `docker stop [containerid]`)
 
 Passing environment variables:
 - `docker run -d -p 80:3000 -e "GEARTRACK_BUGSNAG=apikey" hdnpt/geartrack-website`
